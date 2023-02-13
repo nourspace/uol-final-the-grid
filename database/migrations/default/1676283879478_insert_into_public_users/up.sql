@@ -1,0 +1,1 @@
+INSERT INTO "public"."users"("id", "name", "password", "role", "username", "created_at", "last_login", "updated_at") VALUES (1, E'Nour', E'pass', E'admin', E'nour', E'2023-02-13T10:24:39.45355+00:00', null, E'2023-02-13T10:24:39.45355+00:00');

@@ -1,0 +1,1 @@
+CREATE TABLE "public"."activity_comment" ("activity_id" integer NOT NULL, "asset_id" integer NOT NULL, PRIMARY KEY ("activity_id","asset_id") , FOREIGN KEY ("activity_id") REFERENCES "public"."activities"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("asset_id") REFERENCES "public"."assets"("id") ON UPDATE restrict ON DELETE restrict);

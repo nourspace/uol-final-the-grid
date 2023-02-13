@@ -1,0 +1,39 @@
+table:
+  name: users
+  schema: public
+array_relationships:
+  - name: activities
+    using:
+      foreign_key_constraint_on:
+        column: created_by
+        table:
+          name: activities
+          schema: public
+  - name: assets
+    using:
+      foreign_key_constraint_on:
+        column: created_by
+        table:
+          name: assets
+          schema: public
+  - name: attachments
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: attachments
+          schema: public
+  - name: comments
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: comments
+          schema: public
+  - name: tasks
+    using:
+      foreign_key_constraint_on:
+        column: created_by
+        table:
+          name: tasks
+          schema: public
