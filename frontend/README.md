@@ -34,3 +34,10 @@ npm run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Linting, formatting, typechecking
+```shell
+npm run lint
+npm run lintfix
+npm run typecheck
+```
