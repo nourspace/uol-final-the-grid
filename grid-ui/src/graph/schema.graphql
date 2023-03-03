@@ -74,7 +74,7 @@ type activities {
     is_hidden: Boolean!
     notes: String
     source: String
-    timestamp: timestamptz!
+    timestamp: timestamptz
     type: String
     updated_at: timestamptz!
     "An object relationship"
