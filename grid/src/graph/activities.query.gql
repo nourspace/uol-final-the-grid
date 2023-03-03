@@ -1,0 +1,6 @@
+query AllActivities($search: String) {
+  activities(where: { notes: { _ilike: $search } }) {
+    id
+    notes
+  }
+}

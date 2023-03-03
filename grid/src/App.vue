@@ -1,6 +1,19 @@
 <script setup lang="ts">
+import { AllActivities } from '@/graph/activities.query.gql'
+import { useQuery } from '@vue/apollo-composable'
+import { computed, ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+
+const searchTerm = ref('')
+const { result, loading, error } = useQuery(
+  AllActivities,
+  () => ({ search: `%${searchTerm.value}%` }),
+  () => ({ debounce: 500, enabled: searchTerm.value.length >= 3 }),
+)
+console.log({ result })
+// extract activities from result, otherwise return default
+const activities = computed(() => result.value?.activities ?? [])
 </script>
 
 <template>
@@ -9,11 +22,20 @@ import HelloWorld from './components/HelloWorld.vue'
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
+      <div style="height: 300px">
+        <input v-model="searchTerm" />
+        <p v-if="loading">Loading...</p>
+        <p v-else-if="error">Something went wrong: {{ error }}</p>
+        <template v-else-if="activities">
+          <div>
+            <p v-for="a in activities" :key="a.id">{{ a.id }}: {{ a.notes }}</p>
+          </div>
+        </template>
+      </div>
     </div>
   </header>
 
