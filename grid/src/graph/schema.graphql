@@ -1,0 +1,4205 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: query_root
+    mutation: mutation_root
+    subscription: subscription_root
+}
+
+"whether this query should be cached (Hasura Cloud only)"
+directive @cached(
+    "refresh the cache entry"
+    refresh: Boolean! = false,
+    "measured in seconds"
+    ttl: Int! = 60
+) on QUERY
+
+"columns and relationships of \"activities\""
+type activities {
+    "An array relationship"
+    activity_assets(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): [activity_asset!]!
+    "An aggregate relationship"
+    activity_assets_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): activity_asset_aggregate!
+    "An array relationship"
+    activity_comments(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): [activity_comment!]!
+    "An aggregate relationship"
+    activity_comments_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): activity_comment_aggregate!
+    created_at: timestamptz!
+    created_by: Int!
+    id: Int!
+    is_hidden: Boolean!
+    notes: String
+    source: String
+    timestamp: timestamptz!
+    type: String
+    updated_at: timestamptz!
+    "An object relationship"
+    user: users!
+}
+
+"aggregated selection of \"activities\""
+type activities_aggregate {
+    aggregate: activities_aggregate_fields
+    nodes: [activities!]!
+}
+
+"aggregate fields of \"activities\""
+type activities_aggregate_fields {
+    avg: activities_avg_fields
+    count(columns: [activities_select_column!], distinct: Boolean): Int!
+    max: activities_max_fields
+    min: activities_min_fields
+    stddev: activities_stddev_fields
+    stddev_pop: activities_stddev_pop_fields
+    stddev_samp: activities_stddev_samp_fields
+    sum: activities_sum_fields
+    var_pop: activities_var_pop_fields
+    var_samp: activities_var_samp_fields
+    variance: activities_variance_fields
+}
+
+"aggregate avg on columns"
+type activities_avg_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate max on columns"
+type activities_max_fields {
+    created_at: timestamptz
+    created_by: Int
+    id: Int
+    notes: String
+    source: String
+    timestamp: timestamptz
+    type: String
+    updated_at: timestamptz
+}
+
+"aggregate min on columns"
+type activities_min_fields {
+    created_at: timestamptz
+    created_by: Int
+    id: Int
+    notes: String
+    source: String
+    timestamp: timestamptz
+    type: String
+    updated_at: timestamptz
+}
+
+"response of any mutation on the table \"activities\""
+type activities_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [activities!]!
+}
+
+"aggregate stddev on columns"
+type activities_stddev_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate stddev_pop on columns"
+type activities_stddev_pop_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate stddev_samp on columns"
+type activities_stddev_samp_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate sum on columns"
+type activities_sum_fields {
+    created_by: Int
+    id: Int
+}
+
+"aggregate var_pop on columns"
+type activities_var_pop_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate var_samp on columns"
+type activities_var_samp_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate variance on columns"
+type activities_variance_fields {
+    created_by: Float
+    id: Float
+}
+
+"columns and relationships of \"activity_asset\""
+type activity_asset {
+    "An object relationship"
+    activity: activities!
+    activity_id: Int!
+    "An object relationship"
+    asset: assets!
+    asset_id: Int!
+}
+
+"aggregated selection of \"activity_asset\""
+type activity_asset_aggregate {
+    aggregate: activity_asset_aggregate_fields
+    nodes: [activity_asset!]!
+}
+
+"aggregate fields of \"activity_asset\""
+type activity_asset_aggregate_fields {
+    avg: activity_asset_avg_fields
+    count(columns: [activity_asset_select_column!], distinct: Boolean): Int!
+    max: activity_asset_max_fields
+    min: activity_asset_min_fields
+    stddev: activity_asset_stddev_fields
+    stddev_pop: activity_asset_stddev_pop_fields
+    stddev_samp: activity_asset_stddev_samp_fields
+    sum: activity_asset_sum_fields
+    var_pop: activity_asset_var_pop_fields
+    var_samp: activity_asset_var_samp_fields
+    variance: activity_asset_variance_fields
+}
+
+"aggregate avg on columns"
+type activity_asset_avg_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate max on columns"
+type activity_asset_max_fields {
+    activity_id: Int
+    asset_id: Int
+}
+
+"aggregate min on columns"
+type activity_asset_min_fields {
+    activity_id: Int
+    asset_id: Int
+}
+
+"response of any mutation on the table \"activity_asset\""
+type activity_asset_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [activity_asset!]!
+}
+
+"aggregate stddev on columns"
+type activity_asset_stddev_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate stddev_pop on columns"
+type activity_asset_stddev_pop_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate stddev_samp on columns"
+type activity_asset_stddev_samp_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate sum on columns"
+type activity_asset_sum_fields {
+    activity_id: Int
+    asset_id: Int
+}
+
+"aggregate var_pop on columns"
+type activity_asset_var_pop_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate var_samp on columns"
+type activity_asset_var_samp_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate variance on columns"
+type activity_asset_variance_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"columns and relationships of \"activity_comment\""
+type activity_comment {
+    "An object relationship"
+    activity: activities!
+    activity_id: Int!
+    "An object relationship"
+    asset: assets!
+    asset_id: Int!
+}
+
+"aggregated selection of \"activity_comment\""
+type activity_comment_aggregate {
+    aggregate: activity_comment_aggregate_fields
+    nodes: [activity_comment!]!
+}
+
+"aggregate fields of \"activity_comment\""
+type activity_comment_aggregate_fields {
+    avg: activity_comment_avg_fields
+    count(columns: [activity_comment_select_column!], distinct: Boolean): Int!
+    max: activity_comment_max_fields
+    min: activity_comment_min_fields
+    stddev: activity_comment_stddev_fields
+    stddev_pop: activity_comment_stddev_pop_fields
+    stddev_samp: activity_comment_stddev_samp_fields
+    sum: activity_comment_sum_fields
+    var_pop: activity_comment_var_pop_fields
+    var_samp: activity_comment_var_samp_fields
+    variance: activity_comment_variance_fields
+}
+
+"aggregate avg on columns"
+type activity_comment_avg_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate max on columns"
+type activity_comment_max_fields {
+    activity_id: Int
+    asset_id: Int
+}
+
+"aggregate min on columns"
+type activity_comment_min_fields {
+    activity_id: Int
+    asset_id: Int
+}
+
+"response of any mutation on the table \"activity_comment\""
+type activity_comment_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [activity_comment!]!
+}
+
+"aggregate stddev on columns"
+type activity_comment_stddev_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate stddev_pop on columns"
+type activity_comment_stddev_pop_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate stddev_samp on columns"
+type activity_comment_stddev_samp_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate sum on columns"
+type activity_comment_sum_fields {
+    activity_id: Int
+    asset_id: Int
+}
+
+"aggregate var_pop on columns"
+type activity_comment_var_pop_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate var_samp on columns"
+type activity_comment_var_samp_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"aggregate variance on columns"
+type activity_comment_variance_fields {
+    activity_id: Float
+    asset_id: Float
+}
+
+"columns and relationships of \"articles\""
+type articles {
+    created_at: timestamptz!
+    id: Int!
+    is_published: Boolean!
+    published_at: timestamptz!
+    text: String
+    title: String!
+    type: String!
+    updated_at: timestamptz!
+}
+
+"aggregated selection of \"articles\""
+type articles_aggregate {
+    aggregate: articles_aggregate_fields
+    nodes: [articles!]!
+}
+
+"aggregate fields of \"articles\""
+type articles_aggregate_fields {
+    avg: articles_avg_fields
+    count(columns: [articles_select_column!], distinct: Boolean): Int!
+    max: articles_max_fields
+    min: articles_min_fields
+    stddev: articles_stddev_fields
+    stddev_pop: articles_stddev_pop_fields
+    stddev_samp: articles_stddev_samp_fields
+    sum: articles_sum_fields
+    var_pop: articles_var_pop_fields
+    var_samp: articles_var_samp_fields
+    variance: articles_variance_fields
+}
+
+"aggregate avg on columns"
+type articles_avg_fields {
+    id: Float
+}
+
+"aggregate max on columns"
+type articles_max_fields {
+    created_at: timestamptz
+    id: Int
+    published_at: timestamptz
+    text: String
+    title: String
+    type: String
+    updated_at: timestamptz
+}
+
+"aggregate min on columns"
+type articles_min_fields {
+    created_at: timestamptz
+    id: Int
+    published_at: timestamptz
+    text: String
+    title: String
+    type: String
+    updated_at: timestamptz
+}
+
+"response of any mutation on the table \"articles\""
+type articles_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [articles!]!
+}
+
+"aggregate stddev on columns"
+type articles_stddev_fields {
+    id: Float
+}
+
+"aggregate stddev_pop on columns"
+type articles_stddev_pop_fields {
+    id: Float
+}
+
+"aggregate stddev_samp on columns"
+type articles_stddev_samp_fields {
+    id: Float
+}
+
+"aggregate sum on columns"
+type articles_sum_fields {
+    id: Int
+}
+
+"aggregate var_pop on columns"
+type articles_var_pop_fields {
+    id: Float
+}
+
+"aggregate var_samp on columns"
+type articles_var_samp_fields {
+    id: Float
+}
+
+"aggregate variance on columns"
+type articles_variance_fields {
+    id: Float
+}
+
+"columns and relationships of \"assets\""
+type assets {
+    "An array relationship"
+    activity_assets(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): [activity_asset!]!
+    "An aggregate relationship"
+    activity_assets_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): activity_asset_aggregate!
+    "An array relationship"
+    activity_comments(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): [activity_comment!]!
+    "An aggregate relationship"
+    activity_comments_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): activity_comment_aggregate!
+    category: String!
+    created_at: timestamptz!
+    created_by: Int!
+    description: String
+    id: Int!
+    name: String!
+    updated_at: timestamptz!
+    url: String
+    "An object relationship"
+    user: users!
+}
+
+"aggregated selection of \"assets\""
+type assets_aggregate {
+    aggregate: assets_aggregate_fields
+    nodes: [assets!]!
+}
+
+"aggregate fields of \"assets\""
+type assets_aggregate_fields {
+    avg: assets_avg_fields
+    count(columns: [assets_select_column!], distinct: Boolean): Int!
+    max: assets_max_fields
+    min: assets_min_fields
+    stddev: assets_stddev_fields
+    stddev_pop: assets_stddev_pop_fields
+    stddev_samp: assets_stddev_samp_fields
+    sum: assets_sum_fields
+    var_pop: assets_var_pop_fields
+    var_samp: assets_var_samp_fields
+    variance: assets_variance_fields
+}
+
+"aggregate avg on columns"
+type assets_avg_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate max on columns"
+type assets_max_fields {
+    category: String
+    created_at: timestamptz
+    created_by: Int
+    description: String
+    id: Int
+    name: String
+    updated_at: timestamptz
+    url: String
+}
+
+"aggregate min on columns"
+type assets_min_fields {
+    category: String
+    created_at: timestamptz
+    created_by: Int
+    description: String
+    id: Int
+    name: String
+    updated_at: timestamptz
+    url: String
+}
+
+"response of any mutation on the table \"assets\""
+type assets_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [assets!]!
+}
+
+"aggregate stddev on columns"
+type assets_stddev_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate stddev_pop on columns"
+type assets_stddev_pop_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate stddev_samp on columns"
+type assets_stddev_samp_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate sum on columns"
+type assets_sum_fields {
+    created_by: Int
+    id: Int
+}
+
+"aggregate var_pop on columns"
+type assets_var_pop_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate var_samp on columns"
+type assets_var_samp_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate variance on columns"
+type assets_variance_fields {
+    created_by: Float
+    id: Float
+}
+
+"columns and relationships of \"attachments\""
+type attachments {
+    created_at: timestamptz
+    id: Int!
+    url: String!
+    "An object relationship"
+    user: users!
+    user_id: Int!
+}
+
+"aggregated selection of \"attachments\""
+type attachments_aggregate {
+    aggregate: attachments_aggregate_fields
+    nodes: [attachments!]!
+}
+
+"aggregate fields of \"attachments\""
+type attachments_aggregate_fields {
+    avg: attachments_avg_fields
+    count(columns: [attachments_select_column!], distinct: Boolean): Int!
+    max: attachments_max_fields
+    min: attachments_min_fields
+    stddev: attachments_stddev_fields
+    stddev_pop: attachments_stddev_pop_fields
+    stddev_samp: attachments_stddev_samp_fields
+    sum: attachments_sum_fields
+    var_pop: attachments_var_pop_fields
+    var_samp: attachments_var_samp_fields
+    variance: attachments_variance_fields
+}
+
+"aggregate avg on columns"
+type attachments_avg_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate max on columns"
+type attachments_max_fields {
+    created_at: timestamptz
+    id: Int
+    url: String
+    user_id: Int
+}
+
+"aggregate min on columns"
+type attachments_min_fields {
+    created_at: timestamptz
+    id: Int
+    url: String
+    user_id: Int
+}
+
+"response of any mutation on the table \"attachments\""
+type attachments_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [attachments!]!
+}
+
+"aggregate stddev on columns"
+type attachments_stddev_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate stddev_pop on columns"
+type attachments_stddev_pop_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate stddev_samp on columns"
+type attachments_stddev_samp_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate sum on columns"
+type attachments_sum_fields {
+    id: Int
+    user_id: Int
+}
+
+"aggregate var_pop on columns"
+type attachments_var_pop_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate var_samp on columns"
+type attachments_var_samp_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate variance on columns"
+type attachments_variance_fields {
+    id: Float
+    user_id: Float
+}
+
+"columns and relationships of \"comments\""
+type comments {
+    created_at: timestamptz!
+    id: Int!
+    text: String!
+    "An object relationship"
+    user: users!
+    user_id: Int!
+}
+
+"aggregated selection of \"comments\""
+type comments_aggregate {
+    aggregate: comments_aggregate_fields
+    nodes: [comments!]!
+}
+
+"aggregate fields of \"comments\""
+type comments_aggregate_fields {
+    avg: comments_avg_fields
+    count(columns: [comments_select_column!], distinct: Boolean): Int!
+    max: comments_max_fields
+    min: comments_min_fields
+    stddev: comments_stddev_fields
+    stddev_pop: comments_stddev_pop_fields
+    stddev_samp: comments_stddev_samp_fields
+    sum: comments_sum_fields
+    var_pop: comments_var_pop_fields
+    var_samp: comments_var_samp_fields
+    variance: comments_variance_fields
+}
+
+"aggregate avg on columns"
+type comments_avg_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate max on columns"
+type comments_max_fields {
+    created_at: timestamptz
+    id: Int
+    text: String
+    user_id: Int
+}
+
+"aggregate min on columns"
+type comments_min_fields {
+    created_at: timestamptz
+    id: Int
+    text: String
+    user_id: Int
+}
+
+"response of any mutation on the table \"comments\""
+type comments_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [comments!]!
+}
+
+"aggregate stddev on columns"
+type comments_stddev_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate stddev_pop on columns"
+type comments_stddev_pop_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate stddev_samp on columns"
+type comments_stddev_samp_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate sum on columns"
+type comments_sum_fields {
+    id: Int
+    user_id: Int
+}
+
+"aggregate var_pop on columns"
+type comments_var_pop_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate var_samp on columns"
+type comments_var_samp_fields {
+    id: Float
+    user_id: Float
+}
+
+"aggregate variance on columns"
+type comments_variance_fields {
+    id: Float
+    user_id: Float
+}
+
+"mutation root"
+type mutation_root {
+    "delete data from the table: \"activities\""
+    delete_activities(
+        "filter the rows which have to be deleted"
+        where: activities_bool_exp!
+    ): activities_mutation_response
+    "delete single row from the table: \"activities\""
+    delete_activities_by_pk(id: Int!): activities
+    "delete data from the table: \"activity_asset\""
+    delete_activity_asset(
+        "filter the rows which have to be deleted"
+        where: activity_asset_bool_exp!
+    ): activity_asset_mutation_response
+    "delete single row from the table: \"activity_asset\""
+    delete_activity_asset_by_pk(activity_id: Int!, asset_id: Int!): activity_asset
+    "delete data from the table: \"activity_comment\""
+    delete_activity_comment(
+        "filter the rows which have to be deleted"
+        where: activity_comment_bool_exp!
+    ): activity_comment_mutation_response
+    "delete single row from the table: \"activity_comment\""
+    delete_activity_comment_by_pk(activity_id: Int!, asset_id: Int!): activity_comment
+    "delete data from the table: \"articles\""
+    delete_articles(
+        "filter the rows which have to be deleted"
+        where: articles_bool_exp!
+    ): articles_mutation_response
+    "delete single row from the table: \"articles\""
+    delete_articles_by_pk(id: Int!): articles
+    "delete data from the table: \"assets\""
+    delete_assets(
+        "filter the rows which have to be deleted"
+        where: assets_bool_exp!
+    ): assets_mutation_response
+    "delete single row from the table: \"assets\""
+    delete_assets_by_pk(id: Int!): assets
+    "delete data from the table: \"attachments\""
+    delete_attachments(
+        "filter the rows which have to be deleted"
+        where: attachments_bool_exp!
+    ): attachments_mutation_response
+    "delete single row from the table: \"attachments\""
+    delete_attachments_by_pk(id: Int!): attachments
+    "delete data from the table: \"comments\""
+    delete_comments(
+        "filter the rows which have to be deleted"
+        where: comments_bool_exp!
+    ): comments_mutation_response
+    "delete single row from the table: \"comments\""
+    delete_comments_by_pk(id: Int!): comments
+    "delete data from the table: \"tasks\""
+    delete_tasks(
+        "filter the rows which have to be deleted"
+        where: tasks_bool_exp!
+    ): tasks_mutation_response
+    "delete single row from the table: \"tasks\""
+    delete_tasks_by_pk(id: Int!): tasks
+    "delete data from the table: \"users\""
+    delete_users(
+        "filter the rows which have to be deleted"
+        where: users_bool_exp!
+    ): users_mutation_response
+    "delete single row from the table: \"users\""
+    delete_users_by_pk(id: Int!): users
+    "insert data into the table: \"activities\""
+    insert_activities(
+        "the rows to be inserted"
+        objects: [activities_insert_input!]!,
+        "upsert condition"
+        on_conflict: activities_on_conflict
+    ): activities_mutation_response
+    "insert a single row into the table: \"activities\""
+    insert_activities_one(
+        "the row to be inserted"
+        object: activities_insert_input!,
+        "upsert condition"
+        on_conflict: activities_on_conflict
+    ): activities
+    "insert data into the table: \"activity_asset\""
+    insert_activity_asset(
+        "the rows to be inserted"
+        objects: [activity_asset_insert_input!]!,
+        "upsert condition"
+        on_conflict: activity_asset_on_conflict
+    ): activity_asset_mutation_response
+    "insert a single row into the table: \"activity_asset\""
+    insert_activity_asset_one(
+        "the row to be inserted"
+        object: activity_asset_insert_input!,
+        "upsert condition"
+        on_conflict: activity_asset_on_conflict
+    ): activity_asset
+    "insert data into the table: \"activity_comment\""
+    insert_activity_comment(
+        "the rows to be inserted"
+        objects: [activity_comment_insert_input!]!,
+        "upsert condition"
+        on_conflict: activity_comment_on_conflict
+    ): activity_comment_mutation_response
+    "insert a single row into the table: \"activity_comment\""
+    insert_activity_comment_one(
+        "the row to be inserted"
+        object: activity_comment_insert_input!,
+        "upsert condition"
+        on_conflict: activity_comment_on_conflict
+    ): activity_comment
+    "insert data into the table: \"articles\""
+    insert_articles(
+        "the rows to be inserted"
+        objects: [articles_insert_input!]!,
+        "upsert condition"
+        on_conflict: articles_on_conflict
+    ): articles_mutation_response
+    "insert a single row into the table: \"articles\""
+    insert_articles_one(
+        "the row to be inserted"
+        object: articles_insert_input!,
+        "upsert condition"
+        on_conflict: articles_on_conflict
+    ): articles
+    "insert data into the table: \"assets\""
+    insert_assets(
+        "the rows to be inserted"
+        objects: [assets_insert_input!]!,
+        "upsert condition"
+        on_conflict: assets_on_conflict
+    ): assets_mutation_response
+    "insert a single row into the table: \"assets\""
+    insert_assets_one(
+        "the row to be inserted"
+        object: assets_insert_input!,
+        "upsert condition"
+        on_conflict: assets_on_conflict
+    ): assets
+    "insert data into the table: \"attachments\""
+    insert_attachments(
+        "the rows to be inserted"
+        objects: [attachments_insert_input!]!,
+        "upsert condition"
+        on_conflict: attachments_on_conflict
+    ): attachments_mutation_response
+    "insert a single row into the table: \"attachments\""
+    insert_attachments_one(
+        "the row to be inserted"
+        object: attachments_insert_input!,
+        "upsert condition"
+        on_conflict: attachments_on_conflict
+    ): attachments
+    "insert data into the table: \"comments\""
+    insert_comments(
+        "the rows to be inserted"
+        objects: [comments_insert_input!]!,
+        "upsert condition"
+        on_conflict: comments_on_conflict
+    ): comments_mutation_response
+    "insert a single row into the table: \"comments\""
+    insert_comments_one(
+        "the row to be inserted"
+        object: comments_insert_input!,
+        "upsert condition"
+        on_conflict: comments_on_conflict
+    ): comments
+    "insert data into the table: \"tasks\""
+    insert_tasks(
+        "the rows to be inserted"
+        objects: [tasks_insert_input!]!,
+        "upsert condition"
+        on_conflict: tasks_on_conflict
+    ): tasks_mutation_response
+    "insert a single row into the table: \"tasks\""
+    insert_tasks_one(
+        "the row to be inserted"
+        object: tasks_insert_input!,
+        "upsert condition"
+        on_conflict: tasks_on_conflict
+    ): tasks
+    "insert data into the table: \"users\""
+    insert_users(
+        "the rows to be inserted"
+        objects: [users_insert_input!]!,
+        "upsert condition"
+        on_conflict: users_on_conflict
+    ): users_mutation_response
+    "insert a single row into the table: \"users\""
+    insert_users_one(
+        "the row to be inserted"
+        object: users_insert_input!,
+        "upsert condition"
+        on_conflict: users_on_conflict
+    ): users
+    "update data of the table: \"activities\""
+    update_activities(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: activities_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: activities_set_input,
+        "filter the rows which have to be updated"
+        where: activities_bool_exp!
+    ): activities_mutation_response
+    "update single row of the table: \"activities\""
+    update_activities_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: activities_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: activities_set_input,
+        pk_columns: activities_pk_columns_input!
+    ): activities
+    "update multiples rows of table: \"activities\""
+    update_activities_many(
+        "updates to execute, in order"
+        updates: [activities_updates!]!
+    ): [activities_mutation_response]
+    "update data of the table: \"activity_asset\""
+    update_activity_asset(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: activity_asset_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: activity_asset_set_input,
+        "filter the rows which have to be updated"
+        where: activity_asset_bool_exp!
+    ): activity_asset_mutation_response
+    "update single row of the table: \"activity_asset\""
+    update_activity_asset_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: activity_asset_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: activity_asset_set_input,
+        pk_columns: activity_asset_pk_columns_input!
+    ): activity_asset
+    "update multiples rows of table: \"activity_asset\""
+    update_activity_asset_many(
+        "updates to execute, in order"
+        updates: [activity_asset_updates!]!
+    ): [activity_asset_mutation_response]
+    "update data of the table: \"activity_comment\""
+    update_activity_comment(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: activity_comment_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: activity_comment_set_input,
+        "filter the rows which have to be updated"
+        where: activity_comment_bool_exp!
+    ): activity_comment_mutation_response
+    "update single row of the table: \"activity_comment\""
+    update_activity_comment_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: activity_comment_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: activity_comment_set_input,
+        pk_columns: activity_comment_pk_columns_input!
+    ): activity_comment
+    "update multiples rows of table: \"activity_comment\""
+    update_activity_comment_many(
+        "updates to execute, in order"
+        updates: [activity_comment_updates!]!
+    ): [activity_comment_mutation_response]
+    "update data of the table: \"articles\""
+    update_articles(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: articles_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: articles_set_input,
+        "filter the rows which have to be updated"
+        where: articles_bool_exp!
+    ): articles_mutation_response
+    "update single row of the table: \"articles\""
+    update_articles_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: articles_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: articles_set_input,
+        pk_columns: articles_pk_columns_input!
+    ): articles
+    "update multiples rows of table: \"articles\""
+    update_articles_many(
+        "updates to execute, in order"
+        updates: [articles_updates!]!
+    ): [articles_mutation_response]
+    "update data of the table: \"assets\""
+    update_assets(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: assets_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: assets_set_input,
+        "filter the rows which have to be updated"
+        where: assets_bool_exp!
+    ): assets_mutation_response
+    "update single row of the table: \"assets\""
+    update_assets_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: assets_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: assets_set_input,
+        pk_columns: assets_pk_columns_input!
+    ): assets
+    "update multiples rows of table: \"assets\""
+    update_assets_many(
+        "updates to execute, in order"
+        updates: [assets_updates!]!
+    ): [assets_mutation_response]
+    "update data of the table: \"attachments\""
+    update_attachments(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: attachments_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: attachments_set_input,
+        "filter the rows which have to be updated"
+        where: attachments_bool_exp!
+    ): attachments_mutation_response
+    "update single row of the table: \"attachments\""
+    update_attachments_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: attachments_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: attachments_set_input,
+        pk_columns: attachments_pk_columns_input!
+    ): attachments
+    "update multiples rows of table: \"attachments\""
+    update_attachments_many(
+        "updates to execute, in order"
+        updates: [attachments_updates!]!
+    ): [attachments_mutation_response]
+    "update data of the table: \"comments\""
+    update_comments(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: comments_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: comments_set_input,
+        "filter the rows which have to be updated"
+        where: comments_bool_exp!
+    ): comments_mutation_response
+    "update single row of the table: \"comments\""
+    update_comments_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: comments_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: comments_set_input,
+        pk_columns: comments_pk_columns_input!
+    ): comments
+    "update multiples rows of table: \"comments\""
+    update_comments_many(
+        "updates to execute, in order"
+        updates: [comments_updates!]!
+    ): [comments_mutation_response]
+    "update data of the table: \"tasks\""
+    update_tasks(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: tasks_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: tasks_set_input,
+        "filter the rows which have to be updated"
+        where: tasks_bool_exp!
+    ): tasks_mutation_response
+    "update single row of the table: \"tasks\""
+    update_tasks_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: tasks_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: tasks_set_input,
+        pk_columns: tasks_pk_columns_input!
+    ): tasks
+    "update multiples rows of table: \"tasks\""
+    update_tasks_many(
+        "updates to execute, in order"
+        updates: [tasks_updates!]!
+    ): [tasks_mutation_response]
+    "update data of the table: \"users\""
+    update_users(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: users_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: users_set_input,
+        "filter the rows which have to be updated"
+        where: users_bool_exp!
+    ): users_mutation_response
+    "update single row of the table: \"users\""
+    update_users_by_pk(
+        "increments the numeric columns with given value of the filtered values"
+        _inc: users_inc_input,
+        "sets the columns of the filtered rows to the given values"
+        _set: users_set_input,
+        pk_columns: users_pk_columns_input!
+    ): users
+    "update multiples rows of table: \"users\""
+    update_users_many(
+        "updates to execute, in order"
+        updates: [users_updates!]!
+    ): [users_mutation_response]
+}
+
+type query_root {
+    "An array relationship"
+    activities(
+        "distinct select on columns"
+        distinct_on: [activities_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activities_order_by!],
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): [activities!]!
+    "An aggregate relationship"
+    activities_aggregate(
+        "distinct select on columns"
+        distinct_on: [activities_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activities_order_by!],
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): activities_aggregate!
+    "fetch data from the table: \"activities\" using primary key columns"
+    activities_by_pk(id: Int!): activities
+    "fetch data from the table: \"activity_asset\""
+    activity_asset(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): [activity_asset!]!
+    "fetch aggregated fields from the table: \"activity_asset\""
+    activity_asset_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): activity_asset_aggregate!
+    "fetch data from the table: \"activity_asset\" using primary key columns"
+    activity_asset_by_pk(activity_id: Int!, asset_id: Int!): activity_asset
+    "fetch data from the table: \"activity_comment\""
+    activity_comment(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): [activity_comment!]!
+    "fetch aggregated fields from the table: \"activity_comment\""
+    activity_comment_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): activity_comment_aggregate!
+    "fetch data from the table: \"activity_comment\" using primary key columns"
+    activity_comment_by_pk(activity_id: Int!, asset_id: Int!): activity_comment
+    "fetch data from the table: \"articles\""
+    articles(
+        "distinct select on columns"
+        distinct_on: [articles_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [articles_order_by!],
+        "filter the rows returned"
+        where: articles_bool_exp
+    ): [articles!]!
+    "fetch aggregated fields from the table: \"articles\""
+    articles_aggregate(
+        "distinct select on columns"
+        distinct_on: [articles_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [articles_order_by!],
+        "filter the rows returned"
+        where: articles_bool_exp
+    ): articles_aggregate!
+    "fetch data from the table: \"articles\" using primary key columns"
+    articles_by_pk(id: Int!): articles
+    "An array relationship"
+    assets(
+        "distinct select on columns"
+        distinct_on: [assets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [assets_order_by!],
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): [assets!]!
+    "An aggregate relationship"
+    assets_aggregate(
+        "distinct select on columns"
+        distinct_on: [assets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [assets_order_by!],
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): assets_aggregate!
+    "fetch data from the table: \"assets\" using primary key columns"
+    assets_by_pk(id: Int!): assets
+    "An array relationship"
+    attachments(
+        "distinct select on columns"
+        distinct_on: [attachments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [attachments_order_by!],
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): [attachments!]!
+    "An aggregate relationship"
+    attachments_aggregate(
+        "distinct select on columns"
+        distinct_on: [attachments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [attachments_order_by!],
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): attachments_aggregate!
+    "fetch data from the table: \"attachments\" using primary key columns"
+    attachments_by_pk(id: Int!): attachments
+    "An array relationship"
+    comments(
+        "distinct select on columns"
+        distinct_on: [comments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [comments_order_by!],
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): [comments!]!
+    "An aggregate relationship"
+    comments_aggregate(
+        "distinct select on columns"
+        distinct_on: [comments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [comments_order_by!],
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): comments_aggregate!
+    "fetch data from the table: \"comments\" using primary key columns"
+    comments_by_pk(id: Int!): comments
+    "An array relationship"
+    tasks(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): [tasks!]!
+    "An aggregate relationship"
+    tasks_aggregate(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): tasks_aggregate!
+    "fetch data from the table: \"tasks\" using primary key columns"
+    tasks_by_pk(id: Int!): tasks
+    "fetch data from the table: \"users\""
+    users(
+        "distinct select on columns"
+        distinct_on: [users_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [users_order_by!],
+        "filter the rows returned"
+        where: users_bool_exp
+    ): [users!]!
+    "fetch aggregated fields from the table: \"users\""
+    users_aggregate(
+        "distinct select on columns"
+        distinct_on: [users_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [users_order_by!],
+        "filter the rows returned"
+        where: users_bool_exp
+    ): users_aggregate!
+    "fetch data from the table: \"users\" using primary key columns"
+    users_by_pk(id: Int!): users
+}
+
+type subscription_root {
+    "An array relationship"
+    activities(
+        "distinct select on columns"
+        distinct_on: [activities_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activities_order_by!],
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): [activities!]!
+    "An aggregate relationship"
+    activities_aggregate(
+        "distinct select on columns"
+        distinct_on: [activities_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activities_order_by!],
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): activities_aggregate!
+    "fetch data from the table: \"activities\" using primary key columns"
+    activities_by_pk(id: Int!): activities
+    "fetch data from the table in a streaming manner: \"activities\""
+    activities_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [activities_stream_cursor_input]!,
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): [activities!]!
+    "fetch data from the table: \"activity_asset\""
+    activity_asset(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): [activity_asset!]!
+    "fetch aggregated fields from the table: \"activity_asset\""
+    activity_asset_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_asset_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_asset_order_by!],
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): activity_asset_aggregate!
+    "fetch data from the table: \"activity_asset\" using primary key columns"
+    activity_asset_by_pk(activity_id: Int!, asset_id: Int!): activity_asset
+    "fetch data from the table in a streaming manner: \"activity_asset\""
+    activity_asset_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [activity_asset_stream_cursor_input]!,
+        "filter the rows returned"
+        where: activity_asset_bool_exp
+    ): [activity_asset!]!
+    "fetch data from the table: \"activity_comment\""
+    activity_comment(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): [activity_comment!]!
+    "fetch aggregated fields from the table: \"activity_comment\""
+    activity_comment_aggregate(
+        "distinct select on columns"
+        distinct_on: [activity_comment_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activity_comment_order_by!],
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): activity_comment_aggregate!
+    "fetch data from the table: \"activity_comment\" using primary key columns"
+    activity_comment_by_pk(activity_id: Int!, asset_id: Int!): activity_comment
+    "fetch data from the table in a streaming manner: \"activity_comment\""
+    activity_comment_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [activity_comment_stream_cursor_input]!,
+        "filter the rows returned"
+        where: activity_comment_bool_exp
+    ): [activity_comment!]!
+    "fetch data from the table: \"articles\""
+    articles(
+        "distinct select on columns"
+        distinct_on: [articles_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [articles_order_by!],
+        "filter the rows returned"
+        where: articles_bool_exp
+    ): [articles!]!
+    "fetch aggregated fields from the table: \"articles\""
+    articles_aggregate(
+        "distinct select on columns"
+        distinct_on: [articles_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [articles_order_by!],
+        "filter the rows returned"
+        where: articles_bool_exp
+    ): articles_aggregate!
+    "fetch data from the table: \"articles\" using primary key columns"
+    articles_by_pk(id: Int!): articles
+    "fetch data from the table in a streaming manner: \"articles\""
+    articles_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [articles_stream_cursor_input]!,
+        "filter the rows returned"
+        where: articles_bool_exp
+    ): [articles!]!
+    "An array relationship"
+    assets(
+        "distinct select on columns"
+        distinct_on: [assets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [assets_order_by!],
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): [assets!]!
+    "An aggregate relationship"
+    assets_aggregate(
+        "distinct select on columns"
+        distinct_on: [assets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [assets_order_by!],
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): assets_aggregate!
+    "fetch data from the table: \"assets\" using primary key columns"
+    assets_by_pk(id: Int!): assets
+    "fetch data from the table in a streaming manner: \"assets\""
+    assets_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [assets_stream_cursor_input]!,
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): [assets!]!
+    "An array relationship"
+    attachments(
+        "distinct select on columns"
+        distinct_on: [attachments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [attachments_order_by!],
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): [attachments!]!
+    "An aggregate relationship"
+    attachments_aggregate(
+        "distinct select on columns"
+        distinct_on: [attachments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [attachments_order_by!],
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): attachments_aggregate!
+    "fetch data from the table: \"attachments\" using primary key columns"
+    attachments_by_pk(id: Int!): attachments
+    "fetch data from the table in a streaming manner: \"attachments\""
+    attachments_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [attachments_stream_cursor_input]!,
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): [attachments!]!
+    "An array relationship"
+    comments(
+        "distinct select on columns"
+        distinct_on: [comments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [comments_order_by!],
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): [comments!]!
+    "An aggregate relationship"
+    comments_aggregate(
+        "distinct select on columns"
+        distinct_on: [comments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [comments_order_by!],
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): comments_aggregate!
+    "fetch data from the table: \"comments\" using primary key columns"
+    comments_by_pk(id: Int!): comments
+    "fetch data from the table in a streaming manner: \"comments\""
+    comments_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [comments_stream_cursor_input]!,
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): [comments!]!
+    "An array relationship"
+    tasks(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): [tasks!]!
+    "An aggregate relationship"
+    tasks_aggregate(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): tasks_aggregate!
+    "fetch data from the table: \"tasks\" using primary key columns"
+    tasks_by_pk(id: Int!): tasks
+    "fetch data from the table in a streaming manner: \"tasks\""
+    tasks_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [tasks_stream_cursor_input]!,
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): [tasks!]!
+    "fetch data from the table: \"users\""
+    users(
+        "distinct select on columns"
+        distinct_on: [users_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [users_order_by!],
+        "filter the rows returned"
+        where: users_bool_exp
+    ): [users!]!
+    "fetch aggregated fields from the table: \"users\""
+    users_aggregate(
+        "distinct select on columns"
+        distinct_on: [users_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [users_order_by!],
+        "filter the rows returned"
+        where: users_bool_exp
+    ): users_aggregate!
+    "fetch data from the table: \"users\" using primary key columns"
+    users_by_pk(id: Int!): users
+    "fetch data from the table in a streaming manner: \"users\""
+    users_stream(
+        "maximum number of rows returned in a single batch"
+        batch_size: Int!,
+        "cursor to stream the results returned by the query"
+        cursor: [users_stream_cursor_input]!,
+        "filter the rows returned"
+        where: users_bool_exp
+    ): [users!]!
+}
+
+"columns and relationships of \"tasks\""
+type tasks {
+    created_at: timestamptz!
+    created_by: Int!
+    desc: String
+    id: Int!
+    status: String!
+    title: String!
+    updated_at: timestamptz!
+    "An object relationship"
+    user: users!
+}
+
+"aggregated selection of \"tasks\""
+type tasks_aggregate {
+    aggregate: tasks_aggregate_fields
+    nodes: [tasks!]!
+}
+
+"aggregate fields of \"tasks\""
+type tasks_aggregate_fields {
+    avg: tasks_avg_fields
+    count(columns: [tasks_select_column!], distinct: Boolean): Int!
+    max: tasks_max_fields
+    min: tasks_min_fields
+    stddev: tasks_stddev_fields
+    stddev_pop: tasks_stddev_pop_fields
+    stddev_samp: tasks_stddev_samp_fields
+    sum: tasks_sum_fields
+    var_pop: tasks_var_pop_fields
+    var_samp: tasks_var_samp_fields
+    variance: tasks_variance_fields
+}
+
+"aggregate avg on columns"
+type tasks_avg_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate max on columns"
+type tasks_max_fields {
+    created_at: timestamptz
+    created_by: Int
+    desc: String
+    id: Int
+    status: String
+    title: String
+    updated_at: timestamptz
+}
+
+"aggregate min on columns"
+type tasks_min_fields {
+    created_at: timestamptz
+    created_by: Int
+    desc: String
+    id: Int
+    status: String
+    title: String
+    updated_at: timestamptz
+}
+
+"response of any mutation on the table \"tasks\""
+type tasks_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [tasks!]!
+}
+
+"aggregate stddev on columns"
+type tasks_stddev_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate stddev_pop on columns"
+type tasks_stddev_pop_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate stddev_samp on columns"
+type tasks_stddev_samp_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate sum on columns"
+type tasks_sum_fields {
+    created_by: Int
+    id: Int
+}
+
+"aggregate var_pop on columns"
+type tasks_var_pop_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate var_samp on columns"
+type tasks_var_samp_fields {
+    created_by: Float
+    id: Float
+}
+
+"aggregate variance on columns"
+type tasks_variance_fields {
+    created_by: Float
+    id: Float
+}
+
+"columns and relationships of \"users\""
+type users {
+    "An array relationship"
+    activities(
+        "distinct select on columns"
+        distinct_on: [activities_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activities_order_by!],
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): [activities!]!
+    "An aggregate relationship"
+    activities_aggregate(
+        "distinct select on columns"
+        distinct_on: [activities_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [activities_order_by!],
+        "filter the rows returned"
+        where: activities_bool_exp
+    ): activities_aggregate!
+    "An array relationship"
+    assets(
+        "distinct select on columns"
+        distinct_on: [assets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [assets_order_by!],
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): [assets!]!
+    "An aggregate relationship"
+    assets_aggregate(
+        "distinct select on columns"
+        distinct_on: [assets_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [assets_order_by!],
+        "filter the rows returned"
+        where: assets_bool_exp
+    ): assets_aggregate!
+    "An array relationship"
+    attachments(
+        "distinct select on columns"
+        distinct_on: [attachments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [attachments_order_by!],
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): [attachments!]!
+    "An aggregate relationship"
+    attachments_aggregate(
+        "distinct select on columns"
+        distinct_on: [attachments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [attachments_order_by!],
+        "filter the rows returned"
+        where: attachments_bool_exp
+    ): attachments_aggregate!
+    "An array relationship"
+    comments(
+        "distinct select on columns"
+        distinct_on: [comments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [comments_order_by!],
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): [comments!]!
+    "An aggregate relationship"
+    comments_aggregate(
+        "distinct select on columns"
+        distinct_on: [comments_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [comments_order_by!],
+        "filter the rows returned"
+        where: comments_bool_exp
+    ): comments_aggregate!
+    created_at: timestamptz!
+    id: Int!
+    last_login: timestamptz
+    name: String!
+    password: String!
+    role: String!
+    "An array relationship"
+    tasks(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): [tasks!]!
+    "An aggregate relationship"
+    tasks_aggregate(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): tasks_aggregate!
+    updated_at: timestamptz!
+    username: String!
+}
+
+"aggregated selection of \"users\""
+type users_aggregate {
+    aggregate: users_aggregate_fields
+    nodes: [users!]!
+}
+
+"aggregate fields of \"users\""
+type users_aggregate_fields {
+    avg: users_avg_fields
+    count(columns: [users_select_column!], distinct: Boolean): Int!
+    max: users_max_fields
+    min: users_min_fields
+    stddev: users_stddev_fields
+    stddev_pop: users_stddev_pop_fields
+    stddev_samp: users_stddev_samp_fields
+    sum: users_sum_fields
+    var_pop: users_var_pop_fields
+    var_samp: users_var_samp_fields
+    variance: users_variance_fields
+}
+
+"aggregate avg on columns"
+type users_avg_fields {
+    id: Float
+}
+
+"aggregate max on columns"
+type users_max_fields {
+    created_at: timestamptz
+    id: Int
+    last_login: timestamptz
+    name: String
+    password: String
+    role: String
+    updated_at: timestamptz
+    username: String
+}
+
+"aggregate min on columns"
+type users_min_fields {
+    created_at: timestamptz
+    id: Int
+    last_login: timestamptz
+    name: String
+    password: String
+    role: String
+    updated_at: timestamptz
+    username: String
+}
+
+"response of any mutation on the table \"users\""
+type users_mutation_response {
+    "number of rows affected by the mutation"
+    affected_rows: Int!
+    "data from the rows affected by the mutation"
+    returning: [users!]!
+}
+
+"aggregate stddev on columns"
+type users_stddev_fields {
+    id: Float
+}
+
+"aggregate stddev_pop on columns"
+type users_stddev_pop_fields {
+    id: Float
+}
+
+"aggregate stddev_samp on columns"
+type users_stddev_samp_fields {
+    id: Float
+}
+
+"aggregate sum on columns"
+type users_sum_fields {
+    id: Int
+}
+
+"aggregate var_pop on columns"
+type users_var_pop_fields {
+    id: Float
+}
+
+"aggregate var_samp on columns"
+type users_var_samp_fields {
+    id: Float
+}
+
+"aggregate variance on columns"
+type users_variance_fields {
+    id: Float
+}
+
+"unique or primary key constraints on table \"activities\""
+enum activities_constraint {
+    "unique or primary key constraint on columns \"id\""
+    activities_pkey
+}
+
+"select columns of table \"activities\""
+enum activities_select_column {
+    "column name"
+    created_at
+    "column name"
+    created_by
+    "column name"
+    id
+    "column name"
+    is_hidden
+    "column name"
+    notes
+    "column name"
+    source
+    "column name"
+    timestamp
+    "column name"
+    type
+    "column name"
+    updated_at
+}
+
+"select \"activities_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"activities\""
+enum activities_select_column_activities_aggregate_bool_exp_bool_and_arguments_columns {
+    "column name"
+    is_hidden
+}
+
+"select \"activities_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"activities\""
+enum activities_select_column_activities_aggregate_bool_exp_bool_or_arguments_columns {
+    "column name"
+    is_hidden
+}
+
+"update columns of table \"activities\""
+enum activities_update_column {
+    "column name"
+    created_at
+    "column name"
+    created_by
+    "column name"
+    id
+    "column name"
+    is_hidden
+    "column name"
+    notes
+    "column name"
+    source
+    "column name"
+    timestamp
+    "column name"
+    type
+    "column name"
+    updated_at
+}
+
+"unique or primary key constraints on table \"activity_asset\""
+enum activity_asset_constraint {
+    "unique or primary key constraint on columns \"asset_id\", \"activity_id\""
+    activity_asset_pkey
+}
+
+"select columns of table \"activity_asset\""
+enum activity_asset_select_column {
+    "column name"
+    activity_id
+    "column name"
+    asset_id
+}
+
+"update columns of table \"activity_asset\""
+enum activity_asset_update_column {
+    "column name"
+    activity_id
+    "column name"
+    asset_id
+}
+
+"unique or primary key constraints on table \"activity_comment\""
+enum activity_comment_constraint {
+    "unique or primary key constraint on columns \"asset_id\", \"activity_id\""
+    activity_comment_pkey
+}
+
+"select columns of table \"activity_comment\""
+enum activity_comment_select_column {
+    "column name"
+    activity_id
+    "column name"
+    asset_id
+}
+
+"update columns of table \"activity_comment\""
+enum activity_comment_update_column {
+    "column name"
+    activity_id
+    "column name"
+    asset_id
+}
+
+"unique or primary key constraints on table \"articles\""
+enum articles_constraint {
+    "unique or primary key constraint on columns \"id\""
+    articles_pkey
+}
+
+"select columns of table \"articles\""
+enum articles_select_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    is_published
+    "column name"
+    published_at
+    "column name"
+    text
+    "column name"
+    title
+    "column name"
+    type
+    "column name"
+    updated_at
+}
+
+"update columns of table \"articles\""
+enum articles_update_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    is_published
+    "column name"
+    published_at
+    "column name"
+    text
+    "column name"
+    title
+    "column name"
+    type
+    "column name"
+    updated_at
+}
+
+"unique or primary key constraints on table \"assets\""
+enum assets_constraint {
+    "unique or primary key constraint on columns \"id\""
+    assets_pkey
+}
+
+"select columns of table \"assets\""
+enum assets_select_column {
+    "column name"
+    category
+    "column name"
+    created_at
+    "column name"
+    created_by
+    "column name"
+    description
+    "column name"
+    id
+    "column name"
+    name
+    "column name"
+    updated_at
+    "column name"
+    url
+}
+
+"update columns of table \"assets\""
+enum assets_update_column {
+    "column name"
+    category
+    "column name"
+    created_at
+    "column name"
+    created_by
+    "column name"
+    description
+    "column name"
+    id
+    "column name"
+    name
+    "column name"
+    updated_at
+    "column name"
+    url
+}
+
+"unique or primary key constraints on table \"attachments\""
+enum attachments_constraint {
+    "unique or primary key constraint on columns \"id\""
+    attachments_pkey
+}
+
+"select columns of table \"attachments\""
+enum attachments_select_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    url
+    "column name"
+    user_id
+}
+
+"update columns of table \"attachments\""
+enum attachments_update_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    url
+    "column name"
+    user_id
+}
+
+"unique or primary key constraints on table \"comments\""
+enum comments_constraint {
+    "unique or primary key constraint on columns \"id\""
+    comments_pkey
+}
+
+"select columns of table \"comments\""
+enum comments_select_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    text
+    "column name"
+    user_id
+}
+
+"update columns of table \"comments\""
+enum comments_update_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    text
+    "column name"
+    user_id
+}
+
+"ordering argument of a cursor"
+enum cursor_ordering {
+    "ascending ordering of the cursor"
+    ASC
+    "descending ordering of the cursor"
+    DESC
+}
+
+"column ordering options"
+enum order_by {
+    "in ascending order, nulls last"
+    asc
+    "in ascending order, nulls first"
+    asc_nulls_first
+    "in ascending order, nulls last"
+    asc_nulls_last
+    "in descending order, nulls first"
+    desc
+    "in descending order, nulls first"
+    desc_nulls_first
+    "in descending order, nulls last"
+    desc_nulls_last
+}
+
+"unique or primary key constraints on table \"tasks\""
+enum tasks_constraint {
+    "unique or primary key constraint on columns \"id\""
+    tasks_pkey
+}
+
+"select columns of table \"tasks\""
+enum tasks_select_column {
+    "column name"
+    created_at
+    "column name"
+    created_by
+    "column name"
+    desc
+    "column name"
+    id
+    "column name"
+    status
+    "column name"
+    title
+    "column name"
+    updated_at
+}
+
+"update columns of table \"tasks\""
+enum tasks_update_column {
+    "column name"
+    created_at
+    "column name"
+    created_by
+    "column name"
+    desc
+    "column name"
+    id
+    "column name"
+    status
+    "column name"
+    title
+    "column name"
+    updated_at
+}
+
+"unique or primary key constraints on table \"users\""
+enum users_constraint {
+    "unique or primary key constraint on columns \"id\""
+    users_pkey
+}
+
+"select columns of table \"users\""
+enum users_select_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    last_login
+    "column name"
+    name
+    "column name"
+    password
+    "column name"
+    role
+    "column name"
+    updated_at
+    "column name"
+    username
+}
+
+"update columns of table \"users\""
+enum users_update_column {
+    "column name"
+    created_at
+    "column name"
+    id
+    "column name"
+    last_login
+    "column name"
+    name
+    "column name"
+    password
+    "column name"
+    role
+    "column name"
+    updated_at
+    "column name"
+    username
+}
+
+scalar timestamptz
+
+"Boolean expression to compare columns of type \"Boolean\". All fields are combined with logical 'AND'."
+input Boolean_comparison_exp {
+    _eq: Boolean
+    _gt: Boolean
+    _gte: Boolean
+    _in: [Boolean!]
+    _is_null: Boolean
+    _lt: Boolean
+    _lte: Boolean
+    _neq: Boolean
+    _nin: [Boolean!]
+}
+
+"Boolean expression to compare columns of type \"Int\". All fields are combined with logical 'AND'."
+input Int_comparison_exp {
+    _eq: Int
+    _gt: Int
+    _gte: Int
+    _in: [Int!]
+    _is_null: Boolean
+    _lt: Int
+    _lte: Int
+    _neq: Int
+    _nin: [Int!]
+}
+
+"Boolean expression to compare columns of type \"String\". All fields are combined with logical 'AND'."
+input String_comparison_exp {
+    _eq: String
+    _gt: String
+    _gte: String
+    "does the column match the given case-insensitive pattern"
+    _ilike: String
+    _in: [String!]
+    "does the column match the given POSIX regular expression, case insensitive"
+    _iregex: String
+    _is_null: Boolean
+    "does the column match the given pattern"
+    _like: String
+    _lt: String
+    _lte: String
+    _neq: String
+    "does the column NOT match the given case-insensitive pattern"
+    _nilike: String
+    _nin: [String!]
+    "does the column NOT match the given POSIX regular expression, case insensitive"
+    _niregex: String
+    "does the column NOT match the given pattern"
+    _nlike: String
+    "does the column NOT match the given POSIX regular expression, case sensitive"
+    _nregex: String
+    "does the column NOT match the given SQL regular expression"
+    _nsimilar: String
+    "does the column match the given POSIX regular expression, case sensitive"
+    _regex: String
+    "does the column match the given SQL regular expression"
+    _similar: String
+}
+
+input activities_aggregate_bool_exp {
+    bool_and: activities_aggregate_bool_exp_bool_and
+    bool_or: activities_aggregate_bool_exp_bool_or
+    count: activities_aggregate_bool_exp_count
+}
+
+input activities_aggregate_bool_exp_bool_and {
+    arguments: activities_select_column_activities_aggregate_bool_exp_bool_and_arguments_columns!
+    distinct: Boolean
+    filter: activities_bool_exp
+    predicate: Boolean_comparison_exp!
+}
+
+input activities_aggregate_bool_exp_bool_or {
+    arguments: activities_select_column_activities_aggregate_bool_exp_bool_or_arguments_columns!
+    distinct: Boolean
+    filter: activities_bool_exp
+    predicate: Boolean_comparison_exp!
+}
+
+input activities_aggregate_bool_exp_count {
+    arguments: [activities_select_column!]
+    distinct: Boolean
+    filter: activities_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"activities\""
+input activities_aggregate_order_by {
+    avg: activities_avg_order_by
+    count: order_by
+    max: activities_max_order_by
+    min: activities_min_order_by
+    stddev: activities_stddev_order_by
+    stddev_pop: activities_stddev_pop_order_by
+    stddev_samp: activities_stddev_samp_order_by
+    sum: activities_sum_order_by
+    var_pop: activities_var_pop_order_by
+    var_samp: activities_var_samp_order_by
+    variance: activities_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"activities\""
+input activities_arr_rel_insert_input {
+    data: [activities_insert_input!]!
+    "upsert condition"
+    on_conflict: activities_on_conflict
+}
+
+"order by avg() on columns of table \"activities\""
+input activities_avg_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Boolean expression to filter rows from the table \"activities\". All fields are combined with a logical 'AND'."
+input activities_bool_exp {
+    _and: [activities_bool_exp!]
+    _not: activities_bool_exp
+    _or: [activities_bool_exp!]
+    activity_assets: activity_asset_bool_exp
+    activity_assets_aggregate: activity_asset_aggregate_bool_exp
+    activity_comments: activity_comment_bool_exp
+    activity_comments_aggregate: activity_comment_aggregate_bool_exp
+    created_at: timestamptz_comparison_exp
+    created_by: Int_comparison_exp
+    id: Int_comparison_exp
+    is_hidden: Boolean_comparison_exp
+    notes: String_comparison_exp
+    source: String_comparison_exp
+    timestamp: timestamptz_comparison_exp
+    type: String_comparison_exp
+    updated_at: timestamptz_comparison_exp
+    user: users_bool_exp
+}
+
+"input type for incrementing numeric columns in table \"activities\""
+input activities_inc_input {
+    created_by: Int
+    id: Int
+}
+
+"input type for inserting data into table \"activities\""
+input activities_insert_input {
+    activity_assets: activity_asset_arr_rel_insert_input
+    activity_comments: activity_comment_arr_rel_insert_input
+    created_at: timestamptz
+    created_by: Int
+    id: Int
+    is_hidden: Boolean
+    notes: String
+    source: String
+    timestamp: timestamptz
+    type: String
+    updated_at: timestamptz
+    user: users_obj_rel_insert_input
+}
+
+"order by max() on columns of table \"activities\""
+input activities_max_order_by {
+    created_at: order_by
+    created_by: order_by
+    id: order_by
+    notes: order_by
+    source: order_by
+    timestamp: order_by
+    type: order_by
+    updated_at: order_by
+}
+
+"order by min() on columns of table \"activities\""
+input activities_min_order_by {
+    created_at: order_by
+    created_by: order_by
+    id: order_by
+    notes: order_by
+    source: order_by
+    timestamp: order_by
+    type: order_by
+    updated_at: order_by
+}
+
+"input type for inserting object relation for remote table \"activities\""
+input activities_obj_rel_insert_input {
+    data: activities_insert_input!
+    "upsert condition"
+    on_conflict: activities_on_conflict
+}
+
+"on_conflict condition type for table \"activities\""
+input activities_on_conflict {
+    constraint: activities_constraint!
+    update_columns: [activities_update_column!]! = []
+    where: activities_bool_exp
+}
+
+"Ordering options when selecting data from \"activities\"."
+input activities_order_by {
+    activity_assets_aggregate: activity_asset_aggregate_order_by
+    activity_comments_aggregate: activity_comment_aggregate_order_by
+    created_at: order_by
+    created_by: order_by
+    id: order_by
+    is_hidden: order_by
+    notes: order_by
+    source: order_by
+    timestamp: order_by
+    type: order_by
+    updated_at: order_by
+    user: users_order_by
+}
+
+"primary key columns input for table: activities"
+input activities_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"activities\""
+input activities_set_input {
+    created_at: timestamptz
+    created_by: Int
+    id: Int
+    is_hidden: Boolean
+    notes: String
+    source: String
+    timestamp: timestamptz
+    type: String
+    updated_at: timestamptz
+}
+
+"order by stddev() on columns of table \"activities\""
+input activities_stddev_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by stddev_pop() on columns of table \"activities\""
+input activities_stddev_pop_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by stddev_samp() on columns of table \"activities\""
+input activities_stddev_samp_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Streaming cursor of the table \"activities\""
+input activities_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: activities_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input activities_stream_cursor_value_input {
+    created_at: timestamptz
+    created_by: Int
+    id: Int
+    is_hidden: Boolean
+    notes: String
+    source: String
+    timestamp: timestamptz
+    type: String
+    updated_at: timestamptz
+}
+
+"order by sum() on columns of table \"activities\""
+input activities_sum_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+input activities_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: activities_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: activities_set_input
+    "filter the rows which have to be updated"
+    where: activities_bool_exp!
+}
+
+"order by var_pop() on columns of table \"activities\""
+input activities_var_pop_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by var_samp() on columns of table \"activities\""
+input activities_var_samp_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by variance() on columns of table \"activities\""
+input activities_variance_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+input activity_asset_aggregate_bool_exp {
+    count: activity_asset_aggregate_bool_exp_count
+}
+
+input activity_asset_aggregate_bool_exp_count {
+    arguments: [activity_asset_select_column!]
+    distinct: Boolean
+    filter: activity_asset_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"activity_asset\""
+input activity_asset_aggregate_order_by {
+    avg: activity_asset_avg_order_by
+    count: order_by
+    max: activity_asset_max_order_by
+    min: activity_asset_min_order_by
+    stddev: activity_asset_stddev_order_by
+    stddev_pop: activity_asset_stddev_pop_order_by
+    stddev_samp: activity_asset_stddev_samp_order_by
+    sum: activity_asset_sum_order_by
+    var_pop: activity_asset_var_pop_order_by
+    var_samp: activity_asset_var_samp_order_by
+    variance: activity_asset_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"activity_asset\""
+input activity_asset_arr_rel_insert_input {
+    data: [activity_asset_insert_input!]!
+    "upsert condition"
+    on_conflict: activity_asset_on_conflict
+}
+
+"order by avg() on columns of table \"activity_asset\""
+input activity_asset_avg_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"Boolean expression to filter rows from the table \"activity_asset\". All fields are combined with a logical 'AND'."
+input activity_asset_bool_exp {
+    _and: [activity_asset_bool_exp!]
+    _not: activity_asset_bool_exp
+    _or: [activity_asset_bool_exp!]
+    activity: activities_bool_exp
+    activity_id: Int_comparison_exp
+    asset: assets_bool_exp
+    asset_id: Int_comparison_exp
+}
+
+"input type for incrementing numeric columns in table \"activity_asset\""
+input activity_asset_inc_input {
+    activity_id: Int
+    asset_id: Int
+}
+
+"input type for inserting data into table \"activity_asset\""
+input activity_asset_insert_input {
+    activity: activities_obj_rel_insert_input
+    activity_id: Int
+    asset: assets_obj_rel_insert_input
+    asset_id: Int
+}
+
+"order by max() on columns of table \"activity_asset\""
+input activity_asset_max_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by min() on columns of table \"activity_asset\""
+input activity_asset_min_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"on_conflict condition type for table \"activity_asset\""
+input activity_asset_on_conflict {
+    constraint: activity_asset_constraint!
+    update_columns: [activity_asset_update_column!]! = []
+    where: activity_asset_bool_exp
+}
+
+"Ordering options when selecting data from \"activity_asset\"."
+input activity_asset_order_by {
+    activity: activities_order_by
+    activity_id: order_by
+    asset: assets_order_by
+    asset_id: order_by
+}
+
+"primary key columns input for table: activity_asset"
+input activity_asset_pk_columns_input {
+    activity_id: Int!
+    asset_id: Int!
+}
+
+"input type for updating data in table \"activity_asset\""
+input activity_asset_set_input {
+    activity_id: Int
+    asset_id: Int
+}
+
+"order by stddev() on columns of table \"activity_asset\""
+input activity_asset_stddev_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by stddev_pop() on columns of table \"activity_asset\""
+input activity_asset_stddev_pop_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by stddev_samp() on columns of table \"activity_asset\""
+input activity_asset_stddev_samp_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"Streaming cursor of the table \"activity_asset\""
+input activity_asset_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: activity_asset_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input activity_asset_stream_cursor_value_input {
+    activity_id: Int
+    asset_id: Int
+}
+
+"order by sum() on columns of table \"activity_asset\""
+input activity_asset_sum_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+input activity_asset_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: activity_asset_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: activity_asset_set_input
+    "filter the rows which have to be updated"
+    where: activity_asset_bool_exp!
+}
+
+"order by var_pop() on columns of table \"activity_asset\""
+input activity_asset_var_pop_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by var_samp() on columns of table \"activity_asset\""
+input activity_asset_var_samp_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by variance() on columns of table \"activity_asset\""
+input activity_asset_variance_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+input activity_comment_aggregate_bool_exp {
+    count: activity_comment_aggregate_bool_exp_count
+}
+
+input activity_comment_aggregate_bool_exp_count {
+    arguments: [activity_comment_select_column!]
+    distinct: Boolean
+    filter: activity_comment_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"activity_comment\""
+input activity_comment_aggregate_order_by {
+    avg: activity_comment_avg_order_by
+    count: order_by
+    max: activity_comment_max_order_by
+    min: activity_comment_min_order_by
+    stddev: activity_comment_stddev_order_by
+    stddev_pop: activity_comment_stddev_pop_order_by
+    stddev_samp: activity_comment_stddev_samp_order_by
+    sum: activity_comment_sum_order_by
+    var_pop: activity_comment_var_pop_order_by
+    var_samp: activity_comment_var_samp_order_by
+    variance: activity_comment_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"activity_comment\""
+input activity_comment_arr_rel_insert_input {
+    data: [activity_comment_insert_input!]!
+    "upsert condition"
+    on_conflict: activity_comment_on_conflict
+}
+
+"order by avg() on columns of table \"activity_comment\""
+input activity_comment_avg_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"Boolean expression to filter rows from the table \"activity_comment\". All fields are combined with a logical 'AND'."
+input activity_comment_bool_exp {
+    _and: [activity_comment_bool_exp!]
+    _not: activity_comment_bool_exp
+    _or: [activity_comment_bool_exp!]
+    activity: activities_bool_exp
+    activity_id: Int_comparison_exp
+    asset: assets_bool_exp
+    asset_id: Int_comparison_exp
+}
+
+"input type for incrementing numeric columns in table \"activity_comment\""
+input activity_comment_inc_input {
+    activity_id: Int
+    asset_id: Int
+}
+
+"input type for inserting data into table \"activity_comment\""
+input activity_comment_insert_input {
+    activity: activities_obj_rel_insert_input
+    activity_id: Int
+    asset: assets_obj_rel_insert_input
+    asset_id: Int
+}
+
+"order by max() on columns of table \"activity_comment\""
+input activity_comment_max_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by min() on columns of table \"activity_comment\""
+input activity_comment_min_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"on_conflict condition type for table \"activity_comment\""
+input activity_comment_on_conflict {
+    constraint: activity_comment_constraint!
+    update_columns: [activity_comment_update_column!]! = []
+    where: activity_comment_bool_exp
+}
+
+"Ordering options when selecting data from \"activity_comment\"."
+input activity_comment_order_by {
+    activity: activities_order_by
+    activity_id: order_by
+    asset: assets_order_by
+    asset_id: order_by
+}
+
+"primary key columns input for table: activity_comment"
+input activity_comment_pk_columns_input {
+    activity_id: Int!
+    asset_id: Int!
+}
+
+"input type for updating data in table \"activity_comment\""
+input activity_comment_set_input {
+    activity_id: Int
+    asset_id: Int
+}
+
+"order by stddev() on columns of table \"activity_comment\""
+input activity_comment_stddev_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by stddev_pop() on columns of table \"activity_comment\""
+input activity_comment_stddev_pop_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by stddev_samp() on columns of table \"activity_comment\""
+input activity_comment_stddev_samp_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"Streaming cursor of the table \"activity_comment\""
+input activity_comment_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: activity_comment_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input activity_comment_stream_cursor_value_input {
+    activity_id: Int
+    asset_id: Int
+}
+
+"order by sum() on columns of table \"activity_comment\""
+input activity_comment_sum_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+input activity_comment_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: activity_comment_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: activity_comment_set_input
+    "filter the rows which have to be updated"
+    where: activity_comment_bool_exp!
+}
+
+"order by var_pop() on columns of table \"activity_comment\""
+input activity_comment_var_pop_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by var_samp() on columns of table \"activity_comment\""
+input activity_comment_var_samp_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"order by variance() on columns of table \"activity_comment\""
+input activity_comment_variance_order_by {
+    activity_id: order_by
+    asset_id: order_by
+}
+
+"Boolean expression to filter rows from the table \"articles\". All fields are combined with a logical 'AND'."
+input articles_bool_exp {
+    _and: [articles_bool_exp!]
+    _not: articles_bool_exp
+    _or: [articles_bool_exp!]
+    created_at: timestamptz_comparison_exp
+    id: Int_comparison_exp
+    is_published: Boolean_comparison_exp
+    published_at: timestamptz_comparison_exp
+    text: String_comparison_exp
+    title: String_comparison_exp
+    type: String_comparison_exp
+    updated_at: timestamptz_comparison_exp
+}
+
+"input type for incrementing numeric columns in table \"articles\""
+input articles_inc_input {
+    id: Int
+}
+
+"input type for inserting data into table \"articles\""
+input articles_insert_input {
+    created_at: timestamptz
+    id: Int
+    is_published: Boolean
+    published_at: timestamptz
+    text: String
+    title: String
+    type: String
+    updated_at: timestamptz
+}
+
+"on_conflict condition type for table \"articles\""
+input articles_on_conflict {
+    constraint: articles_constraint!
+    update_columns: [articles_update_column!]! = []
+    where: articles_bool_exp
+}
+
+"Ordering options when selecting data from \"articles\"."
+input articles_order_by {
+    created_at: order_by
+    id: order_by
+    is_published: order_by
+    published_at: order_by
+    text: order_by
+    title: order_by
+    type: order_by
+    updated_at: order_by
+}
+
+"primary key columns input for table: articles"
+input articles_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"articles\""
+input articles_set_input {
+    created_at: timestamptz
+    id: Int
+    is_published: Boolean
+    published_at: timestamptz
+    text: String
+    title: String
+    type: String
+    updated_at: timestamptz
+}
+
+"Streaming cursor of the table \"articles\""
+input articles_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: articles_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input articles_stream_cursor_value_input {
+    created_at: timestamptz
+    id: Int
+    is_published: Boolean
+    published_at: timestamptz
+    text: String
+    title: String
+    type: String
+    updated_at: timestamptz
+}
+
+input articles_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: articles_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: articles_set_input
+    "filter the rows which have to be updated"
+    where: articles_bool_exp!
+}
+
+input assets_aggregate_bool_exp {
+    count: assets_aggregate_bool_exp_count
+}
+
+input assets_aggregate_bool_exp_count {
+    arguments: [assets_select_column!]
+    distinct: Boolean
+    filter: assets_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"assets\""
+input assets_aggregate_order_by {
+    avg: assets_avg_order_by
+    count: order_by
+    max: assets_max_order_by
+    min: assets_min_order_by
+    stddev: assets_stddev_order_by
+    stddev_pop: assets_stddev_pop_order_by
+    stddev_samp: assets_stddev_samp_order_by
+    sum: assets_sum_order_by
+    var_pop: assets_var_pop_order_by
+    var_samp: assets_var_samp_order_by
+    variance: assets_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"assets\""
+input assets_arr_rel_insert_input {
+    data: [assets_insert_input!]!
+    "upsert condition"
+    on_conflict: assets_on_conflict
+}
+
+"order by avg() on columns of table \"assets\""
+input assets_avg_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Boolean expression to filter rows from the table \"assets\". All fields are combined with a logical 'AND'."
+input assets_bool_exp {
+    _and: [assets_bool_exp!]
+    _not: assets_bool_exp
+    _or: [assets_bool_exp!]
+    activity_assets: activity_asset_bool_exp
+    activity_assets_aggregate: activity_asset_aggregate_bool_exp
+    activity_comments: activity_comment_bool_exp
+    activity_comments_aggregate: activity_comment_aggregate_bool_exp
+    category: String_comparison_exp
+    created_at: timestamptz_comparison_exp
+    created_by: Int_comparison_exp
+    description: String_comparison_exp
+    id: Int_comparison_exp
+    name: String_comparison_exp
+    updated_at: timestamptz_comparison_exp
+    url: String_comparison_exp
+    user: users_bool_exp
+}
+
+"input type for incrementing numeric columns in table \"assets\""
+input assets_inc_input {
+    created_by: Int
+    id: Int
+}
+
+"input type for inserting data into table \"assets\""
+input assets_insert_input {
+    activity_assets: activity_asset_arr_rel_insert_input
+    activity_comments: activity_comment_arr_rel_insert_input
+    category: String
+    created_at: timestamptz
+    created_by: Int
+    description: String
+    id: Int
+    name: String
+    updated_at: timestamptz
+    url: String
+    user: users_obj_rel_insert_input
+}
+
+"order by max() on columns of table \"assets\""
+input assets_max_order_by {
+    category: order_by
+    created_at: order_by
+    created_by: order_by
+    description: order_by
+    id: order_by
+    name: order_by
+    updated_at: order_by
+    url: order_by
+}
+
+"order by min() on columns of table \"assets\""
+input assets_min_order_by {
+    category: order_by
+    created_at: order_by
+    created_by: order_by
+    description: order_by
+    id: order_by
+    name: order_by
+    updated_at: order_by
+    url: order_by
+}
+
+"input type for inserting object relation for remote table \"assets\""
+input assets_obj_rel_insert_input {
+    data: assets_insert_input!
+    "upsert condition"
+    on_conflict: assets_on_conflict
+}
+
+"on_conflict condition type for table \"assets\""
+input assets_on_conflict {
+    constraint: assets_constraint!
+    update_columns: [assets_update_column!]! = []
+    where: assets_bool_exp
+}
+
+"Ordering options when selecting data from \"assets\"."
+input assets_order_by {
+    activity_assets_aggregate: activity_asset_aggregate_order_by
+    activity_comments_aggregate: activity_comment_aggregate_order_by
+    category: order_by
+    created_at: order_by
+    created_by: order_by
+    description: order_by
+    id: order_by
+    name: order_by
+    updated_at: order_by
+    url: order_by
+    user: users_order_by
+}
+
+"primary key columns input for table: assets"
+input assets_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"assets\""
+input assets_set_input {
+    category: String
+    created_at: timestamptz
+    created_by: Int
+    description: String
+    id: Int
+    name: String
+    updated_at: timestamptz
+    url: String
+}
+
+"order by stddev() on columns of table \"assets\""
+input assets_stddev_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by stddev_pop() on columns of table \"assets\""
+input assets_stddev_pop_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by stddev_samp() on columns of table \"assets\""
+input assets_stddev_samp_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Streaming cursor of the table \"assets\""
+input assets_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: assets_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input assets_stream_cursor_value_input {
+    category: String
+    created_at: timestamptz
+    created_by: Int
+    description: String
+    id: Int
+    name: String
+    updated_at: timestamptz
+    url: String
+}
+
+"order by sum() on columns of table \"assets\""
+input assets_sum_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+input assets_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: assets_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: assets_set_input
+    "filter the rows which have to be updated"
+    where: assets_bool_exp!
+}
+
+"order by var_pop() on columns of table \"assets\""
+input assets_var_pop_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by var_samp() on columns of table \"assets\""
+input assets_var_samp_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by variance() on columns of table \"assets\""
+input assets_variance_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+input attachments_aggregate_bool_exp {
+    count: attachments_aggregate_bool_exp_count
+}
+
+input attachments_aggregate_bool_exp_count {
+    arguments: [attachments_select_column!]
+    distinct: Boolean
+    filter: attachments_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"attachments\""
+input attachments_aggregate_order_by {
+    avg: attachments_avg_order_by
+    count: order_by
+    max: attachments_max_order_by
+    min: attachments_min_order_by
+    stddev: attachments_stddev_order_by
+    stddev_pop: attachments_stddev_pop_order_by
+    stddev_samp: attachments_stddev_samp_order_by
+    sum: attachments_sum_order_by
+    var_pop: attachments_var_pop_order_by
+    var_samp: attachments_var_samp_order_by
+    variance: attachments_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"attachments\""
+input attachments_arr_rel_insert_input {
+    data: [attachments_insert_input!]!
+    "upsert condition"
+    on_conflict: attachments_on_conflict
+}
+
+"order by avg() on columns of table \"attachments\""
+input attachments_avg_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"Boolean expression to filter rows from the table \"attachments\". All fields are combined with a logical 'AND'."
+input attachments_bool_exp {
+    _and: [attachments_bool_exp!]
+    _not: attachments_bool_exp
+    _or: [attachments_bool_exp!]
+    created_at: timestamptz_comparison_exp
+    id: Int_comparison_exp
+    url: String_comparison_exp
+    user: users_bool_exp
+    user_id: Int_comparison_exp
+}
+
+"input type for incrementing numeric columns in table \"attachments\""
+input attachments_inc_input {
+    id: Int
+    user_id: Int
+}
+
+"input type for inserting data into table \"attachments\""
+input attachments_insert_input {
+    created_at: timestamptz
+    id: Int
+    url: String
+    user: users_obj_rel_insert_input
+    user_id: Int
+}
+
+"order by max() on columns of table \"attachments\""
+input attachments_max_order_by {
+    created_at: order_by
+    id: order_by
+    url: order_by
+    user_id: order_by
+}
+
+"order by min() on columns of table \"attachments\""
+input attachments_min_order_by {
+    created_at: order_by
+    id: order_by
+    url: order_by
+    user_id: order_by
+}
+
+"on_conflict condition type for table \"attachments\""
+input attachments_on_conflict {
+    constraint: attachments_constraint!
+    update_columns: [attachments_update_column!]! = []
+    where: attachments_bool_exp
+}
+
+"Ordering options when selecting data from \"attachments\"."
+input attachments_order_by {
+    created_at: order_by
+    id: order_by
+    url: order_by
+    user: users_order_by
+    user_id: order_by
+}
+
+"primary key columns input for table: attachments"
+input attachments_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"attachments\""
+input attachments_set_input {
+    created_at: timestamptz
+    id: Int
+    url: String
+    user_id: Int
+}
+
+"order by stddev() on columns of table \"attachments\""
+input attachments_stddev_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by stddev_pop() on columns of table \"attachments\""
+input attachments_stddev_pop_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by stddev_samp() on columns of table \"attachments\""
+input attachments_stddev_samp_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"Streaming cursor of the table \"attachments\""
+input attachments_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: attachments_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input attachments_stream_cursor_value_input {
+    created_at: timestamptz
+    id: Int
+    url: String
+    user_id: Int
+}
+
+"order by sum() on columns of table \"attachments\""
+input attachments_sum_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+input attachments_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: attachments_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: attachments_set_input
+    "filter the rows which have to be updated"
+    where: attachments_bool_exp!
+}
+
+"order by var_pop() on columns of table \"attachments\""
+input attachments_var_pop_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by var_samp() on columns of table \"attachments\""
+input attachments_var_samp_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by variance() on columns of table \"attachments\""
+input attachments_variance_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+input comments_aggregate_bool_exp {
+    count: comments_aggregate_bool_exp_count
+}
+
+input comments_aggregate_bool_exp_count {
+    arguments: [comments_select_column!]
+    distinct: Boolean
+    filter: comments_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"comments\""
+input comments_aggregate_order_by {
+    avg: comments_avg_order_by
+    count: order_by
+    max: comments_max_order_by
+    min: comments_min_order_by
+    stddev: comments_stddev_order_by
+    stddev_pop: comments_stddev_pop_order_by
+    stddev_samp: comments_stddev_samp_order_by
+    sum: comments_sum_order_by
+    var_pop: comments_var_pop_order_by
+    var_samp: comments_var_samp_order_by
+    variance: comments_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"comments\""
+input comments_arr_rel_insert_input {
+    data: [comments_insert_input!]!
+    "upsert condition"
+    on_conflict: comments_on_conflict
+}
+
+"order by avg() on columns of table \"comments\""
+input comments_avg_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"Boolean expression to filter rows from the table \"comments\". All fields are combined with a logical 'AND'."
+input comments_bool_exp {
+    _and: [comments_bool_exp!]
+    _not: comments_bool_exp
+    _or: [comments_bool_exp!]
+    created_at: timestamptz_comparison_exp
+    id: Int_comparison_exp
+    text: String_comparison_exp
+    user: users_bool_exp
+    user_id: Int_comparison_exp
+}
+
+"input type for incrementing numeric columns in table \"comments\""
+input comments_inc_input {
+    id: Int
+    user_id: Int
+}
+
+"input type for inserting data into table \"comments\""
+input comments_insert_input {
+    created_at: timestamptz
+    id: Int
+    text: String
+    user: users_obj_rel_insert_input
+    user_id: Int
+}
+
+"order by max() on columns of table \"comments\""
+input comments_max_order_by {
+    created_at: order_by
+    id: order_by
+    text: order_by
+    user_id: order_by
+}
+
+"order by min() on columns of table \"comments\""
+input comments_min_order_by {
+    created_at: order_by
+    id: order_by
+    text: order_by
+    user_id: order_by
+}
+
+"on_conflict condition type for table \"comments\""
+input comments_on_conflict {
+    constraint: comments_constraint!
+    update_columns: [comments_update_column!]! = []
+    where: comments_bool_exp
+}
+
+"Ordering options when selecting data from \"comments\"."
+input comments_order_by {
+    created_at: order_by
+    id: order_by
+    text: order_by
+    user: users_order_by
+    user_id: order_by
+}
+
+"primary key columns input for table: comments"
+input comments_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"comments\""
+input comments_set_input {
+    created_at: timestamptz
+    id: Int
+    text: String
+    user_id: Int
+}
+
+"order by stddev() on columns of table \"comments\""
+input comments_stddev_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by stddev_pop() on columns of table \"comments\""
+input comments_stddev_pop_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by stddev_samp() on columns of table \"comments\""
+input comments_stddev_samp_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"Streaming cursor of the table \"comments\""
+input comments_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: comments_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input comments_stream_cursor_value_input {
+    created_at: timestamptz
+    id: Int
+    text: String
+    user_id: Int
+}
+
+"order by sum() on columns of table \"comments\""
+input comments_sum_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+input comments_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: comments_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: comments_set_input
+    "filter the rows which have to be updated"
+    where: comments_bool_exp!
+}
+
+"order by var_pop() on columns of table \"comments\""
+input comments_var_pop_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by var_samp() on columns of table \"comments\""
+input comments_var_samp_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+"order by variance() on columns of table \"comments\""
+input comments_variance_order_by {
+    id: order_by
+    user_id: order_by
+}
+
+input tasks_aggregate_bool_exp {
+    count: tasks_aggregate_bool_exp_count
+}
+
+input tasks_aggregate_bool_exp_count {
+    arguments: [tasks_select_column!]
+    distinct: Boolean
+    filter: tasks_bool_exp
+    predicate: Int_comparison_exp!
+}
+
+"order by aggregate values of table \"tasks\""
+input tasks_aggregate_order_by {
+    avg: tasks_avg_order_by
+    count: order_by
+    max: tasks_max_order_by
+    min: tasks_min_order_by
+    stddev: tasks_stddev_order_by
+    stddev_pop: tasks_stddev_pop_order_by
+    stddev_samp: tasks_stddev_samp_order_by
+    sum: tasks_sum_order_by
+    var_pop: tasks_var_pop_order_by
+    var_samp: tasks_var_samp_order_by
+    variance: tasks_variance_order_by
+}
+
+"input type for inserting array relation for remote table \"tasks\""
+input tasks_arr_rel_insert_input {
+    data: [tasks_insert_input!]!
+    "upsert condition"
+    on_conflict: tasks_on_conflict
+}
+
+"order by avg() on columns of table \"tasks\""
+input tasks_avg_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Boolean expression to filter rows from the table \"tasks\". All fields are combined with a logical 'AND'."
+input tasks_bool_exp {
+    _and: [tasks_bool_exp!]
+    _not: tasks_bool_exp
+    _or: [tasks_bool_exp!]
+    created_at: timestamptz_comparison_exp
+    created_by: Int_comparison_exp
+    desc: String_comparison_exp
+    id: Int_comparison_exp
+    status: String_comparison_exp
+    title: String_comparison_exp
+    updated_at: timestamptz_comparison_exp
+    user: users_bool_exp
+}
+
+"input type for incrementing numeric columns in table \"tasks\""
+input tasks_inc_input {
+    created_by: Int
+    id: Int
+}
+
+"input type for inserting data into table \"tasks\""
+input tasks_insert_input {
+    created_at: timestamptz
+    created_by: Int
+    desc: String
+    id: Int
+    status: String
+    title: String
+    updated_at: timestamptz
+    user: users_obj_rel_insert_input
+}
+
+"order by max() on columns of table \"tasks\""
+input tasks_max_order_by {
+    created_at: order_by
+    created_by: order_by
+    desc: order_by
+    id: order_by
+    status: order_by
+    title: order_by
+    updated_at: order_by
+}
+
+"order by min() on columns of table \"tasks\""
+input tasks_min_order_by {
+    created_at: order_by
+    created_by: order_by
+    desc: order_by
+    id: order_by
+    status: order_by
+    title: order_by
+    updated_at: order_by
+}
+
+"on_conflict condition type for table \"tasks\""
+input tasks_on_conflict {
+    constraint: tasks_constraint!
+    update_columns: [tasks_update_column!]! = []
+    where: tasks_bool_exp
+}
+
+"Ordering options when selecting data from \"tasks\"."
+input tasks_order_by {
+    created_at: order_by
+    created_by: order_by
+    desc: order_by
+    id: order_by
+    status: order_by
+    title: order_by
+    updated_at: order_by
+    user: users_order_by
+}
+
+"primary key columns input for table: tasks"
+input tasks_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"tasks\""
+input tasks_set_input {
+    created_at: timestamptz
+    created_by: Int
+    desc: String
+    id: Int
+    status: String
+    title: String
+    updated_at: timestamptz
+}
+
+"order by stddev() on columns of table \"tasks\""
+input tasks_stddev_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by stddev_pop() on columns of table \"tasks\""
+input tasks_stddev_pop_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by stddev_samp() on columns of table \"tasks\""
+input tasks_stddev_samp_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Streaming cursor of the table \"tasks\""
+input tasks_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: tasks_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input tasks_stream_cursor_value_input {
+    created_at: timestamptz
+    created_by: Int
+    desc: String
+    id: Int
+    status: String
+    title: String
+    updated_at: timestamptz
+}
+
+"order by sum() on columns of table \"tasks\""
+input tasks_sum_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+input tasks_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: tasks_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: tasks_set_input
+    "filter the rows which have to be updated"
+    where: tasks_bool_exp!
+}
+
+"order by var_pop() on columns of table \"tasks\""
+input tasks_var_pop_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by var_samp() on columns of table \"tasks\""
+input tasks_var_samp_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"order by variance() on columns of table \"tasks\""
+input tasks_variance_order_by {
+    created_by: order_by
+    id: order_by
+}
+
+"Boolean expression to compare columns of type \"timestamptz\". All fields are combined with logical 'AND'."
+input timestamptz_comparison_exp {
+    _eq: timestamptz
+    _gt: timestamptz
+    _gte: timestamptz
+    _in: [timestamptz!]
+    _is_null: Boolean
+    _lt: timestamptz
+    _lte: timestamptz
+    _neq: timestamptz
+    _nin: [timestamptz!]
+}
+
+"Boolean expression to filter rows from the table \"users\". All fields are combined with a logical 'AND'."
+input users_bool_exp {
+    _and: [users_bool_exp!]
+    _not: users_bool_exp
+    _or: [users_bool_exp!]
+    activities: activities_bool_exp
+    activities_aggregate: activities_aggregate_bool_exp
+    assets: assets_bool_exp
+    assets_aggregate: assets_aggregate_bool_exp
+    attachments: attachments_bool_exp
+    attachments_aggregate: attachments_aggregate_bool_exp
+    comments: comments_bool_exp
+    comments_aggregate: comments_aggregate_bool_exp
+    created_at: timestamptz_comparison_exp
+    id: Int_comparison_exp
+    last_login: timestamptz_comparison_exp
+    name: String_comparison_exp
+    password: String_comparison_exp
+    role: String_comparison_exp
+    tasks: tasks_bool_exp
+    tasks_aggregate: tasks_aggregate_bool_exp
+    updated_at: timestamptz_comparison_exp
+    username: String_comparison_exp
+}
+
+"input type for incrementing numeric columns in table \"users\""
+input users_inc_input {
+    id: Int
+}
+
+"input type for inserting data into table \"users\""
+input users_insert_input {
+    activities: activities_arr_rel_insert_input
+    assets: assets_arr_rel_insert_input
+    attachments: attachments_arr_rel_insert_input
+    comments: comments_arr_rel_insert_input
+    created_at: timestamptz
+    id: Int
+    last_login: timestamptz
+    name: String
+    password: String
+    role: String
+    tasks: tasks_arr_rel_insert_input
+    updated_at: timestamptz
+    username: String
+}
+
+"input type for inserting object relation for remote table \"users\""
+input users_obj_rel_insert_input {
+    data: users_insert_input!
+    "upsert condition"
+    on_conflict: users_on_conflict
+}
+
+"on_conflict condition type for table \"users\""
+input users_on_conflict {
+    constraint: users_constraint!
+    update_columns: [users_update_column!]! = []
+    where: users_bool_exp
+}
+
+"Ordering options when selecting data from \"users\"."
+input users_order_by {
+    activities_aggregate: activities_aggregate_order_by
+    assets_aggregate: assets_aggregate_order_by
+    attachments_aggregate: attachments_aggregate_order_by
+    comments_aggregate: comments_aggregate_order_by
+    created_at: order_by
+    id: order_by
+    last_login: order_by
+    name: order_by
+    password: order_by
+    role: order_by
+    tasks_aggregate: tasks_aggregate_order_by
+    updated_at: order_by
+    username: order_by
+}
+
+"primary key columns input for table: users"
+input users_pk_columns_input {
+    id: Int!
+}
+
+"input type for updating data in table \"users\""
+input users_set_input {
+    created_at: timestamptz
+    id: Int
+    last_login: timestamptz
+    name: String
+    password: String
+    role: String
+    updated_at: timestamptz
+    username: String
+}
+
+"Streaming cursor of the table \"users\""
+input users_stream_cursor_input {
+    "Stream column input with initial value"
+    initial_value: users_stream_cursor_value_input!
+    "cursor ordering"
+    ordering: cursor_ordering
+}
+
+"Initial value of the column from where the streaming should start"
+input users_stream_cursor_value_input {
+    created_at: timestamptz
+    id: Int
+    last_login: timestamptz
+    name: String
+    password: String
+    role: String
+    updated_at: timestamptz
+    username: String
+}
+
+input users_updates {
+    "increments the numeric columns with given value of the filtered values"
+    _inc: users_inc_input
+    "sets the columns of the filtered rows to the given values"
+    _set: users_set_input
+    "filter the rows which have to be updated"
+    where: users_bool_exp!
+}
