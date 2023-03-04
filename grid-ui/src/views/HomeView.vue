@@ -2,6 +2,7 @@
 import { AllActivities } from '@/graph/activities.query.gql'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ref } from 'vue'
+import { mdiAccount, mdiHeart } from "@mdi/js"
 
 const searchTerm = ref('')
 const { result, loading, error } = useQuery(
@@ -18,12 +19,12 @@ const activities = computed(() => result.value?.activities ?? [])
   <main>
     <v-sheet width="300" class="mx-auto">
       <v-form>
-        <v-text-field v-model="searchTerm" :loading="true" clearable label="Search" prepend-icon="mdi-vuetify">
+        <v-text-field v-model="searchTerm" :loading="true" clearable label="Search" :prepend-icon="mdiAccount">
           <template v-slot:loader>
             <v-progress-linear :active="loading" color="info" absolute height="7" indeterminate></v-progress-linear>
           </template>
         </v-text-field>
-        <VBtn type="submit" variant="elevated" append-icon="mdi-heart" color="primary">Hey</VBtn>
+        <VBtn type="submit" variant="elevated" :append-icon="mdiHeart" color="primary">Hey</VBtn>
       </v-form>
       <p v-if="loading">Loading...</p>
       <p v-else-if="error">Something went wrong: {{ error }}</p>
