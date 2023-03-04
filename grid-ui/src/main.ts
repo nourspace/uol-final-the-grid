@@ -1,25 +1,13 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 import { DefaultApolloClient } from '@vue/apollo-composable'
 import { createPinia } from 'pinia'
 import { createApp, h, provide } from 'vue'
 
-import App from './App.vue'
+import apolloClient from '@/plugins/apolloClient'
+import vuetify from '@/plugins/vuetify'
+import router from '@/router'
 
-import './assets/main.css'
-
-import router from './router'
-
-const httpLink = createHttpLink({
-  uri: 'http://localhost:8080/v1/graphql',
-  headers: {
-    'x-hasura-admin-secret': 'myadminsecretkey',
-  },
-})
-const cache = new InMemoryCache()
-const apolloClient = new ApolloClient({
-  link: httpLink,
-  cache,
-})
+import '@/assets/main.css'
+import App from '@/App.vue'
 
 const app = createApp({
   setup() {
@@ -30,5 +18,6 @@ const app = createApp({
 
 app.use(createPinia())
 app.use(router)
+app.use(vuetify)
 
 app.mount('#app')
