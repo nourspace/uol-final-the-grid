@@ -37,3 +37,17 @@ array_relationships:
         table:
           name: tasks
           schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - id
+        - last_login
+        - name
+        - role
+        - updated_at
+        - username
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
