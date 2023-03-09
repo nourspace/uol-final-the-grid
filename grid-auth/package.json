@@ -2,11 +2,11 @@
   "name": "grid-auth",
   "version": "1.0.0",
   "description": "Authentication backend for The Grid",
-  "main": "build/index.ts",
+  "main": "dest/index.ts",
   "scripts": {
     "dev": "ts-node-dev ./src/index.ts",
-    "start": "NODE_ENV=production NODE_OPTIONS=--enable-source-maps node ./build/index.js",
-    "build": "rm -rf ./build && tsc -p ."
+    "start": "NODE_ENV=production NODE_OPTIONS=--enable-source-maps node ./dest/index.js",
+    "build": "rm -rf ./dest && tsc -p ."
   },
   "author": "NW",
   "dependencies": {

@@ -1,5 +1,6 @@
 import "express-async-errors"; // Important to import on top
-require("dotenv").config();
+require("dotenv").config(); // Load .env
+require("dotenv").config({ path: `.env.local`, override: true }); // Override with .env.local
 import express, { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { gql } from "graphql-request";
@@ -62,7 +63,7 @@ app.post(
         defaultRole: "user",
         allowedRoles: ["user"],
         otherClaims: {
-          "X-Hasura-User-Id": userId,
+          "X-Hasura-User-Id": `${userId}`,
         },
       }),
     });
@@ -108,7 +109,7 @@ app.post("/auth/login", async (req: Request, res: Response) => {
         defaultRole: "user",
         allowedRoles: ["user"],
         otherClaims: {
-          "X-Hasura-User-Id": user.id,
+          "X-Hasura-User-Id": `${user.id}`,
         },
       }),
     });

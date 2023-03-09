@@ -5,6 +5,13 @@ Content-Type: application/json
   "username": "mimi",
   "password": "password"
 }
+> {%
+  client.log(response.body.token)
+  client.test("Request executed successfully", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
 ###
 POST http://localhost:6000/auth/login
 Content-Type: application/json
@@ -13,4 +20,11 @@ Content-Type: application/json
   "username": "mimi",
   "password": "password"
 }
+> {%
+  client.log(response.body.token)
+  client.test("Request executed successfully", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
 ###
