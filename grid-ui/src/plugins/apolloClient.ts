@@ -1,10 +1,16 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 
 // GraphQL
+const token = import.meta.env.VITE_USER_TOKEN
 const httpLink = createHttpLink({
-  uri: 'http://localhost:8080/v1/graphql',
+  uri: import.meta.env.VITE_HASURA_GRAPHQL_ENDPOINT,
   headers: {
-    'x-hasura-admin-secret': 'myadminsecretkey',
+    // User token
+    Authorization: `Bearer ${token}`,
+    // Use admin secret if env is set
+    ...(import.meta.env.VITE_HASURA_GRAPHQL_ADMIN_SECRET && {
+      'x-hasura-admin-secret': import.meta.env.VITE_HASURA_GRAPHQL_ADMIN_SECRET,
+    }),
   },
 })
 
