@@ -1,4 +1,4 @@
-POST http://localhost:3000/auth/register
+POST http://localhost:6000/auth/register
 Content-Type: application/json
 
 {
@@ -6,7 +6,7 @@ Content-Type: application/json
   "password": "password"
 }
 ###
-POST http://localhost:3000/auth/login
+POST http://localhost:6000/auth/login
 Content-Type: application/json
 
 {

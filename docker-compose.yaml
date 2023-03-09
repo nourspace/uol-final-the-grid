@@ -31,6 +31,9 @@ services:
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_JWT_SECRET: '{ "type": "HS256", "key": "this-is-a-generic-HS256-secret-key-and-you-should-really-change-it" }'
+  # Todo (Nour): Add ui
+  # Todo (Nour): Add auth
+  # Todo (Nour): Add console
 volumes:
   db_data:
 

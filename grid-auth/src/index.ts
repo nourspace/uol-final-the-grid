@@ -1,4 +1,5 @@
 import "express-async-errors"; // Important to import on top
+require("dotenv").config();
 import express, { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { gql } from "graphql-request";
@@ -7,7 +8,7 @@ import { generateJWT } from "./jwt";
 import { body, validationResult } from "express-validator";
 
 const app = express();
-const port = process.env.PORT || "3000";
+const port = process.env.PORT || "6000";
 
 // Parse JSON in request bodies
 app.use(express.json());

@@ -1,10 +1,8 @@
 import * as jwt from "jsonwebtoken";
 
 const HASURA_GRAPHQL_JWT_SECRET = {
-  type: process.env.HASURA_JWT_SECRET_TYPE || "HS256",
-  key:
-    process.env.HASURA_JWT_SECRET_KEY ||
-    "this-is-a-generic-HS256-secret-key-and-you-should-really-change-it",
+  type: process.env.HASURA_GRAPHQL_JWT_SECRET_TYPE || "HS256",
+  key: process.env.HASURA_GRAPHQL_JWT_SECRET_KEY || "",
 };
 
 const JWT_CONFIG: jwt.SignOptions = {
