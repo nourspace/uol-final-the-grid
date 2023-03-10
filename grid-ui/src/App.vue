@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const links = [
-  { title: 'Assets', name: 'test' },
-  { title: 'Activities', name: 'home' },
+  { title: 'Assets', name: 'assets' },
+  { title: 'Activities', name: 'activities' },
+  { title: 'Tasks', name: 'tasks' },
   { title: 'Test', name: 'test' },
   { title: 'About', name: 'about' },
 ]
@@ -22,17 +23,17 @@ const links = [
     <v-main class="bg-grey-lighten-3">
       <v-container>
         <v-row>
-          <v-col cols="12" sm="10">
-            <v-sheet min-height="70vh" rounded="lg">
+          <v-col cols="12" sm="12">
+            <v-sheet min-height="80vh" rounded="lg">
               <RouterView />
             </v-sheet>
           </v-col>
 
-          <v-col cols="12" sm="2">
-            <v-sheet rounded="lg" min-height="268">
-              <!--  -->
-            </v-sheet>
-          </v-col>
+          <!--          <v-col cols="12" sm="2">-->
+          <!--            <v-sheet rounded="lg" min-height="268">-->
+          <!--              &lt;!&ndash;  &ndash;&gt;-->
+          <!--            </v-sheet>-->
+          <!--          </v-col>-->
         </v-row>
       </v-container>
     </v-main>
