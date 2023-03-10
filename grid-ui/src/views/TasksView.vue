@@ -25,31 +25,14 @@ console.log({ result })
 // extract activities from result, otherwise return default
 const tasks = computed(() => result.value?.tasks ?? [])
 
-/**
- * Todo
- * - search
- * - create new
- * - update
- * - delete
- * - sort
- * - paginate
- * - nested relations (created_by.name)
- * - [x] format dates
- */
-
 const headers = [
-  {
-    title: 'ID',
-    align: 'start',
-    sortable: false,
-    key: 'id',
-  },
-  { title: 'Title', align: 'start', key: 'name' },
-  { title: 'desc', align: 'start', key: 'desc' },
-  { title: 'status', align: 'start', key: 'status' },
-  { title: 'created_by', align: 'end', key: 'created_by' },
-  { title: 'created_at', align: 'end', key: 'created_at' },
-  { title: 'updated_at', align: 'end', key: 'updated_at' },
+  { title: 'ID', align: 'start', sortable: false, key: 'id' },
+  { title: 'Title', align: 'start', key: 'title' },
+  { title: 'Desc', align: 'start', key: 'desc' },
+  { title: 'Status', align: 'start', key: 'status' },
+  { title: 'By', align: 'end', key: 'created_by' },
+  { title: 'Created', align: 'end', key: 'created_at' },
+  { title: 'Updated', align: 'end', key: 'updated_at' },
 ]
 const itemsPerPage = 50
 </script>
@@ -63,19 +46,13 @@ const itemsPerPage = 50
       :loading="loading"
       class="elevation-1">
       <template v-slot:item.created_at="{ item }">
-          {{ new Date(item.raw.created_at).toLocaleDateString() }}
+        {{ new Date(item.raw.created_at).toLocaleDateString() }}
       </template>
       <template v-slot:item.updated_at="{ item }">
-          {{ new Date(item.raw.updated_at).toLocaleDateString() }}
+        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
       </template>
     </v-data-table-server>
   </div>
 </template>
 
-<style>
-
-.v-data-table__td {
-    text-overflow: clip;
-    /*width: 100px !important;*/
-}
-</style>
+<style></style>

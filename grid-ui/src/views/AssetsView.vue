@@ -35,21 +35,17 @@ const assets = computed(() => result.value?.assets ?? [])
  * - paginate
  * - nested relations (created_by.name)
  * - [x] format dates
+ * - [x] col width
  */
 
 const headers = [
-  {
-    title: 'ID',
-    align: 'start',
-    sortable: false,
-    key: 'id',
-  },
+  { title: 'ID', align: 'start', key: 'id', sortable: false },
   { title: 'Name', align: 'start', key: 'name' },
-  { title: 'description', align: 'start', key: 'description' },
-  // { title: 'url', align: 'start', key: 'url' },
-  { title: 'created_by', align: 'end', key: 'created_by' },
-  { title: 'created_at', align: 'end', key: 'created_at' },
-  { title: 'updated_at', align: 'end', key: 'updated_at' },
+  { title: 'Desc', align: 'start', key: 'description' },
+  { title: 'URL', align: 'start', key: 'url' },
+  { title: 'By', align: 'end', key: 'created_by' },
+  { title: 'Created', align: 'end', key: 'created_at' },
+  { title: 'Updated', align: 'end', key: 'updated_at' },
 ]
 const itemsPerPage = 50
 </script>
@@ -62,20 +58,19 @@ const itemsPerPage = 50
       :items="assets"
       :loading="loading"
       class="elevation-1">
+      <template v-slot:item.url="{ item }">
+        <div class="v-data-table__td__url">
+          <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>
+        </div>
+      </template>
       <template v-slot:item.created_at="{ item }">
-          {{ new Date(item.raw.created_at).toLocaleDateString() }}
+        {{ new Date(item.raw.created_at).toLocaleDateString() }}
       </template>
       <template v-slot:item.updated_at="{ item }">
-          {{ new Date(item.raw.updated_at).toLocaleDateString() }}
+        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
       </template>
     </v-data-table-server>
   </div>
 </template>
 
-<style>
-
-.v-data-table__td {
-    text-overflow: clip;
-    /*width: 100px !important;*/
-}
-</style>
+<style scoped></style>
