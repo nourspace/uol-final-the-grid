@@ -2,7 +2,7 @@ POST http://localhost:6000/auth/register
 Content-Type: application/json
 
 {
-  "username": "mimi",
+  "username": "alice",
   "password": "password"
 }
 > {%
@@ -17,7 +17,7 @@ POST http://localhost:6000/auth/login
 Content-Type: application/json
 
 {
-  "username": "mimi",
+  "username": "alice",
   "password": "password"
 }
 > {%

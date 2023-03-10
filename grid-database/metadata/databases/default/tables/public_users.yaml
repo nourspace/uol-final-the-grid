@@ -16,20 +16,6 @@ array_relationships:
         table:
           name: assets
           schema: public
-  - name: attachments
-    using:
-      foreign_key_constraint_on:
-        column: user_id
-        table:
-          name: attachments
-          schema: public
-  - name: comments
-    using:
-      foreign_key_constraint_on:
-        column: user_id
-        table:
-          name: comments
-          schema: public
   - name: tasks
     using:
       foreign_key_constraint_on:
@@ -41,13 +27,20 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - created_at
         - id
         - last_login
         - name
         - role
-        - updated_at
+        - username
+      filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - name
+        - password
         - username
       filter:
         id:
           _eq: X-Hasura-User-Id
+      check: null
