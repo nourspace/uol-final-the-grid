@@ -1,32 +1,19 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-import { computed } from 'vue'
+import { AllTasks } from '@/graph/tasks.query.gql'
+import { computed, ref } from 'vue'
 
-const query = gql`
-  query allTasks {
-    tasks {
-      id
-      title
-      status
-      desc
-      created_by
-      created_at
-      updated_at
-    }
-  }
-`
+const searchTerm = ref('')
 const { result, loading, error } = useQuery(
-  query,
-  // () => ({ search: `%${searchTerm.value}%` }),
-  // () => ({ debounce: 500, enabled: searchTerm.value.length >= 3 }),
+  AllTasks,
+  () => ({ search: `%${searchTerm.value}%` }),
+  () => ({ debounce: 500, enabled: searchTerm.value == '' || searchTerm.value.length >= 3 }),
 )
-console.log({ result })
 // extract activities from result, otherwise return default
 const tasks = computed(() => result.value?.tasks ?? [])
 
 const headers = [
-  { title: 'ID', align: 'start', sortable: false, key: 'id' },
+  { title: 'ID', align: 'start', key: 'id' },
   { title: 'Title', align: 'start', key: 'title' },
   { title: 'Desc', align: 'start', key: 'desc' },
   { title: 'Status', align: 'start', key: 'status' },
@@ -44,7 +31,30 @@ const itemsPerPage = 50
       :headers="headers"
       :items="tasks"
       :loading="loading"
+      density="comfortable"
+      fixed-header
+      height="70vh"
       class="elevation-1">
+      <template v-slot:top>
+        <v-toolbar height="80" extension-height="80">
+          <v-text-field
+            clearable
+            @click:clear="searchTerm = ''"
+            hide-details
+            variant="outlined"
+            density="comfortable"
+            v-model="searchTerm"
+            label="Search Tasks"
+            placeholder="Type task title or desc"
+            class="mx-4"
+            style="flex: 3" />
+          <v-spacer></v-spacer>
+          <v-btn color="primary" dark class="">New Task</v-btn>
+          <template #extension v-if="error">
+            <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
+          </template>
+        </v-toolbar>
+      </template>
       <template v-slot:item.created_at="{ item }">
         {{ new Date(item.raw.created_at).toLocaleDateString() }}
       </template>

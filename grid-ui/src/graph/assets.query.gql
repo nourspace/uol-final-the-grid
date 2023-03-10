@@ -1,0 +1,13 @@
+query AllAssets($search: String) {
+  assets(
+    where: { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }, { url: { _ilike: $search } }] }
+  ) {
+    id
+    name
+    description
+    url
+    created_by
+    created_at
+    updated_at
+  }
+}

@@ -1,0 +1,11 @@
+query AllTasks($search: String) {
+  tasks(where: { _or: [{ title: { _ilike: $search } }, { desc: { _ilike: $search } }] }) {
+    id
+    title
+    status
+    desc
+    created_by
+    created_at
+    updated_at
+  }
+}

@@ -1,6 +1,11 @@
 query AllActivities($search: String) {
-  activities(where: { notes: { _ilike: $search } }) {
+  activities(where: { _or: [{ notes: { _ilike: $search } }, { source: { _ilike: $search } }] }) {
     id
+    type
     notes
+    source
+    created_by
+    created_at
+    updated_at
   }
 }
