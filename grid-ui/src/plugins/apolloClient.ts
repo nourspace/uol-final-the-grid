@@ -1,4 +1,5 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import { provideApolloClient } from "@vue/apollo-composable"
 
 // GraphQL
 const token = import.meta.env.VITE_USER_TOKEN
@@ -16,7 +17,11 @@ const httpLink = createHttpLink({
 
 const cache = new InMemoryCache()
 
-export default new ApolloClient({
+export const apolloClient = new ApolloClient({
   link: httpLink,
   cache,
 })
+
+provideApolloClient(apolloClient)
+
+export default apolloClient

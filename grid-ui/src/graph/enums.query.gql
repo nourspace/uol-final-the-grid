@@ -1,0 +1,18 @@
+query AllEnums {
+  activity_type {
+    value
+    comment
+  }
+  asset_category {
+    value
+    comment
+  }
+  task_status {
+    value
+    comment
+  }
+  user_role {
+    value
+    comment
+  }
+}

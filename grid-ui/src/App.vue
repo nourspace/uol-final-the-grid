@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useEnumsStore } from '@/stores/enums'
+import { onMounted } from 'vue'
+
 const links = [
   { title: 'Assets', name: 'assets' },
   { title: 'Activities', name: 'activities' },
@@ -6,6 +9,12 @@ const links = [
   { title: 'Test', name: 'test' },
   { title: 'About', name: 'about' },
 ]
+const { fetchEnums } = useEnumsStore()
+
+onMounted(async () => {
+  console.log('App mounted')
+  fetchEnums()
+})
 </script>
 
 <template>
