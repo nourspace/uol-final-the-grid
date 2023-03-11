@@ -1,15 +1,10 @@
+#import './assets.fragment.gql'
+
 query AllAssets($search: String!) {
   assets(
     where: { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }, { url: { _ilike: $search } }] }
     order_by: { id: desc }
   ) {
-    id
-    name
-    category
-    description
-    url
-    created_by
-    created_at
-    updated_at
+    ...AssetFragment
   }
 }

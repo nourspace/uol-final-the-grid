@@ -9,7 +9,7 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: 'Item',
+  title: 'Are you sure you want to delete this item?',
   width: '600px',
   loading: false
 })
@@ -20,20 +20,18 @@ const value = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 })
-// Todo (Nour): [improvement] add form https://vuetifyjs.com/en/components/forms/
-// Todo (Nour): [UX] add validation https://vuetifyjs.com/en/components/text-fields/#custom-validation
+// Todo (Nour): [refactor] this and MyDialog are identical
 </script>
 
 <template>
   <v-dialog v-model="value" :max-width="width">
-    <v-card :title="title" :loading="loading">
-      <v-card-text>
-        <slot></slot>
-      </v-card-text>
+    <v-card :loading="loading">
+      <v-card-title class="text-h5">{{ title }}</v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue-darken-1" variant="text" @click="emit('cancel')"> Cancel</v-btn>
-        <v-btn color="blue-darken-1" variant="text" @click="emit('ok')"> Save</v-btn>
+        <v-btn color="blue-darken-1" variant="text" @click="emit('cancel')">Cancel</v-btn>
+        <v-btn color="blue-darken-1" variant="text" @click="emit('ok')">OK</v-btn>
+        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </v-dialog>

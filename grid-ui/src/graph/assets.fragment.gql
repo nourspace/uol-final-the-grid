@@ -1,0 +1,10 @@
+fragment AssetFragment on assets {
+  id
+  name
+  category
+  description
+  url
+  created_by
+  created_at
+  updated_at
+}

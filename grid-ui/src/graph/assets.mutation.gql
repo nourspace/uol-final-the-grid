@@ -1,26 +1,14 @@
-mutation InsertAsset($asset: assets_insert_input!) {
-  insert_assets_one(object: $asset) {
-    id
-    name
-    category
-    description
-    url
-    created_by
-    created_at
-    updated_at
+#import './assets.fragment.gql'
+
+mutation InsertAsset($object: assets_insert_input!) {
+  insert_assets_one(object: $object) {
+    ...AssetFragment
   }
 }
 
-mutation UpdateAsset($id: Int!, $asset: assets_set_input) {
-  update_assets_by_pk(pk_columns: {id: $id}, _set: $asset) {
-    id
-    name
-    category
-    description
-    url
-    created_by
-    created_at
-    updated_at
+mutation UpdateAsset($id: Int!, $object: assets_set_input) {
+  update_assets_by_pk(pk_columns: {id: $id}, _set: $object) {
+    ...AssetFragment
   }
 }
 

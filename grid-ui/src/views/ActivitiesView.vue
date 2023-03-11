@@ -21,7 +21,7 @@ const headers = [
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
 ]
-const itemsPerPage = 50
+let itemsPerPage = 50
 </script>
 
 <template>
