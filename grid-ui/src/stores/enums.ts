@@ -16,7 +16,7 @@ export const useEnumsStore = defineStore('counter', () => {
 
   function fetchEnums() {
     console.debug('Fetching enums...')
-    const { onResult } = useQuery(AllEnums)
+    const { onResult, onError} = useQuery(AllEnums)
     onResult((queryResult) => {
       console.debug('Got enums...')
       console.log(queryResult.data)
@@ -26,6 +26,9 @@ export const useEnumsStore = defineStore('counter', () => {
       userRole.value = queryResult.data.activity_type
     })
     // Todo (Nour): [exception] handle query errors
+    onError((error) => {
+      console.log(error)
+    })
   }
 
   return { assetCategory, activityType, taskStatus, userRole, fetchEnums }

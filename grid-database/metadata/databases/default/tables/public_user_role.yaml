@@ -2,3 +2,10 @@ table:
   name: user_role
   schema: public
 is_enum: true
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - value
+        - comment
+      filter: {}
