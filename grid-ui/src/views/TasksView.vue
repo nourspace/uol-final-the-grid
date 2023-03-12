@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { useQuery } from '@vue/apollo-composable'
+import { useListQuery } from '@/composables/useListQuery'
 import { AllTasks } from '@/graph/tasks.query.gql'
+import { StreamTasks } from '@/graph/tasks.subscription.gql'
 import { computed, ref } from 'vue'
 
+// List
 const searchTerm = ref('')
-const { result, loading, error } = useQuery(
-  AllTasks,
-  () => ({ search: `%${searchTerm.value}%` }),
-  () => ({ debounce: 500, enabled: searchTerm.value == '' || searchTerm.value.length >= 3 }),
-)
-// extract activities from result, otherwise return default
-const tasks = computed(() => result.value?.tasks ?? [])
+const queryVariables = computed(() => ({ search: `%${searchTerm.value}%` }))
+const { items: tasks, loading, error } = useListQuery({ query: AllTasks, queryVariables, subscription: StreamTasks })
+let itemsPerPage = 50
 
 const headers = [
   { title: 'ID', align: 'start', key: 'id' },
@@ -21,7 +19,6 @@ const headers = [
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
 ]
-let itemsPerPage = 50
 </script>
 
 <template>
@@ -34,7 +31,8 @@ let itemsPerPage = 50
       density="comfortable"
       fixed-header
       height="70vh"
-      class="elevation-1">
+      class="elevation-1"
+    >
       <template v-slot:top>
         <v-toolbar height="80" extension-height="80">
           <v-text-field
@@ -47,7 +45,8 @@ let itemsPerPage = 50
             label="Search Tasks"
             placeholder="Type task title or desc"
             class="mx-4"
-            style="flex: 3" />
+            style="flex: 3"
+          />
           <v-spacer></v-spacer>
           <v-btn color="primary" dark class="">New Task</v-btn>
           <template #extension v-if="error">

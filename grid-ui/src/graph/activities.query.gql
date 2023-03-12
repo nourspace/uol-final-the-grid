@@ -1,4 +1,5 @@
 #import './activities.fragment.gql'
+#import './users.fragment.gql'
 
 query AllActivities($search: String) {
   items: activities(
@@ -7,8 +8,7 @@ query AllActivities($search: String) {
   ) {
     ...ActivityFragment
     created_by_object {
-      id
-      username
+      ...MiniUserFragment
     }
   }
 }

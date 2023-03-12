@@ -1,0 +1,9 @@
+fragment TaskFragment on tasks {
+  id
+  title
+  status
+  desc
+  created_by
+  created_at
+  updated_at
+}

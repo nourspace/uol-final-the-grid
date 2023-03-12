@@ -1,0 +1,4 @@
+fragment MiniUserFragment on users {
+  id
+  username
+}
