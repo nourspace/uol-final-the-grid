@@ -1,10 +1,11 @@
-import { ApolloClient, createHttpLink, InMemoryCache, split } from '@apollo/client/core'
-import { setContext } from '@apollo/client/link/context'
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
-import { getMainDefinition } from '@apollo/client/utilities'
-import { provideApolloClient } from '@vue/apollo-composable'
-// @ts-ignore not sure why!
-import { createClient } from 'graphql-ws'
+import { ApolloClient, createHttpLink, InMemoryCache, split } from "@apollo/client/core"
+import { setContext } from "@apollo/client/link/context"
+import { onError } from "@apollo/client/link/error"
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
+import { getMainDefinition } from "@apollo/client/utilities"
+import { provideApolloClient } from "@vue/apollo-composable"
+import { logErrorMessages } from "@vue/apollo-util"
+import { createClient } from "graphql-ws"
 
 // GraphQL
 const userToken = import.meta.env.VITE_USER_TOKEN
@@ -58,6 +59,13 @@ const splitLink = split(
   authLink.concat(httpLink),
 )
 
+// Handle errors
+const errorLink = onError(error => {
+  if (process.env.NODE_ENV !== 'production') {
+    logErrorMessages(error)
+  }
+})
+
 // Avoid merge warnings
 // https://dera.hashnode.dev/fix-cache-data-may-be-lost-when-replacing-the-getallposts-field-of-a-query-object-in-apollo-client
 const cache = new InMemoryCache({
@@ -69,7 +77,7 @@ const cache = new InMemoryCache({
 })
 
 export const apolloClient = new ApolloClient({
-  link: splitLink,
+  link: errorLink.concat(splitLink),
   cache,
 })
 
