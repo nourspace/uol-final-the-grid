@@ -44,6 +44,8 @@ type activities {
     ): activity_asset_aggregate!
     created_at: timestamptz!
     created_by: Int!
+    "An object relationship"
+    created_by_object: users!
     id: Int!
     is_hidden: Boolean!
     notes: String
@@ -77,8 +79,6 @@ type activities {
     timestamp: timestamptz
     type: activity_type_enum
     updated_at: timestamptz!
-    "An object relationship"
-    user: users!
 }
 
 "aggregated selection of \"activities\""
@@ -388,13 +388,13 @@ type assets {
     category: asset_category_enum!
     created_at: timestamptz!
     created_by: Int!
+    "An object relationship"
+    created_by_object: users!
     description: String
     id: Int!
     name: String!
     updated_at: timestamptz!
     url: String
-    "An object relationship"
-    user: users!
 }
 
 "aggregated selection of \"assets\""
@@ -1712,6 +1712,8 @@ type task_status_mutation_response {
 type tasks {
     created_at: timestamptz!
     created_by: Int!
+    "An object relationship"
+    created_by_object: users!
     desc: String
     id: Int!
     status: task_status_enum!
@@ -1743,8 +1745,6 @@ type tasks {
     ): task_activity_aggregate!
     title: String!
     updated_at: timestamptz!
-    "An object relationship"
-    user: users!
 }
 
 "aggregated selection of \"tasks\""
@@ -2591,6 +2591,7 @@ input activities_bool_exp {
     activity_assets_aggregate: activity_asset_aggregate_bool_exp
     created_at: timestamptz_comparison_exp
     created_by: Int_comparison_exp
+    created_by_object: users_bool_exp
     id: Int_comparison_exp
     is_hidden: Boolean_comparison_exp
     notes: String_comparison_exp
@@ -2600,7 +2601,6 @@ input activities_bool_exp {
     timestamp: timestamptz_comparison_exp
     type: activity_type_enum_comparison_exp
     updated_at: timestamptz_comparison_exp
-    user: users_bool_exp
 }
 
 "input type for incrementing numeric columns in table \"activities\""
@@ -2614,6 +2614,7 @@ input activities_insert_input {
     activity_assets: activity_asset_arr_rel_insert_input
     created_at: timestamptz
     created_by: Int
+    created_by_object: users_obj_rel_insert_input
     id: Int
     is_hidden: Boolean
     notes: String
@@ -2622,7 +2623,6 @@ input activities_insert_input {
     timestamp: timestamptz
     type: activity_type_enum
     updated_at: timestamptz
-    user: users_obj_rel_insert_input
 }
 
 "order by max() on columns of table \"activities\""
@@ -2666,6 +2666,7 @@ input activities_order_by {
     activity_assets_aggregate: activity_asset_aggregate_order_by
     created_at: order_by
     created_by: order_by
+    created_by_object: users_order_by
     id: order_by
     is_hidden: order_by
     notes: order_by
@@ -2674,7 +2675,6 @@ input activities_order_by {
     timestamp: order_by
     type: order_by
     updated_at: order_by
-    user: users_order_by
 }
 
 "primary key columns input for table: activities"
@@ -3122,12 +3122,12 @@ input assets_bool_exp {
     category: asset_category_enum_comparison_exp
     created_at: timestamptz_comparison_exp
     created_by: Int_comparison_exp
+    created_by_object: users_bool_exp
     description: String_comparison_exp
     id: Int_comparison_exp
     name: String_comparison_exp
     updated_at: timestamptz_comparison_exp
     url: String_comparison_exp
-    user: users_bool_exp
 }
 
 "input type for incrementing numeric columns in table \"assets\""
@@ -3142,12 +3142,12 @@ input assets_insert_input {
     category: asset_category_enum
     created_at: timestamptz
     created_by: Int
+    created_by_object: users_obj_rel_insert_input
     description: String
     id: Int
     name: String
     updated_at: timestamptz
     url: String
-    user: users_obj_rel_insert_input
 }
 
 "order by max() on columns of table \"assets\""
@@ -3192,12 +3192,12 @@ input assets_order_by {
     category: order_by
     created_at: order_by
     created_by: order_by
+    created_by_object: users_order_by
     description: order_by
     id: order_by
     name: order_by
     updated_at: order_by
     url: order_by
-    user: users_order_by
 }
 
 "primary key columns input for table: assets"
@@ -3571,6 +3571,7 @@ input tasks_bool_exp {
     _or: [tasks_bool_exp!]
     created_at: timestamptz_comparison_exp
     created_by: Int_comparison_exp
+    created_by_object: users_bool_exp
     desc: String_comparison_exp
     id: Int_comparison_exp
     status: task_status_enum_comparison_exp
@@ -3578,7 +3579,6 @@ input tasks_bool_exp {
     task_activities_aggregate: task_activity_aggregate_bool_exp
     title: String_comparison_exp
     updated_at: timestamptz_comparison_exp
-    user: users_bool_exp
 }
 
 "input type for incrementing numeric columns in table \"tasks\""
@@ -3591,13 +3591,13 @@ input tasks_inc_input {
 input tasks_insert_input {
     created_at: timestamptz
     created_by: Int
+    created_by_object: users_obj_rel_insert_input
     desc: String
     id: Int
     status: task_status_enum
     task_activities: task_activity_arr_rel_insert_input
     title: String
     updated_at: timestamptz
-    user: users_obj_rel_insert_input
 }
 
 "order by max() on columns of table \"tasks\""
@@ -3638,13 +3638,13 @@ input tasks_on_conflict {
 input tasks_order_by {
     created_at: order_by
     created_by: order_by
+    created_by_object: users_order_by
     desc: order_by
     id: order_by
     status: order_by
     task_activities_aggregate: task_activity_aggregate_order_by
     title: order_by
     updated_at: order_by
-    user: users_order_by
 }
 
 "primary key columns input for table: tasks"

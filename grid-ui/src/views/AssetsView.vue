@@ -34,18 +34,20 @@ const headers = [
 ]
 let itemsPerPage = 50
 
+const queryVariables = computed(()=> ({ search: `%${searchTerm.value}%` }))
 const { result, loading, error, subscribeToMore } = useQuery(
   AllAssets,
-  () => ({ search: `%${searchTerm.value}%` }),
+  () => queryVariables.value,
   () => ({ debounce: 500, enabled: searchTerm.value == '' || searchTerm.value.length >= 3 }),
 )
 // extract from result, otherwise return default
 const assets = computed(() => result.value?.assets ?? [])
 // Subscribe to more results and append them to query
+// Todo (Nour): [extra] could subscribe to deleted items as well?
 subscribeToMore(() => ({
   document: StreamAssets,
   variables: {
-    search: `%${searchTerm.value}%`,
+    ...queryVariables.value,
     now: new Date().toUTCString(),
   },
   updateQuery: (previousResult, newResult) => {
@@ -62,9 +64,9 @@ subscribeToMore(() => ({
 
 /**
  * Todo
- * - nested relations (created_by.name)
  * - sort
  * - paginate
+ * - [x] nested relations (created_by.name)
  * - [x] update cache after insert / delete
  * - [x] update
  * - [x] delete
@@ -101,18 +103,21 @@ const reset = () => {
 
 // Mutations
 
+// Insert
 const {
   mutate: insertItem,
   loading: insertLoading,
   onDone: insertDone,
   onError: insertError,
 } = useMutation(InsertAsset, () => ({ variables: { object: editedItem.value } }))
+// Update
 const {
   mutate: updateItem,
   loading: updateLoading,
   onDone: updateDone,
   onError: updateError,
 } = useMutation(UpdateAsset, () => ({ variables: { id: selectedItemId.value, object: editedItem.value } }))
+// Delete
 const {
   mutate: deleteItem,
   loading: deleteLoading,
@@ -251,6 +256,9 @@ const deleteItemDialog = ({ id }: Asset) => {
         <div class="v-data-table__td__url">
           <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>
         </div>
+      </template>
+      <template v-slot:item.created_by="{ item }">
+        {{ item.raw.created_by_object.username }}
       </template>
       <template v-slot:item.created_at="{ item }">
         {{ new Date(item.raw.created_at).toLocaleDateString() }}

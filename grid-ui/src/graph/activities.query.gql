@@ -7,5 +7,9 @@ query AllActivities($search: String) {
     created_by
     created_at
     updated_at
+    created_by_object {
+      id
+      username
+    }
   }
 }

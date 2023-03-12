@@ -55,6 +55,9 @@ let itemsPerPage = 50
           </template>
         </v-toolbar>
       </template>
+      <template v-slot:item.created_by="{ item }">
+        {{ item.raw.created_by_object.username }}
+      </template>
       <template v-slot:item.created_at="{ item }">
         {{ new Date(item.raw.created_at).toLocaleDateString() }}
       </template>

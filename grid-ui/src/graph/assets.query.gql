@@ -6,5 +6,9 @@ query AllAssets($search: String!) {
     order_by: { created_at: desc }
   ) {
     ...AssetFragment
+    created_by_object {
+      id
+      username
+    }
   }
 }
