@@ -1,7 +1,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import type { DocumentNode } from 'graphql/language'
-import { computed } from 'vue'
 import type { ComputedRef } from 'vue'
+import { computed } from 'vue'
 
 interface QueryVariables {
   search: string
@@ -9,10 +9,10 @@ interface QueryVariables {
 
 interface ListQueryOptions {
   query: DocumentNode
-  queryName: string
+  queryName?: string // defaults to 'items'
   queryVariables: ComputedRef<QueryVariables>
   subscription: DocumentNode
-  subscriptionName: string
+  subscriptionName?: string // defaults to 'stream'
 }
 
 export function useListQuery({ query, queryName, queryVariables, subscription, subscriptionName }: ListQueryOptions) {
@@ -27,10 +27,11 @@ export function useListQuery({ query, queryName, queryVariables, subscription, s
   )
 
   // extract from result, otherwise return default
-  const items = computed(() => result.value?.[queryName] ?? [])
+  const items = computed(() => result.value?.[queryName || 'items'] ?? [])
 
   // Subscribe to more results and append them to query
   // Todo (Nour): [extra] could subscribe to deleted items as well?
+  // Todo (Nour): [extra] could subscribe to updated items as well?
   subscribeToMore(() => ({
     document: subscription,
     variables: {
@@ -40,10 +41,10 @@ export function useListQuery({ query, queryName, queryVariables, subscription, s
     updateQuery: (previousResult, newResult) => {
       console.debug({ previousResult, newResult })
       return {
-        [queryName]: [
+        [queryName || 'items']: [
           // Prepend new [queryName] to existing ones
-          ...newResult.subscriptionData.data[subscriptionName],
-          ...previousResult[queryName],
+          ...newResult.subscriptionData.data[subscriptionName || 'stream'],
+          ...previousResult[queryName || 'items'],
         ],
       }
     },

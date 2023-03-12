@@ -1,0 +1,9 @@
+fragment ActivityFragment on activities {
+  id
+  type
+  notes
+  source
+  created_by
+  created_at
+  updated_at
+}

@@ -23,17 +23,7 @@ interface Asset {
 // List
 const searchTerm = ref('')
 const queryVariables = computed(() => ({ search: `%${searchTerm.value}%` }))
-const {
-  items: assets,
-  loading,
-  error,
-} = useListQuery({
-  query: AllAssets,
-  queryName: 'assets',
-  queryVariables,
-  subscription: StreamAssets,
-  subscriptionName: 'assets_stream',
-})
+const { items: assets, loading, error } = useListQuery({ query: AllAssets, queryVariables, subscription: StreamAssets })
 let itemsPerPage = 50
 
 const headers = [
