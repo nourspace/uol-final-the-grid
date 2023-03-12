@@ -8,7 +8,7 @@ interface Enum {
   comment: string
 }
 
-export const useEnumsStore = defineStore('counter', () => {
+export const useEnumsStore = defineStore('enums', () => {
   const assetCategory = ref<Enum[]>([])
   const activityType = ref<Enum[]>([])
   const taskStatus = ref<Enum[]>([])
