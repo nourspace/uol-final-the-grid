@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
-import { useEnumsStore } from '@/stores/enums'
-import { useQuery, useMutation } from '@vue/apollo-composable'
+import { DeleteAsset, InsertAsset, UpdateAsset } from '@/graph/assets.mutation.gql'
 import { AllAssets } from '@/graph/assets.query.gql'
-import { InsertAsset, UpdateAsset, DeleteAsset } from '@/graph/assets.mutation.gql'
+import { StreamAssets } from '@/graph/assets.subscription.gql'
+import { useEnumsStore } from '@/stores/enums'
+import { mdiDelete, mdiPencil } from '@mdi/js'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
-import { mdiPencil, mdiDelete } from '@mdi/js'
 
 // Todo (Nour): [TS] maybe generate types
 interface Asset {
@@ -20,13 +21,6 @@ interface Asset {
 
 // List
 const searchTerm = ref('')
-const { result, loading, error } = useQuery(
-  AllAssets,
-  () => ({ search: `%${searchTerm.value}%` }),
-  () => ({ debounce: 500, enabled: searchTerm.value == '' || searchTerm.value.length >= 3 }),
-)
-const assets = computed(() => result.value?.assets ?? []) // extract from result, otherwise return default
-
 const headers = [
   { title: 'ID', align: 'start', key: 'id' },
   { title: 'Name', align: 'start', key: 'name' },
@@ -40,12 +34,38 @@ const headers = [
 ]
 let itemsPerPage = 50
 
+const { result, loading, error, subscribeToMore } = useQuery(
+  AllAssets,
+  () => ({ search: `%${searchTerm.value}%` }),
+  () => ({ debounce: 500, enabled: searchTerm.value == '' || searchTerm.value.length >= 3 }),
+)
+// extract from result, otherwise return default
+const assets = computed(() => result.value?.assets ?? [])
+// Subscribe to more results and append them to query
+subscribeToMore(() => ({
+  document: StreamAssets,
+  variables: {
+    search: `%${searchTerm.value}%`,
+    now: new Date().toUTCString(),
+  },
+  updateQuery: (previousResult, newResult) => {
+    console.debug({ previousResult, newResult })
+    return {
+      assets: [
+        // Prepend new assets to existing ones
+        ...newResult.subscriptionData.data.assets_stream,
+        ...previousResult.assets,
+      ],
+    }
+  },
+}))
+
 /**
  * Todo
- * - update cache after insert / delete
  * - nested relations (created_by.name)
  * - sort
  * - paginate
+ * - [x] update cache after insert / delete
  * - [x] update
  * - [x] delete
  * - [x] create new
@@ -98,18 +118,34 @@ const {
   loading: deleteLoading,
   onDone: deleteDone,
   onError: deleteError,
-} = useMutation(DeleteAsset, () => ({ variables: { id: selectedItemId.value } }))
+} = useMutation(DeleteAsset, () => ({
+  variables: { id: selectedItemId.value },
+  updateQueries: {
+    AllAssets: (previousResult, { mutationResult }) => {
+      const assets: Asset[] = previousResult.assets
+      const deletedAsset: Asset = mutationResult.data.delete_assets_by_pk
+      if (!deletedAsset || assets.length == 0) {
+        return previousResult
+      }
+      console.debug('updating AllAssets after deletion...', assets.length)
+      return {
+        assets: assets.filter((asset) => asset.id != deletedAsset.id),
+      }
+    },
+  },
+}))
 
 insertDone((result) => {
   console.info('insertDone', result.data)
   reset()
 })
 updateDone((result) => {
-  console.info('updateDone',result.data)
+  console.info('updateDone', result.data)
   reset()
 })
 deleteDone((result) => {
   console.info('deleteDone', result.data)
+  // Todo (Nour): [ux] when  result.data.delete_assets_by_pk is null it means user was not able to delete
   reset()
 })
 insertError((error) => console.log(error))

@@ -3,7 +3,7 @@
 query AllAssets($search: String!) {
   assets(
     where: { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }, { url: { _ilike: $search } }] }
-    order_by: { id: desc }
+    order_by: { created_at: desc }
   ) {
     ...AssetFragment
   }
