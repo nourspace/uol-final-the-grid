@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
+import { useListQuery } from '@/composables/useListQuery'
 import { DeleteAsset, InsertAsset, UpdateAsset } from '@/graph/assets.mutation.gql'
 import { AllAssets } from '@/graph/assets.query.gql'
 import { StreamAssets } from '@/graph/assets.subscription.gql'
 import { useEnumsStore } from '@/stores/enums'
 import { mdiDelete, mdiPencil } from '@mdi/js'
-import { useMutation, useQuery } from '@vue/apollo-composable'
+import { useMutation } from '@vue/apollo-composable'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -21,6 +22,20 @@ interface Asset {
 
 // List
 const searchTerm = ref('')
+const queryVariables = computed(() => ({ search: `%${searchTerm.value}%` }))
+const {
+  items: assets,
+  loading,
+  error,
+} = useListQuery({
+  query: AllAssets,
+  queryName: 'assets',
+  queryVariables,
+  subscription: StreamAssets,
+  subscriptionName: 'assets_stream',
+})
+let itemsPerPage = 50
+
 const headers = [
   { title: 'ID', align: 'start', key: 'id' },
   { title: 'Name', align: 'start', key: 'name' },
@@ -32,35 +47,6 @@ const headers = [
   { title: 'Updated', align: 'end', key: 'updated_at' },
   { title: 'Actions', key: 'actions', sortable: false },
 ]
-let itemsPerPage = 50
-
-const queryVariables = computed(()=> ({ search: `%${searchTerm.value}%` }))
-const { result, loading, error, subscribeToMore } = useQuery(
-  AllAssets,
-  () => queryVariables.value,
-  () => ({ debounce: 500, enabled: searchTerm.value == '' || searchTerm.value.length >= 3 }),
-)
-// extract from result, otherwise return default
-const assets = computed(() => result.value?.assets ?? [])
-// Subscribe to more results and append them to query
-// Todo (Nour): [extra] could subscribe to deleted items as well?
-subscribeToMore(() => ({
-  document: StreamAssets,
-  variables: {
-    ...queryVariables.value,
-    now: new Date().toUTCString(),
-  },
-  updateQuery: (previousResult, newResult) => {
-    console.debug({ previousResult, newResult })
-    return {
-      assets: [
-        // Prepend new assets to existing ones
-        ...newResult.subscriptionData.data.assets_stream,
-        ...previousResult.assets,
-      ],
-    }
-  },
-}))
 
 /**
  * Todo
