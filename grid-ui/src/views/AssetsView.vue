@@ -3,20 +3,20 @@ import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
+import { AllAssets } from '@/graph/assets.query.gql'
+import { StreamAssets } from '@/graph/assets.subscription.gql'
 import {
   DeleteAsset as deleteMutation,
   InsertAsset as insertMutation,
   UpdateAsset as updateMutation,
 } from '@/graph/assets.mutation.gql'
-import { AllAssets } from '@/graph/assets.query.gql'
-import { StreamAssets } from '@/graph/assets.subscription.gql'
 import { useEnumsStore } from '@/stores/enums'
 import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
 // Todo (Nour): [TS] maybe generate types
-interface Asset {
+interface Item {
   id?: number
   name: string
   category: string
@@ -60,8 +60,8 @@ const headers = [
 // Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
 const dialogDelete = ref(false)
-const defaultAsset: Asset = { name: '', category: '', description: '', url: '' }
-const editedItem = ref<Asset>(defaultAsset)
+const defaultItem: Item = { name: '', category: '', description: '', url: '' }
+const editedItem = ref<Item>(defaultItem)
 const selectedItemId = ref<number | undefined>(undefined)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Asset: ${selectedItemId.value}` : 'New Asset'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
@@ -76,7 +76,7 @@ const reset = () => {
   dialog.value = false
   dialogDelete.value = false
   nextTick(() => {
-    editedItem.value = Object.assign({}, defaultAsset)
+    editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
   })
 }
@@ -99,13 +99,13 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, name, category, description, url }: Asset) => {
+const updateItemDialog = ({ id, name, category, description, url }: Item) => {
   console.debug('updating...', id)
   editedItem.value = { name, category, description, url }
   selectedItemId.value = id
   dialog.value = true
 }
-const deleteItemDialog = ({ id }: Asset) => {
+const deleteItemDialog = ({ id }: Item) => {
   console.debug('deleting...', id)
   selectedItemId.value = id
   dialogDelete.value = true

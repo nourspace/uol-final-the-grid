@@ -67,11 +67,15 @@ const errorLink = onError(error => {
 })
 
 // Avoid merge warnings
+// We should use the original query name, not the alias
 // https://dera.hashnode.dev/fix-cache-data-may-be-lost-when-replacing-the-getallposts-field-of-a-query-object-in-apollo-client
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
-      fields: { assets: { merge: (existing, incoming) => incoming } },
+      fields: {
+        assets: { merge: (existing, incoming) => incoming } ,
+        activities: { merge: (existing, incoming) => incoming } ,
+      },
     },
   },
 })
