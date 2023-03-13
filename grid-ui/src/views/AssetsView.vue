@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
+import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
-import { DeleteAsset, InsertAsset, UpdateAsset } from '@/graph/assets.mutation.gql'
+import {
+  DeleteAsset as deleteMutation,
+  InsertAsset as insertMutation,
+  UpdateAsset as updateMutation,
+} from '@/graph/assets.mutation.gql'
 import { AllAssets } from '@/graph/assets.query.gql'
 import { StreamAssets } from '@/graph/assets.subscription.gql'
 import { useEnumsStore } from '@/stores/enums'
 import { mdiDelete, mdiPencil } from '@mdi/js'
-import { useMutation } from '@vue/apollo-composable'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -53,7 +57,7 @@ const headers = [
  */
 
 // Dialogs
-
+// Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
 const dialogDelete = ref(false)
 const defaultAsset: Asset = { name: '', category: '', description: '', url: '' }
@@ -72,66 +76,21 @@ const reset = () => {
   dialog.value = false
   dialogDelete.value = false
   nextTick(() => {
-    editedItem.value = Object.assign(defaultAsset)
+    editedItem.value = Object.assign({}, defaultAsset)
     selectedItemId.value = undefined
   })
 }
 
 // Mutations
-
-// Insert
-const {
-  mutate: insertItem,
-  loading: insertLoading,
-  onDone: insertDone,
-  onError: insertError,
-} = useMutation(InsertAsset, () => ({ variables: { object: editedItem.value } }))
-// Update
-const {
-  mutate: updateItem,
-  loading: updateLoading,
-  onDone: updateDone,
-  onError: updateError,
-} = useMutation(UpdateAsset, () => ({ variables: { id: selectedItemId.value, object: editedItem.value } }))
-// Delete
-const {
-  mutate: deleteItem,
-  loading: deleteLoading,
-  onDone: deleteDone,
-  onError: deleteError,
-} = useMutation(DeleteAsset, () => ({
-  variables: { id: selectedItemId.value },
-  updateQueries: {
-    AllAssets: (previousResult, { mutationResult }) => {
-      const assets: Asset[] = previousResult.assets
-      const deletedAsset: Asset = mutationResult.data.delete_assets_by_pk
-      if (!deletedAsset || assets.length == 0) {
-        return previousResult
-      }
-      console.debug('updating AllAssets after deletion...', assets.length)
-      return {
-        assets: assets.filter((asset) => asset.id != deletedAsset.id),
-      }
-    },
-  },
-}))
-
-insertDone((result) => {
-  console.info('insertDone', result.data)
-  reset()
+const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, deleteLoading } = useCRUDMutations({
+  insertMutation,
+  updateMutation,
+  deleteMutation,
+  editedItem,
+  selectedItemId,
+  reset,
+  listQuery: 'AllAssets',
 })
-updateDone((result) => {
-  console.info('updateDone', result.data)
-  reset()
-})
-deleteDone((result) => {
-  console.info('deleteDone', result.data)
-  // Todo (Nour): [ux] when  result.data.delete_assets_by_pk is null it means user was not able to delete
-  reset()
-})
-insertError((error) => console.log(error))
-updateError((error) => console.log(error))
-deleteError((error) => console.log(error))
 
 // Dialog functions
 
