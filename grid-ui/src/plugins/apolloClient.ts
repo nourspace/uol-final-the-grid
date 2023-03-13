@@ -75,6 +75,7 @@ const cache = new InMemoryCache({
       fields: {
         assets: { merge: (existing, incoming) => incoming } ,
         activities: { merge: (existing, incoming) => incoming } ,
+        tasks: { merge: (existing, incoming) => incoming } ,
       },
     },
   },

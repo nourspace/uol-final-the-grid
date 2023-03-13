@@ -20,10 +20,10 @@ export const useEnumsStore = defineStore('enums', () => {
     onResult((queryResult) => {
       console.debug('Got enums...')
       console.log(queryResult.data)
-      assetCategory.value = queryResult.data.asset_category
       activityType.value = queryResult.data.activity_type
-      taskStatus.value = queryResult.data.activity_type
-      userRole.value = queryResult.data.activity_type
+      assetCategory.value = queryResult.data.asset_category
+      taskStatus.value = queryResult.data.task_status
+      userRole.value = queryResult.data.user_role
     })
     // Todo (Nour): [exception] handle query errors
     onError((error) => {

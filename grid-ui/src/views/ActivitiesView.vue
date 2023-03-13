@@ -18,7 +18,7 @@ import { computed, nextTick, ref, watch } from 'vue'
 // Todo (Nour): [TS] maybe generate types
 interface Item {
   id?: number
-  type: string
+  type?: string
   notes: string
   source: string
 }
@@ -48,7 +48,7 @@ const headers = [
 // Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
 const dialogDelete = ref(false)
-const defaultItem: Item = { type: '', notes: '', source: '' }
+const defaultItem: Item = { notes: '', source: '' }
 const editedItem = ref<Item>(defaultItem)
 const selectedItemId = ref<number | undefined>(undefined)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Activity: ${selectedItemId.value}` : 'New Activity'))
