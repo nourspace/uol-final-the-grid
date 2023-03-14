@@ -1,1 +1,0 @@
-INSERT INTO "public"."activities"("is_hidden", "created_by", "id", "notes", "source", "type", "created_at", "timestamp", "updated_at") VALUES (false, 1, 2, E'Read this post about Bitcoin mining', E'www.mining.com', E'post', E'2023-02-13T10:26:09.351082+00:00', E'2023-02-13T10:26:09.351082+00:00', E'2023-02-13T10:26:09.351082+00:00');
