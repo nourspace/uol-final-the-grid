@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/stores/auth"
 import { DefaultApolloClient } from '@vue/apollo-composable'
 import { createPinia } from 'pinia'
 import { createApp, h, provide } from 'vue'
@@ -14,6 +15,10 @@ const app = createApp({
     provide(DefaultApolloClient, apolloClient)
   },
   render: () => h(App),
+  created() {
+    const { autoLogin } = useAuthStore()
+    autoLogin()
+  },
 })
 
 app.use(createPinia())

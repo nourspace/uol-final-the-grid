@@ -40,7 +40,7 @@ npm run lint
 ## Ports
 
 - 3000 Grid-ui
-- 6000 Grid-auth
+- 5050 Grid-auth
 - 5432 Database
 - 8080 GraphQL
 - 9090 Hasura Console
