@@ -48,6 +48,10 @@ npm run lint
 
 Use docker-compose to build and run `ui` service. We also need `.env` file with some settings.
 
+Check [.env.example](.env.example)
+
+> Modifying .env requires rebuilding the image as these values are baked in the build
+
 ```shell
 # In ui directory, clone .env.example and update settings
 cp env.example .env

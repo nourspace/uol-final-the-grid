@@ -26,7 +26,14 @@ services:
     restart: always
     env_file:
       - grid-ui/.env
-  # Todo (Nour): Add auth
+  auth:
+    image: nourspace/grid-auth
+    build: ./grid-auth
+    ports:
+    - "5050:5050"
+    restart: always
+    env_file:
+      - grid-auth/.env
   # Todo (Nour): Add console
 volumes:
   db_data:
