@@ -18,7 +18,14 @@ services:
     restart: always
     env_file:
       - grid-database/.env
-  # Todo (Nour): Add ui
+  ui:
+    image: nourspace/grid-ui
+    build: ./grid-ui
+    ports:
+    - "80:80"
+    restart: always
+    env_file:
+      - grid-ui/.env
   # Todo (Nour): Add auth
   # Todo (Nour): Add console
 volumes:
