@@ -2,7 +2,7 @@
 import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
 import { storeToRefs } from 'pinia'
-import { computed, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 
 const { fetchEnums } = useEnumsStore()
 const auth = useAuthStore()
@@ -19,10 +19,16 @@ const links = computed(() => [
   { title: 'About', name: 'about' },
 ])
 
-watch(loggedIn, () => {
-  console.debug('Logged in changed', { loggedIn })
+// Todo (Nour): [dx] refactor fetching enums
+onMounted(() => {
+  // fetch on landing
   loggedIn.value && fetchEnums()
 })
+watch(loggedIn, () => {
+  // fetch after login
+  loggedIn.value && fetchEnums()
+})
+
 // Todo (Nour): How to have auth views outside the app?
 </script>
 

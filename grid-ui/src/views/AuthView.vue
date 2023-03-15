@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
+import type { AxiosError } from "axios"
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -10,7 +11,7 @@ const title = computed(() => props.authType[0].toUpperCase() + props.authType.sl
 
 const username = ref('')
 const password = ref('')
-const error = ref<Error | null>(null)
+const error = ref<AxiosError<{error:string}> | null>(null)
 
 const { authRequest } = useAuthStore()
 const router = useRouter()

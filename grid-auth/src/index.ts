@@ -11,12 +11,14 @@ import cors from "cors";
 
 const app = express();
 const port = process.env.PORT || "5050";
-
-// Enable CORS
-const options: cors.CorsOptions = {
-  origin: ["http://localhost:3000"],
-};
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN || "";
+// Enable CORS when `CORS_ORIGIN` is set
+const options: cors.CorsOptions = corsOrigin
+  ? {
+      origin: [corsOrigin],
+    }
+  : {};
+app.use(cors(options));
 
 // Parse JSON in request bodies
 app.use(express.json());
@@ -160,5 +162,7 @@ function clientErrorHandler(
   res: Response,
   next: NextFunction
 ) {
-  res.status(500).send({ error: "Authentication failed. Please contact admin." });
+  res
+    .status(500)
+    .send({ error: "Authentication failed. Please contact admin." });
 }
