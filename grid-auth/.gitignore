@@ -12,6 +12,9 @@ node_modules
 dist
 dist-ssr
 coverage
+
+# local dotenv environment variable files
+.env
 *.local
 
 # Editor directories and files
