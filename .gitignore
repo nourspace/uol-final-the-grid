@@ -1,3 +1,5 @@
 # local dotenv environment variable files
 .env
 *.local
+# Docekr data
+docker-data/

@@ -1,21 +1,22 @@
-import { ApolloClient, createHttpLink, InMemoryCache, split } from "@apollo/client/core"
-import { setContext } from "@apollo/client/link/context"
-import { onError } from "@apollo/client/link/error"
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
-import { getMainDefinition } from "@apollo/client/utilities"
-import { provideApolloClient } from "@vue/apollo-composable"
-import { logErrorMessages } from "@vue/apollo-util"
-import { createClient } from "graphql-ws"
+import { useAuthStore } from '@/stores/auth'
+import { ApolloClient, createHttpLink, InMemoryCache, split } from '@apollo/client/core'
+import { setContext } from '@apollo/client/link/context'
+import { onError } from '@apollo/client/link/error'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { provideApolloClient } from '@vue/apollo-composable'
+import { logErrorMessages } from '@vue/apollo-util'
+import { createClient } from 'graphql-ws'
 
 // GraphQL
-const userToken = import.meta.env.VITE_USER_TOKEN
-const adminToken = import.meta.env.VITE_HASURA_GRAPHQL_ADMIN_SECRET
 
-// Todo (Nour): [core] set auth headers dynamically after user login / log out
 function getHeaders() {
+  const { token } = useAuthStore()
+  // Allow admin to set token manually from env
+  const adminToken = import.meta.env.VITE_HASURA_GRAPHQL_ADMIN_SECRET
   return {
     // User token
-    ...(userToken && { Authorization: `Bearer ${userToken}` }),
+    ...(token && { Authorization: `Bearer ${token}` }),
     // Use admin secret if env is set
     ...(adminToken && { 'X-Hasura-Admin-Secret': adminToken }),
   }
@@ -60,9 +61,15 @@ const splitLink = split(
 )
 
 // Handle errors
-const errorLink = onError(error => {
+const errorLink = onError((error) => {
   if (process.env.NODE_ENV !== 'production') {
     logErrorMessages(error)
+  }
+  const { logout } = useAuthStore()
+  // Log user out should any of the errors is about invalid JWT
+  if (error?.graphQLErrors?.some((e) => e.extensions.code == 'invalid-jwt')) {
+    console.debug('Invalid token logging out')
+    logout()
   }
 })
 
@@ -73,9 +80,9 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        assets: { merge: (existing, incoming) => incoming } ,
-        activities: { merge: (existing, incoming) => incoming } ,
-        tasks: { merge: (existing, incoming) => incoming } ,
+        assets: { merge: (existing, incoming) => incoming },
+        activities: { merge: (existing, incoming) => incoming },
+        tasks: { merge: (existing, incoming) => incoming },
       },
     },
   },

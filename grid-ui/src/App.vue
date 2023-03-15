@@ -1,32 +1,55 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
-import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, watch } from 'vue'
 
-const links = [
-  { title: 'Assets', name: 'assets' },
-  { title: 'Activities', name: 'activities' },
-  { title: 'Tasks', name: 'tasks' },
+const { fetchEnums } = useEnumsStore()
+const auth = useAuthStore()
+const { loggedIn, user } = storeToRefs(auth)
+const links = computed(() => [
+  ...(loggedIn.value
+    ? [
+        { title: 'Assets', name: 'assets' },
+        { title: 'Activities', name: 'activities' },
+        { title: 'Tasks', name: 'tasks' },
+      ]
+    : []),
   { title: 'Test', name: 'test' },
   { title: 'About', name: 'about' },
-]
-const { fetchEnums } = useEnumsStore()
+])
 
-onMounted(async () => {
-  console.log('App mounted')
-  fetchEnums()
+// Todo (Nour): [dx] refactor fetching enums
+onMounted(() => {
+  // fetch on landing
+  loggedIn.value && fetchEnums()
 })
+watch(loggedIn, () => {
+  // fetch after login
+  loggedIn.value && fetchEnums()
+})
+
+// Todo (Nour): How to have auth views outside the app?
 </script>
 
 <template>
   <v-app id="inspire">
     <v-app-bar class="px-3" color="white" flat density="default" extended>
-      <v-avatar color="red-darken-3" size="64">TheGrid</v-avatar>
+      <router-link to="/">
+        <v-avatar color="red-darken-3" size="64">TheGrid</v-avatar>
+      </router-link>
       <v-spacer></v-spacer>
-      <v-tabs centered color="grey-darken-2">
+      <v-tabs centered color="primary" :hide-slider="true">
         <v-tab v-for="link in links" :key="link.name" :to="{ name: link.name }">{{ link.title }}</v-tab>
       </v-tabs>
       <v-spacer></v-spacer>
-      <v-avatar class="hidden-sm-and-down" color="blue-darken-1" size="48">User</v-avatar>
+      <template v-if="loggedIn">
+        <v-btn variant="text" @click="auth.logout"> Logout</v-btn>
+        <v-avatar class="hidden-sm-and-down" color="blue-darken-1" size="48">
+          {{ user.username }}
+        </v-avatar>
+      </template>
+      <v-btn v-else variant="tonal" color="primary" :to="{ name: 'login' }"> Login</v-btn>
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">
