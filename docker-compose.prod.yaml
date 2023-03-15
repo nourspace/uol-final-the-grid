@@ -31,6 +31,8 @@ services:
     restart: always
     environment:
       - VIRTUAL_HOST=grid.nour.space
+      # very important for some reason in this service!
+      - VIRTUAL_PORT=3000
       - LETSENCRYPT_HOST=grid.nour.space
     env_file:
       - grid-ui/.env
