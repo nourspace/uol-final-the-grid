@@ -1,5 +1,8 @@
 import { GraphQLClient } from "graphql-request";
 
-export const client = new GraphQLClient("http://localhost:8080/v1/graphql", {
-  headers: { "x-hasura-admin-secret": "myadminsecretkey" },
+const graphQLEndpoint = process.env.HASURA_GRAPHQL_ENDPOINT || "";
+const adminSecret = process.env.HASURA_GRAPHQL_ADMIN_SECRET || "";
+
+export const client = new GraphQLClient(graphQLEndpoint, {
+  headers: { "x-hasura-admin-secret": adminSecret },
 });

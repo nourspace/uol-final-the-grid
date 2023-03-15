@@ -1,0 +1,16 @@
+#import './tasks.fragment.gql'
+#import './users.fragment.gql'
+
+subscription StreamTasks($search: String!, $now: timestamptz) {
+  # will get all the assets that have `created_at > now` in batches of 5 rows
+  stream: tasks_stream(
+    cursor: { initial_value: { created_at: $now }, ordering: ASC }
+    batch_size: 5
+    where: { _or: [{ title: { _ilike: $search } }, { desc: { _ilike: $search } }] }
+  ) {
+    ...TaskFragment
+    created_by_object{
+      ...MiniUserFragment
+    }
+  }
+}

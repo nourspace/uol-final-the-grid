@@ -2,7 +2,7 @@ table:
   name: activities
   schema: public
 object_relationships:
-  - name: user
+  - name: created_by_object
     using:
       foreign_key_constraint_on: created_by
 array_relationships:
@@ -13,10 +13,55 @@ array_relationships:
         table:
           name: activity_asset
           schema: public
-  - name: activity_comments
+  - name: task_activities
     using:
       foreign_key_constraint_on:
         column: activity_id
         table:
-          name: activity_comment
+          name: task_activity
           schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      set:
+        created_by: x-hasura-User-Id
+      columns:
+        - is_hidden
+        - notes
+        - source
+        - timestamp
+        - type
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - is_hidden
+        - created_by
+        - id
+        - notes
+        - source
+        - type
+        - created_at
+        - timestamp
+        - updated_at
+      filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - is_hidden
+        - notes
+        - source
+        - timestamp
+        - type
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id

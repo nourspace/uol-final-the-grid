@@ -8,3 +8,27 @@ object_relationships:
   - name: asset
     using:
       foreign_key_constraint_on: asset_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        activity:
+          created_by:
+            _eq: X-Hasura-User-Id
+      columns:
+        - activity_id
+        - asset_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - activity_id
+        - asset_id
+      filter: {}
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        activity:
+          created_by:
+            _eq: X-Hasura-User-Id

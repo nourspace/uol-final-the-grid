@@ -1,0 +1,19 @@
+#import './assets.fragment.gql'
+
+mutation InsertAsset($object: assets_insert_input!) {
+  insert_items_one: insert_assets_one(object: $object) {
+    ...AssetFragment
+  }
+}
+
+mutation UpdateAsset($id: Int!, $object: assets_set_input) {
+  update_items_by_pk: update_assets_by_pk(pk_columns: {id: $id}, _set: $object) {
+    ...AssetFragment
+  }
+}
+
+mutation DeleteAsset($id: Int!) {
+  delete_items_by_pk: delete_assets_by_pk(id: $id) {
+    id
+  }
+}

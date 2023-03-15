@@ -2,6 +2,53 @@ table:
   name: tasks
   schema: public
 object_relationships:
-  - name: user
+  - name: created_by_object
     using:
       foreign_key_constraint_on: created_by
+array_relationships:
+  - name: task_activities
+    using:
+      foreign_key_constraint_on:
+        column: task_id
+        table:
+          name: task_activity
+          schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      set:
+        created_by: x-hasura-User-Id
+      columns:
+        - desc
+        - status
+        - title
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - created_by
+        - id
+        - desc
+        - status
+        - title
+        - created_at
+        - updated_at
+      filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - desc
+        - status
+        - title
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id

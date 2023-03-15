@@ -1,0 +1,16 @@
+#import './activities.fragment.gql'
+#import './users.fragment.gql'
+
+subscription StreamActivities($search: String!, $now: timestamptz) {
+  # will get all the assets that have `created_at > now` in batches of 5 rows
+  stream: activities_stream(
+    cursor: { initial_value: { created_at: $now }, ordering: ASC }
+    batch_size: 5
+    where: { _or: [{ notes: { _ilike: $search } }, { source: { _ilike: $search } }] }
+  ) {
+    ...ActivityFragment
+    created_by_object{
+      ...MiniUserFragment
+    }
+  }
+}

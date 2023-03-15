@@ -1,20 +1,9 @@
-<script setup lang="ts">
-import { useCounterStore } from '@/stores/counter'
-import { storeToRefs } from 'pinia'
-import MyHeader from '@/components/MyHeader.vue'
-
-const store = useCounterStore()
-const { count, doubleCount } = storeToRefs(store)
-const { increment } = store
-</script>
+<script setup lang="ts"></script>
 <template>
   <div class="about">
     <h1>This is an about page</h1>
-    <button @click.prevent="increment()">Click for 1</button>
-    <button @click.prevent="increment(2)">Click for 2</button>
-    <p>counter: {{ count }}</p>
-    <p>double: {{ doubleCount }}</p>
-    <MyHeader />
+    <h3>Thank you for testing!</h3>
+    <label>The Grid</label>
   </div>
 </template>
 

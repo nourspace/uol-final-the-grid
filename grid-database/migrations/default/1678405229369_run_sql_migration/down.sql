@@ -1,0 +1,12 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE TABLE asset_category (
+--   value text PRIMARY KEY,
+--   comment text
+-- );
+-- INSERT INTO asset_category (value, comment) VALUES
+--   ('topic', 'Generic topic'),
+--   ('currency', 'Fiat or Bitcoin'),
+--   ('crypto', 'Cryptocurrency project'),
+--   ('other', 'Other category')
+-- ;

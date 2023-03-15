@@ -1,0 +1,11 @@
+table:
+  name: asset_category
+  schema: public
+is_enum: true
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - value
+        - comment
+      filter: {}

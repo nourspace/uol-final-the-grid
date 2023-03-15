@@ -1,0 +1,3 @@
+# local dotenv environment variable files
+.env
+*.local

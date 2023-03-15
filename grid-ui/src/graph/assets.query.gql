@@ -1,0 +1,14 @@
+#import './assets.fragment.gql'
+#import './users.fragment.gql'
+
+query AllAssets($search: String!) {
+  items: assets(
+    where: { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }, { url: { _ilike: $search } }] }
+    order_by: { created_at: desc }
+  ) {
+    ...AssetFragment
+    created_by_object {
+      ...MiniUserFragment
+    }
+  }
+}

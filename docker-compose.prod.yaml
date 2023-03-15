@@ -1,0 +1,95 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres:12
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - grid-database/.env
+    expose:
+      - "5432"
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.18.0
+    expose:
+      - "8080"
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      - VIRTUAL_HOST=graph.grid.nour.space
+      - LETSENCRYPT_HOST=graph.grid.nour.space
+    env_file:
+      - grid-database/.env
+
+  ui:
+    image: nourspace/grid-ui
+    build: ./grid-ui
+    expose:
+      - "3000"
+    restart: always
+    environment:
+      - VIRTUAL_HOST=grid.nour.space
+      # very important for some reason in this service!
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=grid.nour.space
+    env_file:
+      - grid-ui/.env
+
+  auth:
+    image: nourspace/grid-auth
+    build: ./grid-auth
+    expose:
+      - "5050"
+    restart: always
+    environment:
+      - VIRTUAL_HOST=auth.grid.nour.space
+      - LETSENCRYPT_HOST=auth.grid.nour.space
+    env_file:
+      - grid-auth/.env
+
+  # Todo (Nour): Add console
+
+  reverse-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      # Port  80: Required for HTTP-01 challenges to `acme-companion`.
+      # Port 443: Only required for containers that need access over HTTPS. TLS-ALPN-01 challenge not supported.
+      - "80:80"
+      - "443:443"
+    volumes:
+      # `certs/`:      Managed by the `acme-companion` container (_read-only_).
+      # `docker.sock`: Required to interact with containers via the Docker API.
+      # `dhparam`:     A named data volume to prevent `nginx-proxy` creating an anonymous volume each time.
+      - ./docker-data/nginx-proxy/html/:/usr/share/nginx/html/
+      - ./docker-data/nginx-proxy/vhost.d/:/etc/nginx/vhost.d/
+      - ./docker-data/acme-companion/certs/:/etc/nginx/certs/:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - dhparam:/etc/nginx/dhparam
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    restart: always
+    environment:
+      # Only docker-compose v2 supports: `volumes_from: [nginx-proxy]`,
+      # reference the _reverse-proxy_ `container_name` here:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      # `html/`:       Write ACME HTTP-01 challenge files that `nginx-proxy` will serve.
+      # `vhost.d/`:    To enable web access via `nginx-proxy` to HTTP-01 challenge files.
+      # `certs/`:      To store certificates and private keys.
+      # `acme-state/`: To persist config and state for the ACME provisioner (`acme.sh`).
+      # `docker.sock`: Required to interact with containers via the Docker API.
+      - ./docker-data/nginx-proxy/html/:/usr/share/nginx/html/
+      - ./docker-data/nginx-proxy/vhost.d/:/etc/nginx/vhost.d/
+      - ./docker-data/acme-companion/certs/:/etc/nginx/certs/:rw
+      - ./docker-data/acme-companion/acme-state/:/etc/acme.sh/
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  db_data:
+  dhparam:

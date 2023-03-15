@@ -1,0 +1,1 @@
+CREATE TABLE "public"."task_activity" ("task_id" integer NOT NULL, "activity_id" integer NOT NULL, PRIMARY KEY ("task_id","activity_id") , FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("activity_id") REFERENCES "public"."activities"("id") ON UPDATE restrict ON DELETE restrict);
