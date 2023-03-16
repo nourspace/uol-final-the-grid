@@ -1,14 +1,14 @@
 {
   "name": "grid-auth",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Authentication backend for The Grid",
+  "author": "nourspace",
   "main": "dist/index.ts",
   "scripts": {
     "dev": "ts-node-dev ./src/index.ts",
     "start": "NODE_ENV=production NODE_OPTIONS=--enable-source-maps node ./dist/index.js",
     "build": "rm -rf ./dist && tsc -p ."
   },
-  "author": "NW",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
