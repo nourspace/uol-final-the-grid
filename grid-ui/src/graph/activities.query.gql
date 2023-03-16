@@ -1,20 +1,10 @@
 #import './activities.fragment.gql'
-#import './users.fragment.gql'
 
 query AllActivities($search: String) {
   items: activities(
     where: { _or: [{ notes: { _ilike: $search } }, { source: { _ilike: $search } }] }
     order_by: { created_at: desc }
   ) {
-    ...ActivityFragment
-    created_by_object {
-      ...MiniUserFragment
-    }
-    activity_assets {
-      asset {
-        id
-        name
-      }
-    }
+    ...ActivityListFragment
   }
 }

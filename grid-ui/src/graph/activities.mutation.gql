@@ -1,19 +1,37 @@
 #import './activities.fragment.gql'
 
 mutation InsertActivity($object: activities_insert_input!) {
-  insert_items_one: insert_activities_one(object: $object) {
+  item: insert_activities_one(object: $object) {
     ...ActivityFragment
   }
 }
 
 mutation UpdateActivity($id: Int!, $object: activities_set_input) {
-  update_items_by_pk: update_activities_by_pk(pk_columns: {id: $id}, _set: $object) {
+  item: update_activities_by_pk(pk_columns: { id: $id }, _set: $object) {
     ...ActivityFragment
   }
 }
 
 mutation DeleteActivity($id: Int!) {
-  delete_items_by_pk: delete_activities_by_pk(id: $id) {
+  item: delete_activities_by_pk(id: $id) {
     id
+  }
+}
+
+mutation InsertActivityAssets($objects: [activity_asset_insert_input!]!) {
+  insert_activity_asset(objects: $objects) {
+    affected_rows
+    returning {
+      activity {
+        id
+        ...ActivityAssetsFragment
+      }
+    }
+  }
+}
+
+mutation DeleteActivityAssets($id: Int!) {
+  delete_activity_asset(where: { activity_id: { _eq: $id } }) {
+    affected_rows
   }
 }

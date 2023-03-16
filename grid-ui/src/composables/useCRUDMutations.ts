@@ -14,8 +14,11 @@ interface CRUDMutationOptions {
   reset: any
   listQuery: string
   listQueryName?: string // defaults to 'items'
-  deleteMutationName?: string // defaults to 'delete_items_by_pk'
+  deleteMutationName?: string // defaults to 'item'
 }
+
+const DEFAULT_LIST_QUERY_NAME = 'items'
+const DEFAULT_DELETE_MUTATION_NAME = 'item'
 
 export function useCRUDMutations({
   insertMutation,
@@ -51,17 +54,18 @@ export function useCRUDMutations({
     onError: deleteError,
   } = useMutation(deleteMutation, () => ({
     variables: { id: selectedItemId.value },
+    // Todo (Nour): [dx] this is going to be deprecated usage of `update` to directly work with cache is encouraged
     // Update list query result after deletion
     updateQueries: {
-      [listQuery]: (previousResult, { mutationResult }) => {
-        const items: TModel[] = previousResult[listQueryName || 'items']
-        const deletedItem: TModel = mutationResult.data[deleteMutationName || 'delete_items_by_pk']
+      [listQuery]: function (previousResult, { mutationResult }) {
+        const items: TModel[] = previousResult[listQueryName || DEFAULT_LIST_QUERY_NAME]
+        const deletedItem: TModel = mutationResult.data[deleteMutationName || DEFAULT_DELETE_MUTATION_NAME]
         if (!deletedItem || items.length == 0) {
           return previousResult
         }
         console.debug('updating [query] after deletion...', items.length)
         return {
-          [listQueryName || 'items']: items.filter((item) => item.id != deletedItem.id),
+          [listQueryName || DEFAULT_LIST_QUERY_NAME]: items.filter((item) => item.id != deletedItem.id),
         }
       },
     },
@@ -84,5 +88,5 @@ export function useCRUDMutations({
   updateError((error) => console.log(error))
   deleteError((error) => console.log(error))
 
-  return { insertItem, insertLoading, updateItem, updateLoading, deleteItem, deleteLoading }
+  return { insertItem, insertLoading, insertDone, updateItem, updateLoading, updateDone, deleteItem, deleteLoading }
 }

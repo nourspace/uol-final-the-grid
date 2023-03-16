@@ -3,26 +3,20 @@ import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
-import { AllActivities } from '@/graph/activities.query.gql'
-import { StreamActivities } from '@/graph/activities.subscription.gql'
 import {
   DeleteActivity as deleteMutation,
   InsertActivity as insertMutation,
   UpdateActivity as updateMutation,
 } from '@/graph/activities.mutation.gql'
+import { AllActivities } from '@/graph/activities.query.gql'
+import { StreamActivities } from '@/graph/activities.subscription.gql'
+import type { Activity } from '@/services/activties'
+import { setActivityAssets } from '@/services/activties'
 import { useEnumsStore } from '@/stores/enums'
-import { chipColor } from "@/utils"
+import { chipColor } from '@/utils'
 import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
-
-// Todo (Nour): [TS] maybe generate types
-interface Item {
-  id?: number
-  type?: string
-  notes: string
-  source: string
-}
 
 // List
 const searchTerm = ref('')
@@ -50,8 +44,9 @@ const headers = [
 // Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
 const dialogDelete = ref(false)
-const defaultItem: Item = { notes: '', source: '' }
-const editedItem = ref<Item>(defaultItem)
+const defaultItem: Activity = { type: undefined, notes: '', source: '' }
+const editedItem = ref<Activity>(defaultItem)
+const editedItemAssets = ref<number[]>([])
 const selectedItemId = ref<number | undefined>(undefined)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Activity: ${selectedItemId.value}` : 'New Activity'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
@@ -67,20 +62,69 @@ const reset = () => {
   dialogDelete.value = false
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
+    editedItemAssets.value = []
     selectedItemId.value = undefined
   })
 }
 
+// Todo (Nour): [core] load assets from database ofc
+const assets = [
+  { id: 16, name: 'Science' },
+  { id: 17, name: 'Healthcare' },
+  { id: 18, name: 'Energy' },
+  { id: 19, name: 'Blockchain' },
+  { id: 20, name: 'AI' },
+  { id: 1, name: 'Environment' },
+  { id: 2, name: 'Ethereum' },
+  { id: 21, name: 'Bitcoin' },
+  { id: 3, name: 'Cosmos' },
+  { id: 4, name: 'USD Coin' },
+  { id: 5, name: '0L' },
+  { id: 6, name: 'Gold' },
+  { id: 7, name: 'Euro (fiat)' },
+  { id: 8, name: 'USD (fiat)' },
+  { id: 9, name: 'Crypto' },
+  { id: 10, name: 'Economy' },
+  { id: 11, name: 'Politics' },
+  { id: 12, name: 'Commodities' },
+  { id: 13, name: 'Stocks' },
+  { id: 14, name: 'Metaverse' },
+  { id: 15, name: 'CBDC' },
+]
+
 // Mutations
-const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, deleteLoading } = useCRUDMutations({
-  insertMutation,
-  updateMutation,
-  deleteMutation,
-  editedItem,
-  selectedItemId,
-  reset,
-  listQuery: 'AllActivities',
+const { insertItem, insertLoading, insertDone, updateItem, updateLoading, updateDone, deleteItem, deleteLoading } =
+  useCRUDMutations({
+    insertMutation,
+    updateMutation,
+    deleteMutation,
+    editedItem,
+    selectedItemId,
+    reset,
+    listQuery: 'AllActivities',
+  })
+
+insertDone((result) => {
+  console.debug('post insert', result)
+  if (result.data.item) {
+    setActivityAssets(result.data.item.id, editedItemAssets.value)
+  }
 })
+updateDone((result) => {
+  console.debug('post update', result)
+  if (result.data.item) {
+    setActivityAssets(result.data.item.id, editedItemAssets.value)
+  }
+})
+
+function preDeleteItem() {
+  console.debug('pre delete', selectedItemId.value)
+  // Todo (Nour): [dx] how to make sure the item can be actually deleted?
+  if (selectedItemId.value) {
+    setActivityAssets(selectedItemId.value, [])
+    deleteItem()
+  }
+}
 
 // Dialog functions
 
@@ -89,13 +133,14 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, type, notes, source }: Item) => {
+const updateItemDialog = ({ id, type, notes, source, activity_assets }: Activity) => {
   console.debug('updating...', id)
   editedItem.value = { type, notes, source }
+  editedItemAssets.value = activity_assets ? activity_assets.map(({ asset }) => asset.id) : []
   selectedItemId.value = id
   dialog.value = true
 }
-const deleteItemDialog = ({ id }: Item) => {
+const deleteItemDialog = ({ id }: Activity) => {
   console.debug('deleting...', id)
   selectedItemId.value = id
   dialogDelete.value = true
@@ -118,6 +163,24 @@ const deleteItemDialog = ({ id }: Item) => {
             <v-select hide-details :items="activityType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
           </v-col>
           <v-col cols="12">
+            <v-autocomplete
+              label="Assets"
+              v-model="editedItemAssets"
+              :items="assets"
+              item-value="id"
+              item-title="name"
+              multiple
+              chips
+              closable-chips
+              clearable
+              hide-details
+            >
+              <template v-slot:chip="{ props, item }">
+                <v-chip v-bind="props" :color="chipColor(item.title)" variant="tonal" />
+              </template>
+            </v-autocomplete>
+          </v-col>
+          <v-col cols="12">
             <v-textarea hide-details v-model="editedItem.notes" label="Notes" />
           </v-col>
           <v-col cols="12">
@@ -133,7 +196,7 @@ const deleteItemDialog = ({ id }: Item) => {
       :loading="deleteLoading"
       :title="dialogDeleteTitle"
       @cancel="reset"
-      @ok="deleteItem"
+      @ok="preDeleteItem"
     >
     </DeleteDialog>
 

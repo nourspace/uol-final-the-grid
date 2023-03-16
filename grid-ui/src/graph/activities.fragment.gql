@@ -1,3 +1,5 @@
+#import './users.fragment.gql'
+
 fragment ActivityFragment on activities {
   id
   type
@@ -6,4 +8,25 @@ fragment ActivityFragment on activities {
   created_by
   created_at
   updated_at
+}
+
+fragment CreatedByFragment on activities {
+  created_by_object {
+    ...MiniUserFragment
+  }
+}
+
+fragment ActivityAssetsFragment on activities {
+  activity_assets {
+    asset {
+      id
+      name
+    }
+  }
+}
+
+fragment ActivityListFragment on activities {
+  ...ActivityFragment
+  ...CreatedByFragment
+  ...ActivityAssetsFragment
 }
