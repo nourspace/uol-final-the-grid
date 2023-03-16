@@ -11,6 +11,7 @@ import {
   UpdateActivity as updateMutation,
 } from '@/graph/activities.mutation.gql'
 import { useEnumsStore } from '@/stores/enums'
+import { chipColor } from "@/utils"
 import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
@@ -36,6 +37,7 @@ let itemsPerPage = 50
 const headers = [
   { title: 'ID', align: 'start', sortable: false, key: 'id' },
   { title: 'Type', align: 'start', key: 'type' },
+  { title: 'Assets', align: 'start', key: 'assets' },
   { title: 'Notes', align: 'start', key: 'notes' },
   { title: 'Source', align: 'start', key: 'source' },
   { title: 'By', align: 'end', key: 'created_by' },
@@ -113,12 +115,7 @@ const deleteItemDialog = ({ id }: Item) => {
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-select
-              hide-details
-              :items="activityType.map((c) => c.value)"
-              v-model="editedItem.type"
-              label="Type"
-            />
+            <v-select hide-details :items="activityType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
           </v-col>
           <v-col cols="12">
             <v-textarea hide-details v-model="editedItem.notes" label="Notes" />
@@ -151,6 +148,7 @@ const deleteItemDialog = ({ id }: Item) => {
       height="70vh"
       class="elevation-1"
     >
+      <!-- Toolbar -->
       <template v-slot:top>
         <v-toolbar height="80" extension-height="80">
           <v-text-field
@@ -171,6 +169,20 @@ const deleteItemDialog = ({ id }: Item) => {
             <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
           </template>
         </v-toolbar>
+      </template>
+
+      <!-- Custom columns -->
+
+      <template v-slot:item.assets="{ item }">
+        <v-chip
+          v-for="{ asset } in item.raw.activity_assets"
+          :key="asset.id"
+          size="small"
+          class="mr-1 my-1"
+          variant="outlined"
+          :color="chipColor(asset.name)"
+          >{{ asset.name }}
+        </v-chip>
       </template>
       <template v-slot:item.source="{ item }">
         <div class="v-data-table__td__source">

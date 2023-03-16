@@ -166,8 +166,10 @@ const deleteItemDialog = ({ id }: Item) => {
       height="70vh"
       class="elevation-1"
     >
+      <!-- Toolbar -->
       <template v-slot:top>
         <v-toolbar height="80" extension-height="80">
+          <!-- Search field -->
           <v-text-field
             clearable
             @click:clear="searchTerm = ''"
@@ -181,12 +183,16 @@ const deleteItemDialog = ({ id }: Item) => {
             style="flex: 3"
           />
           <v-spacer></v-spacer>
+          <!-- Create new -->
           <v-btn color="primary" dark @click="dialog = true">New Asset</v-btn>
           <template #extension v-if="error">
             <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
           </template>
         </v-toolbar>
       </template>
+
+      <!-- Custom columns -->
+
       <template v-slot:item.url="{ item }">
         <div class="v-data-table__td__url">
           <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>

@@ -10,5 +10,11 @@ query AllActivities($search: String) {
     created_by_object {
       ...MiniUserFragment
     }
+    activity_assets {
+      asset {
+        id
+        name
+      }
+    }
   }
 }
