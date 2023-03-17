@@ -119,6 +119,7 @@ const deleteItemDialog = ({ id }: Item) => {
       v-model="dialog"
       :loading="insertLoading || updateLoading"
       :title="dialogTitle"
+      :comments="!!selectedItemId"
       @cancel="reset"
       @ok="saveItem"
     >
