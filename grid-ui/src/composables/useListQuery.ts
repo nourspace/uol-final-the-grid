@@ -22,7 +22,7 @@ export function useListQuery({ query, queryName, queryVariables, subscription, s
     () => queryVariables.value,
     () => ({
       debounce: 500,
-      enabled: queryVariables.value.search == '%%' || queryVariables.value.search.length >= 5,
+      enabled: queryVariables.value.search == '%%' || queryVariables.value.search.length >= 4,
     }),
   )
 

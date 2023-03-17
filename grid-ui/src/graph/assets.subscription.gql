@@ -6,7 +6,15 @@ subscription StreamAssets($search: String!, $now: timestamptz) {
   stream: assets_stream(
     cursor: { initial_value: { created_at: $now }, ordering: ASC }
     batch_size: 5
-    where: { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }, { url: { _ilike: $search } }] }
+    where: {
+      _or: [
+        { name: { _ilike: $search } }
+        { description: { _ilike: $search } }
+        { url: { _ilike: $search } }
+        #  { category: { _ilike: $search } } # Todo (Nour): can't filter on categories
+        { created_by_object: { username: { _ilike: $search } } }
+      ]
+    }
   ) {
     ...AssetFragment
     created_by_object {

@@ -131,7 +131,7 @@ const activities = ref([
         </v-row>
       </v-container>
 
-      <template #footer>
+      <template #footer v-if="selectedItemId">
         <h3 class="bg-white rounded-lg pa-2 mb-1">Activities</h3>
         <v-sheet ref="container" rounded class="pa-0 mb-4 flex-grow-1 d-flex">
           <v-virtual-scroll ref="scroll" :items="activities" :max-height="200" item-height="64">
@@ -178,7 +178,7 @@ const activities = ref([
             density="comfortable"
             v-model="searchTerm"
             label="Search Tasks"
-            placeholder="Type task title or desc"
+            placeholder="Type task title, description, or username"
             class="mx-4"
             style="flex: 3"
           />

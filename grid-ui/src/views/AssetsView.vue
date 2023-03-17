@@ -179,7 +179,7 @@ const deleteItemDialog = ({ id }: Item) => {
             density="comfortable"
             v-model="searchTerm"
             label="Search Assets"
-            placeholder="Type asset name, description, or URL"
+            placeholder="Type asset name, description, URL, or username"
             class="mx-4"
             style="flex: 3"
           />

@@ -6,10 +6,17 @@ subscription StreamTasks($search: String!, $now: timestamptz) {
   stream: tasks_stream(
     cursor: { initial_value: { created_at: $now }, ordering: ASC }
     batch_size: 5
-    where: { _or: [{ title: { _ilike: $search } }, { desc: { _ilike: $search } }] }
+    where: {
+      _or: [
+        { title: { _ilike: $search } }
+        { desc: { _ilike: $search } }
+        #  { status: { _ilike: $search } } # Todo (Nour): can't filter on status
+        { created_by_object: { username: { _ilike: $search } } }
+      ]
+    }
   ) {
     ...TaskFragment
-    created_by_object{
+    created_by_object {
       ...MiniUserFragment
     }
   }

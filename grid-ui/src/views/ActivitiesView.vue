@@ -206,7 +206,7 @@ const deleteItemDialog = ({ id }: Activity) => {
             density="comfortable"
             v-model="searchTerm"
             label="Search Activities"
-            placeholder="Search in notes and sources"
+            placeholder="Type activity note, source, asset name, or username"
             class="mx-4"
             style="flex: 3"
           />
