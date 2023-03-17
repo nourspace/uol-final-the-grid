@@ -115,7 +115,7 @@ app.post(
     const user = users[0];
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: ["Invalid username or password"] });
     }
 
     // Check if password matches the hashed version
@@ -133,7 +133,7 @@ app.post(
         }),
       });
     } else {
-      res.status(401).json({ error: "Invalid username or password" });
+      res.status(401).json({ error: ["Invalid username or password"] });
     }
   }
 );
@@ -164,5 +164,5 @@ function clientErrorHandler(
 ) {
   res
     .status(500)
-    .send({ error: "Authentication failed. Please contact admin." });
+    .send({ error: ["Authentication failed. Please contact admin."] });
 }

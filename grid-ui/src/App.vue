@@ -15,7 +15,7 @@ const links = computed(() => [
         { title: 'Tasks', name: 'tasks' },
       ]
     : []),
-  { title: 'Test', name: 'test' },
+  // { title: 'Test', name: 'test' },
   { title: 'About', name: 'about' },
 ])
 
@@ -35,7 +35,7 @@ watch(loggedIn, () => {
 <template>
   <v-app id="inspire">
     <v-app-bar class="px-3" color="white" flat density="default" extended>
-      <router-link to="/">
+      <router-link to="/" class="mt-4 text-decoration-none">
         <v-avatar color="red-darken-3" size="64">TheGrid</v-avatar>
       </router-link>
       <v-spacer></v-spacer>
