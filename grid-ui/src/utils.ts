@@ -14,6 +14,16 @@ const hashCode = (s: string) => s.split('').reduce((a, b) => ((a << 5) - a + b.c
 /***
  * Return chip color for the given text
  */
-const chipColor = (text: string) => CHIP_COLORS[Math.abs(hashCode(text)) % CHIP_COLORS.length]
+export const chipColor = (text: string) => CHIP_COLORS[Math.abs(hashCode(text)) % CHIP_COLORS.length]
 
-export { chipColor }
+/**
+ * Given a text generate two letter initials
+ */
+export const getInitials = (text: string) => {
+  text
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+}

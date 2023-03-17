@@ -29,7 +29,7 @@ const value = computed({
   <v-dialog v-model="value" :max-width="comments ? '80vw' : '60vw'">
     <v-container>
       <v-row>
-        <v-col :cols="comments ? 8 : 8" :offset="comments?0:2">
+        <v-col :cols="comments ? 8 : 8" :offset="comments ? 0 : 2">
           <v-card :title="title" :loading="loading">
             <v-card-text>
               <slot></slot>
@@ -41,7 +41,14 @@ const value = computed({
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-col v-if="comments" cols="4"> <CommentsBox /> </v-col>
+        <v-col v-if="comments" cols="4">
+          <CommentsBox />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <slot name="footer"></slot>
+        </v-col>
       </v-row>
     </v-container>
   </v-dialog>

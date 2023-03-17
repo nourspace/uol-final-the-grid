@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chipColor } from '@/utils'
+import { chipColor, getInitials } from '@/utils'
 import { mdiSend } from '@mdi/js'
 import { onMounted, ref } from 'vue'
 
@@ -18,15 +18,6 @@ const comments = ref([
   'Action speaks louder.',
   'Chase the light, seize the moment.',
 ])
-
-function getInitials(comment: string) {
-  const words = comment.split(' ')
-  return words
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase()
-}
 
 function addComment(comment: string) {
   comments.value.push(comment)
