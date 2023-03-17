@@ -16,7 +16,7 @@ export interface Asset {
 }
 
 // Todo (Nour): [dx] this is better done as composable to return loading status etc?
-export async function setActivityAssets(activityId: number, assets: number[]) {
+export async function setActivityAssets(activityId: number, assets: Asset[]) {
   const { resolveClient } = useApolloClient()
   const client = resolveClient()
 
@@ -25,6 +25,6 @@ export async function setActivityAssets(activityId: number, assets: number[]) {
   await client.mutate({ mutation: DeleteActivityAssets, variables: { id: activityId } })
 
   // Insert activity assets
-  const objects = assets.map((asset) => ({ activity_id: activityId, asset_id: asset }))
+  const objects = assets.map((asset) => ({ activity_id: activityId, asset_id: asset.id }))
   await client.mutate({ mutation: InsertActivityAssets, variables: { id: activityId, objects } })
 }

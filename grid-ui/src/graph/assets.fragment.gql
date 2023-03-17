@@ -1,6 +1,10 @@
-fragment AssetFragment on assets {
+fragment AssetMiniFragment on assets {
   id
   name
+}
+
+fragment AssetFragment on assets {
+  ...AssetMiniFragment
   category
   description
   url

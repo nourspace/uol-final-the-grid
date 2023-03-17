@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
+import { useAssetsMini } from '@/composables/assets'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
 import {
@@ -10,7 +11,7 @@ import {
 } from '@/graph/activities.mutation.gql'
 import { AllActivities } from '@/graph/activities.query.gql'
 import { StreamActivities } from '@/graph/activities.subscription.gql'
-import type { Activity } from '@/services/activties'
+import type { Activity, Asset } from '@/services/activties'
 import { setActivityAssets } from '@/services/activties'
 import { useEnumsStore } from '@/stores/enums'
 import { chipColor } from '@/utils'
@@ -46,8 +47,9 @@ const dialog = ref(false)
 const dialogDelete = ref(false)
 const defaultItem: Activity = { type: undefined, notes: '', source: '' }
 const editedItem = ref<Activity>(defaultItem)
-const editedItemAssets = ref<number[]>([])
+const editedItemAssets = ref<Asset[]>([])
 const selectedItemId = ref<number | undefined>(undefined)
+const assetsSearchTerm = ref('')
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Activity: ${selectedItemId.value}` : 'New Activity'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { activityType } = storeToRefs(useEnumsStore())
@@ -67,31 +69,6 @@ const reset = () => {
   })
 }
 
-// Todo (Nour): [core] load assets from database ofc
-const assets = [
-  { id: 16, name: 'Science' },
-  { id: 17, name: 'Healthcare' },
-  { id: 18, name: 'Energy' },
-  { id: 19, name: 'Blockchain' },
-  { id: 20, name: 'AI' },
-  { id: 1, name: 'Environment' },
-  { id: 2, name: 'Ethereum' },
-  { id: 21, name: 'Bitcoin' },
-  { id: 3, name: 'Cosmos' },
-  { id: 4, name: 'USD Coin' },
-  { id: 5, name: '0L' },
-  { id: 6, name: 'Gold' },
-  { id: 7, name: 'Euro (fiat)' },
-  { id: 8, name: 'USD (fiat)' },
-  { id: 9, name: 'Crypto' },
-  { id: 10, name: 'Economy' },
-  { id: 11, name: 'Politics' },
-  { id: 12, name: 'Commodities' },
-  { id: 13, name: 'Stocks' },
-  { id: 14, name: 'Metaverse' },
-  { id: 15, name: 'CBDC' },
-]
-
 // Mutations
 const { insertItem, insertLoading, insertDone, updateItem, updateLoading, updateDone, deleteItem, deleteLoading } =
   useCRUDMutations({
@@ -103,6 +80,8 @@ const { insertItem, insertLoading, insertDone, updateItem, updateLoading, update
     reset,
     listQuery: 'AllActivities',
   })
+// Todo (Nour): [performance] maybe we load assets once so we only search locally?
+const { assets, loading: assetsSearchLoading } = useAssetsMini(assetsSearchTerm)
 
 insertDone((result) => {
   console.debug('post insert', result)
@@ -136,7 +115,7 @@ const saveItem = () => {
 const updateItemDialog = ({ id, type, notes, source, activity_assets }: Activity) => {
   console.debug('updating...', id)
   editedItem.value = { type, notes, source }
-  editedItemAssets.value = activity_assets ? activity_assets.map(({ asset }) => asset.id) : []
+  editedItemAssets.value = activity_assets ? activity_assets.map(({ asset }) => asset) : []
   selectedItemId.value = id
   dialog.value = true
 }
@@ -166,7 +145,10 @@ const deleteItemDialog = ({ id }: Activity) => {
             <v-autocomplete
               label="Assets"
               v-model="editedItemAssets"
+              v-model:search.trim="assetsSearchTerm"
+              :loading="assetsSearchLoading"
               :items="assets"
+              return-object
               item-value="id"
               item-title="name"
               multiple
@@ -175,6 +157,7 @@ const deleteItemDialog = ({ id }: Activity) => {
               clearable
               hide-details
             >
+              <!-- Todo (Nour): [performance] re-renders a lot! -->
               <template v-slot:chip="{ props, item }">
                 <v-chip v-bind="props" :color="chipColor(item.title)" variant="tonal" />
               </template>
