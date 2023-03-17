@@ -12,6 +12,7 @@ import {
 } from '@/graph/assets.mutation.gql'
 import { useEnumsStore } from '@/stores/enums'
 import { useAuthStore } from '@/stores/auth'
+import { requiredRule } from "@/utils"
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -63,9 +64,10 @@ const dialogDelete = ref(false)
 const defaultItem: Item = { name: '', category: '', description: '', url: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
+const isNewItem = computed(() => !selectedItemId.value)
 const selectedItemOwnerId = ref<number | undefined>(undefined)
 const { user } = storeToRefs(useAuthStore())
-const isItemOwner = computed(() => !!selectedItemOwnerId.value && (selectedItemOwnerId.value == user.value.id))
+const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Asset: ${selectedItemId.value}` : 'New Asset'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { assetCategory } = storeToRefs(useEnumsStore())
@@ -100,7 +102,7 @@ const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, delete
 const saveItem = () => {
   console.debug('saveItem', { editedItem: editedItem.value })
   // insert or update
-  selectedItemId.value ? updateItem() : insertItem()
+  isNewItem.value ? insertItem() : updateItem()
 }
 const updateItemDialog = ({ id, name, category, description, url, created_by_object }: Item) => {
   console.debug('updating...', id)
@@ -113,6 +115,7 @@ const deleteItemDialog = () => {
   console.debug('deleting...', selectedItemId)
   dialogDelete.value = true
 }
+
 </script>
 
 <template>
@@ -122,35 +125,35 @@ const deleteItemDialog = () => {
       v-model="dialog"
       :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
-      :comments="!!selectedItemId"
-      :enable-actions="!selectedItemId || isItemOwner"
-      @cancel="reset"
-      @ok="saveItem"
+      :enable-form="isNewItem || isItemOwner"
+      :enable-save="isNewItem || isItemOwner"
+      :enable-delete="isItemOwner"
+      :comments="!isNewItem"
+      @save="saveItem"
       @delete="deleteItemDialog"
+      @cancel="reset"
     >
-      <v-form :disabled="!!selectedItemId && !isItemOwner">
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field hide-details v-model="editedItem.name" label="Name" />
-            </v-col>
-            <v-col cols="12">
-              <v-select
-                hide-details
-                :items="assetCategory.map((c) => c.value)"
-                v-model="editedItem.category"
-                label="Category"
-              />
-            </v-col>
-            <v-col cols="12">
-              <v-text-field hide-details v-model="editedItem.description" label="Description" />
-            </v-col>
-            <v-col cols="12">
-              <v-text-field hide-details v-model="editedItem.url" label="URL" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
+      <v-container>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field v-model="editedItem.name" label="Name" :rules="[requiredRule]" />
+          </v-col>
+          <v-col cols="6">
+            <v-select
+              :items="assetCategory.map((c) => c.value)"
+              v-model="editedItem.category"
+              label="Category"
+              :rules="[requiredRule]"
+            />
+          </v-col>
+          <v-col cols="12">
+            <v-textarea hide-details v-model="editedItem.description" label="Description" />
+          </v-col>
+          <v-col cols="12">
+            <v-text-field hide-details v-model="editedItem.url" label="URL" />
+          </v-col>
+        </v-row>
+      </v-container>
     </MyDialog>
 
     <!-- Delete Dialog -->
@@ -159,7 +162,7 @@ const deleteItemDialog = () => {
       :loading="deleteLoading"
       :title="dialogDeleteTitle"
       @cancel="dialogDelete = false"
-      @ok="deleteItem"
+      @delete="deleteItem"
     >
     </DeleteDialog>
 
@@ -192,7 +195,7 @@ const deleteItemDialog = () => {
           />
           <v-spacer></v-spacer>
           <!-- Create new -->
-          <v-btn color="primary" dark @click="dialog = true">New Asset</v-btn>
+          <v-btn color="primary" dark @click="dialog = true" variant="outlined">New Asset</v-btn>
           <template #extension v-if="error">
             <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
           </template>
@@ -204,7 +207,6 @@ const deleteItemDialog = () => {
       <template v-slot:item="{ item: rowItem }: { item: any }">
         <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="updateItemDialog(rowItem.raw)">
           <!-- Custom columns -->
-          <!-- must use props here as slots are not arable to TS -->
           <template v-slot:item.url="{ item }">
             <div class="v-data-table__td__url">
               <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>

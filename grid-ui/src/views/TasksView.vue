@@ -48,9 +48,10 @@ const dialogDelete = ref(false)
 const defaultItem: Item = { title: '', status: undefined, desc: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
+const isNewItem = computed(() => !selectedItemId.value)
 const selectedItemOwnerId = ref<number | undefined>(undefined)
 const { user } = storeToRefs(useAuthStore())
-const isItemOwner = computed(() => !!selectedItemOwnerId.value && (selectedItemOwnerId.value == user.value.id))
+const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Task: ${selectedItemId.value}` : 'New Task'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { taskStatus } = storeToRefs(useEnumsStore())
@@ -85,7 +86,7 @@ const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, delete
 const saveItem = () => {
   console.debug('saveItem', { editedItem: editedItem.value })
   // insert or update
-  selectedItemId.value ? updateItem() : insertItem()
+  isNewItem.value ? insertItem() : updateItem()
 }
 const updateItemDialog = ({ id, status, title, desc, created_by_object }: Item) => {
   console.debug('updating...', id)
@@ -116,30 +117,31 @@ const activities = ref([
       v-model="dialog"
       :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
-      :comments="!!selectedItemId"
-      :enable-actions="!selectedItemId || isItemOwner"
-      @cancel="reset"
-      @ok="saveItem"
+      :enable-form="isNewItem || isItemOwner"
+      :enable-save="isNewItem || isItemOwner"
+      :enable-delete="isItemOwner"
+      :comments="!isNewItem"
+      @save="saveItem"
       @delete="deleteItemDialog"
+      @cancel="reset"
     >
-      <v-form :disabled="!!selectedItemId && !isItemOwner">
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Type" />
-            </v-col>
-            <v-col cols="12">
-              <v-text-field hide-details v-model="editedItem.title" label="Title" />
-            </v-col>
-            <v-col cols="12">
-              <v-textarea hide-details v-model="editedItem.desc" label="Desc" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
+      <v-container>
+        <v-row>
+          <v-col cols="9">
+            <v-text-field hide-details v-model="editedItem.title" label="Title" />
+          </v-col>
+          <v-col cols="3">
+            <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Status" />
+          </v-col>
+          <v-col cols="12">
+            <v-textarea hide-details v-model="editedItem.desc" label="Desc" />
+          </v-col>
+        </v-row>
+      </v-container>
 
-      <template #footer v-if="selectedItemId">
-        <h3 class="bg-white rounded-lg pa-2 mb-1">Activities</h3>
+      <!-- Activities list -->
+      <template #footer v-if="!isNewItem">
+        <v-card-title class="bg-white rounded-lg py-2 pl-4 mb-1">Activities</v-card-title>
         <v-sheet ref="container" rounded class="pa-0 mb-4 flex-grow-1 d-flex">
           <v-virtual-scroll ref="scroll" :items="activities" :max-height="200" item-height="64">
             <template v-slot:default="{ item: activity }">
@@ -160,7 +162,7 @@ const activities = ref([
       :loading="deleteLoading"
       :title="dialogDeleteTitle"
       @cancel="dialogDelete = false"
-      @ok="deleteItem"
+      @delete="deleteItem"
     >
     </DeleteDialog>
 
@@ -178,6 +180,7 @@ const activities = ref([
       <!-- Toolbar -->
       <template v-slot:top>
         <v-toolbar height="80" extension-height="80">
+          <!-- Search field -->
           <v-text-field
             clearable
             @click:clear="searchTerm = ''"
@@ -191,7 +194,8 @@ const activities = ref([
             style="flex: 3"
           />
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="dialog = true">New Task</v-btn>
+          <!-- Create new -->
+          <v-btn color="primary" dark @click="dialog = true" variant="outlined">New Task</v-btn>
           <template #extension v-if="error">
             <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
           </template>

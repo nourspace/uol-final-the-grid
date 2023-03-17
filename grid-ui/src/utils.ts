@@ -27,3 +27,7 @@ export const getInitials = (text: string) => {
     .join('')
     .toUpperCase()
 }
+
+export const requiredRule = (value: string) => (value ? true : 'Required')
+export const minCharacters = (numChars: number) => (value: string) =>
+  value.length >= numChars ? true : `At least ${numChars} characters`
