@@ -1,6 +1,6 @@
 {
   "name": "grid-ui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Web frontend for The Grid",
   "author": "nourspace",
   "main": "dist/index.html",
