@@ -1,27 +1,23 @@
 <script setup lang="ts">
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
+import { useAssetsMini } from '@/composables/assets'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
-import { AllActivities } from '@/graph/activities.query.gql'
-import { StreamActivities } from '@/graph/activities.subscription.gql'
 import {
   DeleteActivity as deleteMutation,
   InsertActivity as insertMutation,
   UpdateActivity as updateMutation,
 } from '@/graph/activities.mutation.gql'
+import { AllActivities } from '@/graph/activities.query.gql'
+import { StreamActivities } from '@/graph/activities.subscription.gql'
+import type { Activity, Asset } from '@/services/activties'
+import { setActivityAssets } from '@/services/activties'
 import { useEnumsStore } from '@/stores/enums'
+import { chipColor } from '@/utils'
 import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
-
-// Todo (Nour): [TS] maybe generate types
-interface Item {
-  id?: number
-  type?: string
-  notes: string
-  source: string
-}
 
 // List
 const searchTerm = ref('')
@@ -36,6 +32,7 @@ let itemsPerPage = 50
 const headers = [
   { title: 'ID', align: 'start', sortable: false, key: 'id' },
   { title: 'Type', align: 'start', key: 'type' },
+  { title: 'Assets', align: 'start', key: 'assets' },
   { title: 'Notes', align: 'start', key: 'notes' },
   { title: 'Source', align: 'start', key: 'source' },
   { title: 'By', align: 'end', key: 'created_by' },
@@ -48,9 +45,11 @@ const headers = [
 // Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
 const dialogDelete = ref(false)
-const defaultItem: Item = { notes: '', source: '' }
-const editedItem = ref<Item>(defaultItem)
+const defaultItem: Activity = { type: undefined, notes: '', source: '' }
+const editedItem = ref<Activity>(defaultItem)
+const editedItemAssets = ref<Asset[]>([])
 const selectedItemId = ref<number | undefined>(undefined)
+const assetsSearchTerm = ref('')
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Activity: ${selectedItemId.value}` : 'New Activity'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { activityType } = storeToRefs(useEnumsStore())
@@ -65,20 +64,46 @@ const reset = () => {
   dialogDelete.value = false
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
+    editedItemAssets.value = []
     selectedItemId.value = undefined
   })
 }
 
 // Mutations
-const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, deleteLoading } = useCRUDMutations({
-  insertMutation,
-  updateMutation,
-  deleteMutation,
-  editedItem,
-  selectedItemId,
-  reset,
-  listQuery: 'AllActivities',
+const { insertItem, insertLoading, insertDone, updateItem, updateLoading, updateDone, deleteItem, deleteLoading } =
+  useCRUDMutations({
+    insertMutation,
+    updateMutation,
+    deleteMutation,
+    editedItem,
+    selectedItemId,
+    reset,
+    listQuery: 'AllActivities',
+  })
+// Todo (Nour): [performance] maybe we load assets once so we only search locally?
+const { assets, loading: assetsSearchLoading } = useAssetsMini(assetsSearchTerm)
+
+insertDone((result) => {
+  console.debug('post insert', result)
+  if (result.data.item) {
+    setActivityAssets(result.data.item.id, editedItemAssets.value)
+  }
 })
+updateDone((result) => {
+  console.debug('post update', result)
+  if (result.data.item) {
+    setActivityAssets(result.data.item.id, editedItemAssets.value)
+  }
+})
+
+function preDeleteItem() {
+  console.debug('pre delete', selectedItemId.value)
+  // Todo (Nour): [dx] how to make sure the item can be actually deleted?
+  if (selectedItemId.value) {
+    setActivityAssets(selectedItemId.value, [])
+    deleteItem()
+  }
+}
 
 // Dialog functions
 
@@ -87,13 +112,14 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, type, notes, source }: Item) => {
+const updateItemDialog = ({ id, type, notes, source, activity_assets }: Activity) => {
   console.debug('updating...', id)
   editedItem.value = { type, notes, source }
+  editedItemAssets.value = activity_assets ? activity_assets.map(({ asset }) => asset) : []
   selectedItemId.value = id
   dialog.value = true
 }
-const deleteItemDialog = ({ id }: Item) => {
+const deleteItemDialog = ({ id }: Activity) => {
   console.debug('deleting...', id)
   selectedItemId.value = id
   dialogDelete.value = true
@@ -107,18 +133,36 @@ const deleteItemDialog = ({ id }: Item) => {
       v-model="dialog"
       :loading="insertLoading || updateLoading"
       :title="dialogTitle"
+      :comments="!!selectedItemId"
       @cancel="reset"
       @ok="saveItem"
     >
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-select
+            <v-select hide-details :items="activityType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
+          </v-col>
+          <v-col cols="12">
+            <v-autocomplete
+              label="Assets"
+              v-model="editedItemAssets"
+              v-model:search.trim="assetsSearchTerm"
+              :loading="assetsSearchLoading"
+              :items="assets"
+              return-object
+              item-value="id"
+              item-title="name"
+              multiple
+              chips
+              closable-chips
+              clearable
               hide-details
-              :items="activityType.map((c) => c.value)"
-              v-model="editedItem.type"
-              label="Type"
-            />
+            >
+              <!-- Todo (Nour): [performance] re-renders a lot! -->
+              <template v-slot:chip="{ props, item }">
+                <v-chip v-bind="props" :color="chipColor(item.title)" variant="tonal" />
+              </template>
+            </v-autocomplete>
           </v-col>
           <v-col cols="12">
             <v-textarea hide-details v-model="editedItem.notes" label="Notes" />
@@ -136,7 +180,7 @@ const deleteItemDialog = ({ id }: Item) => {
       :loading="deleteLoading"
       :title="dialogDeleteTitle"
       @cancel="reset"
-      @ok="deleteItem"
+      @ok="preDeleteItem"
     >
     </DeleteDialog>
 
@@ -151,6 +195,7 @@ const deleteItemDialog = ({ id }: Item) => {
       height="70vh"
       class="elevation-1"
     >
+      <!-- Toolbar -->
       <template v-slot:top>
         <v-toolbar height="80" extension-height="80">
           <v-text-field
@@ -171,6 +216,20 @@ const deleteItemDialog = ({ id }: Item) => {
             <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
           </template>
         </v-toolbar>
+      </template>
+
+      <!-- Custom columns -->
+
+      <template v-slot:item.assets="{ item }">
+        <v-chip
+          v-for="{ asset } in item.raw.activity_assets"
+          :key="asset.id"
+          size="small"
+          class="mr-1 my-1"
+          variant="outlined"
+          :color="chipColor(asset.name)"
+          >{{ asset.name }}
+        </v-chip>
       </template>
       <template v-slot:item.source="{ item }">
         <div class="v-data-table__td__source">

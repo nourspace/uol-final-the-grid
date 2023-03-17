@@ -1,19 +1,19 @@
 #import './tasks.fragment.gql'
 
 mutation InsertTask($object: tasks_insert_input!) {
-  insert_items_one: insert_tasks_one(object: $object) {
+  item: insert_tasks_one(object: $object) {
     ...TaskFragment
   }
 }
 
 mutation UpdateTask($id: Int!, $object: tasks_set_input) {
-  update_items_by_pk: update_tasks_by_pk(pk_columns: {id: $id}, _set: $object) {
+  item: update_tasks_by_pk(pk_columns: {id: $id}, _set: $object) {
     ...TaskFragment
   }
 }
 
 mutation DeleteTask($id: Int!) {
-  delete_items_by_pk: delete_tasks_by_pk(id: $id) {
+  item: delete_tasks_by_pk(id: $id) {
     id
   }
 }

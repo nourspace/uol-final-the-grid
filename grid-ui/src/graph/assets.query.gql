@@ -12,3 +12,9 @@ query AllAssets($search: String!) {
     }
   }
 }
+
+query AllAssetsMini($search: String!) {
+  items: assets(where: { _or: [{ name: { _ilike: $search } }] }, order_by: { name: asc }) {
+    ...AssetMiniFragment
+  }
+}

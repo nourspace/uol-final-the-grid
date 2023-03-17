@@ -11,6 +11,7 @@ import {
   UpdateTask as updateMutation,
 } from '@/graph/tasks.mutation.gql'
 import { useEnumsStore } from '@/stores/enums'
+import { chipColor, getInitials } from '@/utils'
 import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
@@ -94,6 +95,15 @@ const deleteItemDialog = ({ id }: Item) => {
   selectedItemId.value = id
   dialogDelete.value = true
 }
+
+const activities = ref([
+  'Listened to a podcast on Gold and its impact on Analyze Political Impact on Commodities.',
+  'Interviewed an expert on Research Crypto Mining in Top Countries and its relation to AI.',
+  "Researched Study AI's Impact on Environment using Gold.",
+  'Read the news about Gold and its impact on Research Crypto Mining in Top Countries.',
+  'Watched a video on Ethereum and its impact on Analyze Ethereum PoS Switch.',
+  'Researched Create Healthcare ETF using AI.',
+])
 </script>
 
 <template>
@@ -103,6 +113,7 @@ const deleteItemDialog = ({ id }: Item) => {
       v-model="dialog"
       :loading="insertLoading || updateLoading"
       :title="dialogTitle"
+      :comments="!!selectedItemId"
       @cancel="reset"
       @ok="saveItem"
     >
@@ -119,6 +130,21 @@ const deleteItemDialog = ({ id }: Item) => {
           </v-col>
         </v-row>
       </v-container>
+
+      <template #footer>
+        <h3 class="bg-white rounded-lg pa-2 mb-1">Activities</h3>
+        <v-sheet ref="container" rounded class="pa-0 mb-4 flex-grow-1 d-flex">
+          <v-virtual-scroll ref="scroll" :items="activities" :max-height="200" item-height="64">
+            <template v-slot:default="{ item: activity }">
+              <v-list-item :title="activity" class="mb-2 border-b" lines="one">
+                <template #prepend>
+                  <v-avatar size="32" :color="chipColor(activity)">{{ getInitials(activity) }}</v-avatar>
+                </template>
+              </v-list-item>
+            </template>
+          </v-virtual-scroll>
+        </v-sheet>
+      </template>
     </MyDialog>
 
     <!-- Delete Dialog -->
