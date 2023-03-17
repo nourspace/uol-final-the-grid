@@ -11,6 +11,7 @@ import {
   UpdateAsset as updateMutation,
 } from '@/graph/assets.mutation.gql'
 import { useEnumsStore } from '@/stores/enums'
+import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -21,6 +22,7 @@ interface Item {
   category: string
   description: string
   url: string
+  created_by_object?: { id: number }
 }
 
 // List
@@ -61,6 +63,9 @@ const dialogDelete = ref(false)
 const defaultItem: Item = { name: '', category: '', description: '', url: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
+const selectedItemOwnerId = ref<number | undefined>(undefined)
+const { user } = storeToRefs(useAuthStore())
+const isItemOwner = computed(() => !!selectedItemOwnerId.value && (selectedItemOwnerId.value == user.value.id))
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Asset: ${selectedItemId.value}` : 'New Asset'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { assetCategory } = storeToRefs(useEnumsStore())
@@ -75,6 +80,7 @@ const reset = () => {
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
+    selectedItemOwnerId.value = undefined
   })
 }
 
@@ -96,10 +102,11 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, name, category, description, url }: Item) => {
+const updateItemDialog = ({ id, name, category, description, url, created_by_object }: Item) => {
   console.debug('updating...', id)
   editedItem.value = { name, category, description, url }
   selectedItemId.value = id
+  selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
 }
 const deleteItemDialog = () => {
@@ -116,32 +123,34 @@ const deleteItemDialog = () => {
       :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
       :comments="!!selectedItemId"
-      :delete-action="!!selectedItemId"
+      :enable-actions="!selectedItemId || isItemOwner"
       @cancel="reset"
       @ok="saveItem"
       @delete="deleteItemDialog"
     >
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field hide-details v-model="editedItem.name" label="Name" />
-          </v-col>
-          <v-col cols="12">
-            <v-select
-              hide-details
-              :items="assetCategory.map((c) => c.value)"
-              v-model="editedItem.category"
-              label="Category"
-            />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field hide-details v-model="editedItem.description" label="Description" />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field hide-details v-model="editedItem.url" label="URL" />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-form :disabled="!!selectedItemId && !isItemOwner">
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field hide-details v-model="editedItem.name" label="Name" />
+            </v-col>
+            <v-col cols="12">
+              <v-select
+                hide-details
+                :items="assetCategory.map((c) => c.value)"
+                v-model="editedItem.category"
+                label="Category"
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field hide-details v-model="editedItem.description" label="Description" />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field hide-details v-model="editedItem.url" label="URL" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
     </MyDialog>
 
     <!-- Delete Dialog -->
@@ -209,10 +218,6 @@ const deleteItemDialog = () => {
           </template>
           <template v-slot:item.updated_at="{ item }">
             {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-          </template>
-          <template v-slot:item.actions="{ item }">
-            <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-            <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
           </template>
         </v-data-table-row>
       </template>

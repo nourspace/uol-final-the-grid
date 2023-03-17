@@ -8,6 +8,7 @@ export interface Activity {
   notes: string
   source: string
   activity_assets?: { asset: Asset }[]
+  created_by_object?: { id: number }
 }
 
 export interface Asset {

@@ -14,6 +14,7 @@ import { StreamActivities } from '@/graph/activities.subscription.gql'
 import type { Activity, Asset } from '@/services/activties'
 import { setActivityAssets } from '@/services/activties'
 import { useEnumsStore } from '@/stores/enums'
+import { useAuthStore } from '@/stores/auth'
 import { chipColor } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
@@ -48,6 +49,9 @@ const editedItem = ref<Activity>(Object.assign({}, defaultItem))
 const editedItemAssets = ref<Asset[]>([])
 const selectedItemId = ref<number | undefined>(undefined)
 const assetsSearchTerm = ref('')
+const selectedItemOwnerId = ref<number | undefined>(undefined)
+const { user } = storeToRefs(useAuthStore())
+const isItemOwner = computed(() => !!selectedItemOwnerId.value && (selectedItemOwnerId.value == user.value.id))
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Activity: ${selectedItemId.value}` : 'New Activity'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { activityType } = storeToRefs(useEnumsStore())
@@ -63,6 +67,7 @@ const reset = () => {
     editedItem.value = Object.assign({}, defaultItem)
     editedItemAssets.value = []
     selectedItemId.value = undefined
+    selectedItemOwnerId.value = undefined
   })
 }
 
@@ -109,11 +114,12 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, type, notes, source, activity_assets }: Activity) => {
+const updateItemDialog = ({ id, type, notes, source, activity_assets, created_by_object }: Activity) => {
   console.debug('updating...', id)
   editedItem.value = { type, notes, source }
   editedItemAssets.value = activity_assets ? activity_assets.map(({ asset }) => asset) : []
   selectedItemId.value = id
+  selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
 }
 const deleteItemDialog = () => {
@@ -130,46 +136,48 @@ const deleteItemDialog = () => {
       :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
       :comments="!!selectedItemId"
-      :delete-action="!!selectedItemId"
+      :enable-actions="!selectedItemId || isItemOwner"
       @cancel="reset"
       @ok="saveItem"
       @delete="deleteItemDialog"
     >
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-select hide-details :items="activityType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
-          </v-col>
-          <v-col cols="12">
-            <v-autocomplete
-              label="Assets"
-              v-model="editedItemAssets"
-              v-model:search.trim="assetsSearchTerm"
-              :loading="assetsSearchLoading"
-              :items="assets"
-              return-object
-              item-value="id"
-              item-title="name"
-              multiple
-              chips
-              closable-chips
-              clearable
-              hide-details
-            >
-              <!-- Todo (Nour): [performance] re-renders a lot! -->
-              <template v-slot:chip="{ props, item }">
-                <v-chip v-bind="props" :color="chipColor(item.title)" variant="tonal" />
-              </template>
-            </v-autocomplete>
-          </v-col>
-          <v-col cols="12">
-            <v-textarea hide-details v-model="editedItem.notes" label="Notes" />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field hide-details v-model="editedItem.source" label="Source" />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-form :disabled="!!selectedItemId && !isItemOwner">
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-select hide-details :items="activityType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
+            </v-col>
+            <v-col cols="12">
+              <v-autocomplete
+                label="Assets"
+                v-model="editedItemAssets"
+                v-model:search.trim="assetsSearchTerm"
+                :loading="assetsSearchLoading"
+                :items="assets"
+                return-object
+                item-value="id"
+                item-title="name"
+                multiple
+                chips
+                closable-chips
+                clearable
+                hide-details
+              >
+                <!-- Todo (Nour): [performance] re-renders a lot! -->
+                <template v-slot:chip="{ props, item }">
+                  <v-chip v-bind="props" :color="chipColor(item.title)" variant="tonal" />
+                </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea hide-details v-model="editedItem.notes" label="Notes" />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field hide-details v-model="editedItem.source" label="Source" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
     </MyDialog>
 
     <!-- Delete Dialog -->

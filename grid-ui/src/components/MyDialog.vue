@@ -7,14 +7,14 @@ export interface Props {
   title?: string
   loading?: boolean
   comments?: boolean
-  deleteAction?: boolean
+  enableActions?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: 'Item',
   loading: false,
   comments: false,
-  deleteAction: false,
+  enableActions: false,
 })
 
 const emit = defineEmits(['update:modelValue', 'ok', 'cancel', 'delete'])
@@ -37,10 +37,10 @@ const value = computed({
               <slot></slot>
             </v-card-text>
             <v-card-actions class="ma-2">
-              <v-btn v-if="deleteAction" color="error" variant="outlined" @click="emit('delete')"> Delete </v-btn>
+              <v-btn v-if="enableActions" color="error" variant="outlined" @click="emit('delete')"> Delete </v-btn>
               <v-spacer></v-spacer>
               <v-btn color="grey-darken-1" variant="text" @click="emit('cancel')"> Cancel </v-btn>
-              <v-btn color="primary-darken-1" variant="outlined" @click="emit('ok')"> Save </v-btn>
+              <v-btn v-if="enableActions" color="primary-darken-1" variant="outlined" @click="emit('ok')"> Save </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>

@@ -10,6 +10,7 @@ import {
   InsertTask as insertMutation,
   UpdateTask as updateMutation,
 } from '@/graph/tasks.mutation.gql'
+import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
 import { chipColor, getInitials } from '@/utils'
 import { storeToRefs } from 'pinia'
@@ -21,6 +22,7 @@ interface Item {
   status?: string
   title: string
   desc: string
+  created_by_object?: { id: number }
 }
 
 // List
@@ -46,6 +48,9 @@ const dialogDelete = ref(false)
 const defaultItem: Item = { title: '', status: undefined, desc: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
+const selectedItemOwnerId = ref<number | undefined>(undefined)
+const { user } = storeToRefs(useAuthStore())
+const isItemOwner = computed(() => !!selectedItemOwnerId.value && (selectedItemOwnerId.value == user.value.id))
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Task: ${selectedItemId.value}` : 'New Task'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
 const { taskStatus } = storeToRefs(useEnumsStore())
@@ -60,6 +65,7 @@ const reset = () => {
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
+    selectedItemOwnerId.value = undefined
   })
 }
 
@@ -81,10 +87,11 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, status, title, desc }: Item) => {
+const updateItemDialog = ({ id, status, title, desc, created_by_object }: Item) => {
   console.debug('updating...', id)
   editedItem.value = { status, title, desc }
   selectedItemId.value = id
+  selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
 }
 const deleteItemDialog = () => {
@@ -110,24 +117,26 @@ const activities = ref([
       :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
       :comments="!!selectedItemId"
-      :delete-action="!!selectedItemId"
+      :enable-actions="!selectedItemId || isItemOwner"
       @cancel="reset"
       @ok="saveItem"
       @delete="deleteItemDialog"
     >
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Type" />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field hide-details v-model="editedItem.title" label="Title" />
-          </v-col>
-          <v-col cols="12">
-            <v-textarea hide-details v-model="editedItem.desc" label="Desc" />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-form :disabled="!!selectedItemId && !isItemOwner">
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Type" />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field hide-details v-model="editedItem.title" label="Title" />
+            </v-col>
+            <v-col cols="12">
+              <v-textarea hide-details v-model="editedItem.desc" label="Desc" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
 
       <template #footer v-if="selectedItemId">
         <h3 class="bg-white rounded-lg pa-2 mb-1">Activities</h3>
@@ -202,10 +211,6 @@ const activities = ref([
           </template>
           <template v-slot:item.updated_at="{ item }">
             {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-          </template>
-          <template v-slot:item.actions="{ item }">
-            <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-            <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
           </template>
         </v-data-table-row>
       </template>
