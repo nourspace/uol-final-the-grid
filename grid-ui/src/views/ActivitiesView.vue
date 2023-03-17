@@ -15,7 +15,6 @@ import type { Activity, Asset } from '@/services/activties'
 import { setActivityAssets } from '@/services/activties'
 import { useEnumsStore } from '@/stores/enums'
 import { chipColor } from '@/utils'
-import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -38,7 +37,6 @@ const headers = [
   { title: 'By', align: 'end', key: 'created_by' },
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
-  { title: 'Actions', key: 'actions', sortable: false },
 ]
 
 // Dialogs
@@ -46,7 +44,7 @@ const headers = [
 const dialog = ref(false)
 const dialogDelete = ref(false)
 const defaultItem: Activity = { type: undefined, notes: '', source: '' }
-const editedItem = ref<Activity>(defaultItem)
+const editedItem = ref<Activity>(Object.assign({}, defaultItem))
 const editedItemAssets = ref<Asset[]>([])
 const selectedItemId = ref<number | undefined>(undefined)
 const assetsSearchTerm = ref('')
@@ -56,7 +54,6 @@ const { activityType } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
 watch(dialog, (value) => value || reset())
-watch(dialogDelete, (value) => value || reset())
 
 const reset = () => {
   console.log('reset')
@@ -119,9 +116,8 @@ const updateItemDialog = ({ id, type, notes, source, activity_assets }: Activity
   selectedItemId.value = id
   dialog.value = true
 }
-const deleteItemDialog = ({ id }: Activity) => {
-  console.debug('deleting...', id)
-  selectedItemId.value = id
+const deleteItemDialog = () => {
+  console.debug('deleting...', selectedItemId)
   dialogDelete.value = true
 }
 </script>
@@ -131,11 +127,13 @@ const deleteItemDialog = ({ id }: Activity) => {
     <!--Insert / Update Dialog -->
     <MyDialog
       v-model="dialog"
-      :loading="insertLoading || updateLoading"
+      :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
       :comments="!!selectedItemId"
+      :delete-action="!!selectedItemId"
       @cancel="reset"
       @ok="saveItem"
+      @delete="deleteItemDialog"
     >
       <v-container>
         <v-row>
@@ -179,7 +177,7 @@ const deleteItemDialog = ({ id }: Activity) => {
       v-model="dialogDelete"
       :loading="deleteLoading"
       :title="dialogDeleteTitle"
-      @cancel="reset"
+      @cancel="dialogDelete = false"
       @ok="preDeleteItem"
     >
     </DeleteDialog>
@@ -247,10 +245,6 @@ const deleteItemDialog = ({ id }: Activity) => {
           </template>
           <template v-slot:item.updated_at="{ item }">
             {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-          </template>
-          <template v-slot:item.actions="{ item }">
-            <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-            <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
           </template>
         </v-data-table-row>
       </template>

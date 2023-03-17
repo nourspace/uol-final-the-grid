@@ -12,7 +12,6 @@ import {
 } from '@/graph/tasks.mutation.gql'
 import { useEnumsStore } from '@/stores/enums'
 import { chipColor, getInitials } from '@/utils'
-import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -38,15 +37,14 @@ const headers = [
   { title: 'By', align: 'end', key: 'created_by' },
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
-  { title: 'Actions', key: 'actions', sortable: false },
 ]
 
 // Dialogs
 // Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
 const dialogDelete = ref(false)
-const defaultItem: Item = { title: '', desc: '' }
-const editedItem = ref<Item>(defaultItem)
+const defaultItem: Item = { title: '', status: undefined, desc: '' }
+const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Task: ${selectedItemId.value}` : 'New Task'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
@@ -54,7 +52,6 @@ const { taskStatus } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
 watch(dialog, (value) => value || reset())
-watch(dialogDelete, (value) => value || reset())
 
 const reset = () => {
   console.log('reset')
@@ -90,9 +87,8 @@ const updateItemDialog = ({ id, status, title, desc }: Item) => {
   selectedItemId.value = id
   dialog.value = true
 }
-const deleteItemDialog = ({ id }: Item) => {
-  console.debug('deleting...', id)
-  selectedItemId.value = id
+const deleteItemDialog = () => {
+  console.debug('deleting...', selectedItemId)
   dialogDelete.value = true
 }
 
@@ -111,11 +107,13 @@ const activities = ref([
     <!--Insert / Update Dialog -->
     <MyDialog
       v-model="dialog"
-      :loading="insertLoading || updateLoading"
+      :loading="insertLoading || updateLoading || deleteLoading"
       :title="dialogTitle"
       :comments="!!selectedItemId"
+      :delete-action="!!selectedItemId"
       @cancel="reset"
       @ok="saveItem"
+      @delete="deleteItemDialog"
     >
       <v-container>
         <v-row>
@@ -152,7 +150,7 @@ const activities = ref([
       v-model="dialogDelete"
       :loading="deleteLoading"
       :title="dialogDeleteTitle"
-      @cancel="reset"
+      @cancel="dialogDelete = false"
       @ok="deleteItem"
     >
     </DeleteDialog>
