@@ -218,36 +218,41 @@ const deleteItemDialog = ({ id }: Activity) => {
         </v-toolbar>
       </template>
 
-      <!-- Custom columns -->
-
-      <template v-slot:item.assets="{ item }">
-        <v-chip
-          v-for="{ asset } in item.raw.activity_assets"
-          :key="asset.id"
-          size="small"
-          class="mr-1 my-1"
-          variant="outlined"
-          :color="chipColor(asset.name)"
-          >{{ asset.name }}
-        </v-chip>
-      </template>
-      <template v-slot:item.source="{ item }">
-        <div class="v-data-table__td__source">
-          <a :href="item.raw.source" target="_blank">{{ item.raw.source }}</a>
-        </div>
-      </template>
-      <template v-slot:item.created_by="{ item }">
-        {{ item.raw.created_by_object.username }}
-      </template>
-      <template v-slot:item.created_at="{ item }">
-        {{ new Date(item.raw.created_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.updated_at="{ item }">
-        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-        <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
+      <!-- Custom rows -->
+      <!-- rename to rowItem not to conflict with inner slots -->
+      <template v-slot:item="{ item: rowItem }: { item: any }">
+        <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="updateItemDialog(rowItem.raw)">
+          <!-- Custom columns -->
+          <template v-slot:item.assets="{ item }">
+            <v-chip
+              v-for="{ asset } in item.raw.activity_assets"
+              :key="asset.id"
+              size="small"
+              class="mr-1 my-1"
+              variant="outlined"
+              :color="chipColor(asset.name)"
+              >{{ asset.name }}
+            </v-chip>
+          </template>
+          <template v-slot:item.source="{ item }">
+            <div class="v-data-table__td__source">
+              <a :href="item.raw.source" target="_blank">{{ item.raw.source }}</a>
+            </div>
+          </template>
+          <template v-slot:item.created_by="{ item }">
+            {{ item.raw.created_by_object.username }}
+          </template>
+          <template v-slot:item.created_at="{ item }">
+            {{ new Date(item.raw.created_at).toLocaleDateString() }}
+          </template>
+          <template v-slot:item.updated_at="{ item }">
+            {{ new Date(item.raw.updated_at).toLocaleDateString() }}
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
+            <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
+          </template>
+        </v-data-table-row>
       </template>
     </v-data-table-server>
   </div>

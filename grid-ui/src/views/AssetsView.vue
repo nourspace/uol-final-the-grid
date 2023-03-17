@@ -192,25 +192,31 @@ const deleteItemDialog = ({ id }: Item) => {
         </v-toolbar>
       </template>
 
-      <!-- Custom columns -->
-
-      <template v-slot:item.url="{ item }">
-        <div class="v-data-table__td__url">
-          <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>
-        </div>
-      </template>
-      <template v-slot:item.created_by="{ item }">
-        {{ item.raw.created_by_object.username }}
-      </template>
-      <template v-slot:item.created_at="{ item }">
-        {{ new Date(item.raw.created_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.updated_at="{ item }">
-        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-        <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
+      <!-- Custom rows -->
+      <!-- rename to rowItem not to conflict with inner slots -->
+      <template v-slot:item="{ item: rowItem }: { item: any }">
+        <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="updateItemDialog(rowItem.raw)">
+          <!-- Custom columns -->
+          <!-- must use props here as slots are not arable to TS -->
+          <template v-slot:item.url="{ item }">
+            <div class="v-data-table__td__url">
+              <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>
+            </div>
+          </template>
+          <template v-slot:item.created_by="{ item }">
+            {{ item.raw.created_by_object.username }}
+          </template>
+          <template v-slot:item.created_at="{ item }">
+            {{ new Date(item.raw.created_at).toLocaleDateString() }}
+          </template>
+          <template v-slot:item.updated_at="{ item }">
+            {{ new Date(item.raw.updated_at).toLocaleDateString() }}
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
+            <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
+          </template>
+        </v-data-table-row>
       </template>
     </v-data-table-server>
   </div>

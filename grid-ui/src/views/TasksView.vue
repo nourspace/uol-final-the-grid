@@ -168,6 +168,7 @@ const activities = ref([
       height="70vh"
       class="elevation-1"
     >
+      <!-- Toolbar -->
       <template v-slot:top>
         <v-toolbar height="80" extension-height="80">
           <v-text-field
@@ -189,18 +190,26 @@ const activities = ref([
           </template>
         </v-toolbar>
       </template>
-      <template v-slot:item.created_by="{ item }">
-        {{ item.raw.created_by_object.username }}
-      </template>
-      <template v-slot:item.created_at="{ item }">
-        {{ new Date(item.raw.created_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.updated_at="{ item }">
-        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-        <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
+
+      <!-- Custom rows -->
+      <!-- rename to rowItem not to conflict with inner slots -->
+      <template v-slot:item="{ item: rowItem }: { item: any }">
+        <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="updateItemDialog(rowItem.raw)">
+          <!-- Custom columns -->
+          <template v-slot:item.created_by="{ item }">
+            {{ item.raw.created_by_object.username }}
+          </template>
+          <template v-slot:item.created_at="{ item }">
+            {{ new Date(item.raw.created_at).toLocaleDateString() }}
+          </template>
+          <template v-slot:item.updated_at="{ item }">
+            {{ new Date(item.raw.updated_at).toLocaleDateString() }}
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
+            <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
+          </template>
+        </v-data-table-row>
       </template>
     </v-data-table-server>
   </div>
