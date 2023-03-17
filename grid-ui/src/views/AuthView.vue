@@ -49,13 +49,13 @@ async function submitForm() {
       <v-row class="justify-center">
         <v-col cols="6">
           <v-form ref="form" @submit.prevent="submitForm">
-            <v-text-field v-model="username" label="username" color="primary" :rules="[requiredRule]" />
+            <v-text-field v-model="username" label="username" color="primary" :rules="[requiredRule, minCharacters(3)]" />
             <v-text-field
               v-model="password"
               label="password"
               color="primary"
               type="password"
-              :rules="[requiredRule, minCharacters(5)]"
+              :rules="[requiredRule, isRegister? minCharacters(5): undefined]"
               :hint="passwordHint"
             />
             <v-btn type="submit" color="primary" variant="outlined" class="my-4">{{ title }}</v-btn>

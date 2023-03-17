@@ -49,7 +49,7 @@ watch(loggedIn, () => {
           {{ user.username }}
         </v-avatar>
       </template>
-      <v-btn v-else variant="tonal" color="primary" :to="{ name: 'login' }"> Login</v-btn>
+      <v-btn v-else variant="tonal" color="primary" :to="{ name: 'login' }"> Log in</v-btn>
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">
