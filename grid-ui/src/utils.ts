@@ -20,7 +20,7 @@ export const chipColor = (text: string) => CHIP_COLORS[Math.abs(hashCode(text)) 
  * Given a text generate two letter initials
  */
 export const getInitials = (text: string) => {
-  text
+  return text
     .split(' ')
     .slice(0, 2)
     .map((w) => w[0])
