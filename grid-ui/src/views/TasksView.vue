@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
+import TaskActivityList from '@/components/TaskActivityList.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
-import { AllTasks } from '@/graph/tasks.query.gql'
-import { StreamTasks } from '@/graph/tasks.subscription.gql'
 import {
   DeleteTask as deleteMutation,
   InsertTask as insertMutation,
   UpdateTask as updateMutation,
 } from '@/graph/tasks.mutation.gql'
+import { AllTasks } from '@/graph/tasks.query.gql'
+import { StreamTasks } from '@/graph/tasks.subscription.gql'
 import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
-import { chipColor, getInitials } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -141,18 +141,7 @@ const activities = ref([
 
       <!-- Activities list -->
       <template #footer v-if="!isNewItem">
-        <v-card-title class="bg-white rounded-lg py-2 pl-4 mb-1">Activities</v-card-title>
-        <v-sheet ref="container" rounded class="pa-0 mb-4 flex-grow-1 d-flex">
-          <v-virtual-scroll ref="scroll" :items="activities" :max-height="200" item-height="64">
-            <template v-slot:default="{ item: activity }">
-              <v-list-item :title="activity" class="mb-2 border-b" lines="one">
-                <template #prepend>
-                  <v-avatar size="32" :color="chipColor(activity)">{{ getInitials(activity) }}</v-avatar>
-                </template>
-              </v-list-item>
-            </template>
-          </v-virtual-scroll>
-        </v-sheet>
+        <TaskActivityList :activities="activities" />
       </template>
     </MyDialog>
 
