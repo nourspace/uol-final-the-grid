@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import CRUDDialog from '@/components/CRUDDialog.vue'
 import DataTable from '@/components/DataTable.vue'
-import DeleteDialog from '@/components/DeleteDialog.vue'
-import MyDialog from '@/components/MyDialog.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
 import {
@@ -44,9 +43,7 @@ const headers = [
 ]
 
 // Dialogs
-// Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
-const dialogDelete = ref(false)
 const defaultItem: Item = { name: '', category: '', description: '', url: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
@@ -55,7 +52,7 @@ const selectedItemOwnerId = ref<number | undefined>(undefined)
 const { user } = storeToRefs(useAuthStore())
 const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Asset: ${selectedItemId.value}` : 'New Asset'))
-const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
+const dialogDeleteTitle = computed(() => `Are you sure you want to delete asset: ${selectedItemId.value}?`)
 const { assetCategory } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
@@ -64,7 +61,6 @@ watch(dialog, (value) => value || reset())
 const reset = () => {
   console.log('reset')
   dialog.value = false
-  dialogDelete.value = false
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
@@ -97,25 +93,23 @@ const updateItemDialog = ({ id, name, category, description, url, created_by_obj
   selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
 }
-const deleteItemDialog = () => {
-  console.debug('deleting...', selectedItemId)
-  dialogDelete.value = true
-}
 </script>
 
 <template>
   <div>
-    <!--Insert / Update Dialog -->
-    <MyDialog
+    <!-- CRUD Dialog -->
+    <CRUDDialog
       v-model="dialog"
       :loading="insertLoading || updateLoading || deleteLoading"
+      :delete-loading="deleteLoading"
       :title="dialogTitle"
+      :delete-title="dialogDeleteTitle"
       :enable-form="isNewItem || isItemOwner"
       :enable-save="isNewItem || isItemOwner"
       :enable-delete="isItemOwner"
       :comments="!isNewItem"
       @save="saveItem"
-      @delete="deleteItemDialog"
+      @delete="deleteItem"
       @cancel="reset"
     >
       <v-container>
@@ -139,17 +133,7 @@ const deleteItemDialog = () => {
           </v-col>
         </v-row>
       </v-container>
-    </MyDialog>
-
-    <!-- Delete Dialog -->
-    <DeleteDialog
-      v-model="dialogDelete"
-      :loading="deleteLoading"
-      :title="dialogDeleteTitle"
-      @cancel="dialogDelete = false"
-      @delete="deleteItem"
-    >
-    </DeleteDialog>
+    </CRUDDialog>
 
     <!-- DataTable -->
     <DataTable

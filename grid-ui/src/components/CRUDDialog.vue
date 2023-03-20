@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import CommentsBox from '@/components/CommentsBox.vue'
-import { computed, ref } from 'vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
+import { computed, ref, watch } from 'vue'
 
 export interface Props {
   modelValue: boolean
   title?: string
+  deleteTitle?: string
   loading?: boolean
+  deleteLoading?: boolean
   enableForm?: boolean
   enableSave?: boolean
   enableDelete?: boolean
@@ -14,7 +17,9 @@ export interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: 'Item',
+  deleteTitle: 'Delete Item?',
   loading: false,
+  deleteLoading: false,
   enableForm: false,
   enableSave: false,
   enableDelete: false,
@@ -24,13 +29,17 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:modelValue', 'save', 'delete', 'cancel'])
 
 const form = ref<any>(null)
+const dialogDelete = ref(false)
+
 const value = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 })
 
+watch(value, (value) => value || (dialogDelete.value = false))
+
 async function submitForm() {
-  const { valid } = form.value && await form.value.validate()
+  const { valid } = form.value && (await form.value.validate())
   valid && emit('save')
 }
 
@@ -39,6 +48,16 @@ async function submitForm() {
 </script>
 
 <template>
+  <!-- Delete Dialog -->
+  <DeleteDialog
+    v-model="dialogDelete"
+    :loading="deleteLoading"
+    :title="deleteTitle"
+    @cancel="dialogDelete = false"
+    @delete="emit('delete')"
+  >
+  </DeleteDialog>
+
   <v-dialog v-model="value" :max-width="comments ? '80vw' : '60vw'">
     <v-container>
       <v-row>
@@ -49,7 +68,7 @@ async function submitForm() {
                 <slot></slot>
               </v-card-text>
               <v-card-actions class="ma-2">
-                <v-btn v-if="enableDelete" color="error" variant="outlined" @click="emit('delete')"> Delete</v-btn>
+                <v-btn v-if="enableDelete" color="error" variant="outlined" @click="dialogDelete = true"> Delete</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="grey-darken-1" variant="text" @click="emit('cancel')"> Cancel</v-btn>
                 <v-btn v-if="enableSave" color="primary-darken-1" variant="outlined" type="submit"> Save</v-btn>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import CRUDDialog from '@/components/CRUDDialog.vue'
 import DataTable from '@/components/DataTable.vue'
-import DeleteDialog from '@/components/DeleteDialog.vue'
-import MyDialog from '@/components/MyDialog.vue'
 import TaskActivityList from '@/components/TaskActivityList.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
@@ -42,9 +41,7 @@ const headers = [
 ]
 
 // Dialogs
-// Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
-const dialogDelete = ref(false)
 const defaultItem: Item = { title: '', status: undefined, desc: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
@@ -53,7 +50,7 @@ const selectedItemOwnerId = ref<number | undefined>(undefined)
 const { user } = storeToRefs(useAuthStore())
 const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Task: ${selectedItemId.value}` : 'New Task'))
-const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
+const dialogDeleteTitle = computed(() => `Are you sure you want to delete task: ${selectedItemId.value}?`)
 const { taskStatus } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
@@ -62,7 +59,6 @@ watch(dialog, (value) => value || reset())
 const reset = () => {
   console.log('reset')
   dialog.value = false
-  dialogDelete.value = false
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
@@ -95,10 +91,6 @@ const updateItemDialog = ({ id, status, title, desc, created_by_object }: Item) 
   selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
 }
-const deleteItemDialog = () => {
-  console.debug('deleting...', selectedItemId)
-  dialogDelete.value = true
-}
 
 const activities = ref([
   'Listened to a podcast on Gold and its impact on Analyze Political Impact on Commodities.',
@@ -112,17 +104,19 @@ const activities = ref([
 
 <template>
   <div>
-    <!--Insert / Update Dialog -->
-    <MyDialog
+    <!-- CRUD Dialog -->
+    <CRUDDialog
       v-model="dialog"
       :loading="insertLoading || updateLoading || deleteLoading"
+      :delete-loading="deleteLoading"
       :title="dialogTitle"
+      :delete-title="dialogDeleteTitle"
       :enable-form="isNewItem || isItemOwner"
       :enable-save="isNewItem || isItemOwner"
       :enable-delete="isItemOwner"
       :comments="!isNewItem"
       @save="saveItem"
-      @delete="deleteItemDialog"
+      @delete="deleteItem"
       @cancel="reset"
     >
       <v-container>
@@ -143,17 +137,7 @@ const activities = ref([
       <template #footer v-if="!isNewItem">
         <TaskActivityList :activities="activities" />
       </template>
-    </MyDialog>
-
-    <!-- Delete Dialog -->
-    <DeleteDialog
-      v-model="dialogDelete"
-      :loading="deleteLoading"
-      :title="dialogDeleteTitle"
-      @cancel="dialogDelete = false"
-      @delete="deleteItem"
-    >
-    </DeleteDialog>
+    </CRUDDialog>
 
     <!-- DataTable -->
     <DataTable
