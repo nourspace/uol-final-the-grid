@@ -10,12 +10,12 @@ const { loggedIn, user } = storeToRefs(auth)
 const links = computed(() => [
   ...(loggedIn.value
     ? [
-        { title: 'Assets', name: 'assets' },
+        { title: 'Topics', name: 'topics' },
         { title: 'Activities', name: 'activities' },
         { title: 'Tasks', name: 'tasks' },
       ]
     : []),
-  { title: 'Test', name: 'test' },
+  // { title: 'Test', name: 'test' },
   { title: 'About', name: 'about' },
 ])
 
@@ -33,9 +33,9 @@ watch(loggedIn, () => {
 </script>
 
 <template>
-  <v-app id="inspire">
+  <v-app id="the-grid">
     <v-app-bar class="px-3" color="white" flat density="default" extended>
-      <router-link to="/">
+      <router-link to="/" class="mt-4 text-decoration-none">
         <v-avatar color="red-darken-3" size="64">TheGrid</v-avatar>
       </router-link>
       <v-spacer></v-spacer>
@@ -49,7 +49,7 @@ watch(loggedIn, () => {
           {{ user.username }}
         </v-avatar>
       </template>
-      <v-btn v-else variant="tonal" color="primary" :to="{ name: 'login' }"> Login</v-btn>
+      <v-btn v-else variant="tonal" color="primary" :to="{ name: 'login' }"> Log in</v-btn>
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">

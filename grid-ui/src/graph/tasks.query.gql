@@ -3,7 +3,14 @@
 
 query AllTasks($search: String) {
   items: tasks(
-    where: { _or: [{ title: { _ilike: $search } }, { desc: { _ilike: $search } }] }
+    where: {
+      _or: [
+        { title: { _ilike: $search } }
+        { desc: { _ilike: $search } }
+        #  { status: { _ilike: $search } } # Todo (Nour): can't filter on status
+        { created_by_object: { username: { _ilike: $search } } }
+      ]
+    }
     order_by: { created_at: desc }
   ) {
     ...TaskFragment

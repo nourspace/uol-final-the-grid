@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import DeleteDialog from '@/components/DeleteDialog.vue'
-import MyDialog from '@/components/MyDialog.vue'
+import CRUDDialog from '@/components/CRUDDialog.vue'
+import DataTable from '@/components/DataTable.vue'
+import TaskActivityList from '@/components/TaskActivityList.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
-import { AllTasks } from '@/graph/tasks.query.gql'
-import { StreamTasks } from '@/graph/tasks.subscription.gql'
 import {
   DeleteTask as deleteMutation,
   InsertTask as insertMutation,
   UpdateTask as updateMutation,
 } from '@/graph/tasks.mutation.gql'
+import { AllTasks } from '@/graph/tasks.query.gql'
+import { StreamTasks } from '@/graph/tasks.subscription.gql'
+import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
-import { chipColor, getInitials } from '@/utils'
-import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -22,13 +22,13 @@ interface Item {
   status?: string
   title: string
   desc: string
+  created_by_object?: { id: number }
 }
 
 // List
 const searchTerm = ref('')
 const queryVariables = computed(() => ({ search: `%${searchTerm.value}%` }))
 const { items: tasks, loading, error } = useListQuery({ query: AllTasks, queryVariables, subscription: StreamTasks })
-let itemsPerPage = 50
 
 const headers = [
   { title: 'ID', align: 'start', key: 'id' },
@@ -38,31 +38,31 @@ const headers = [
   { title: 'By', align: 'end', key: 'created_by' },
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
-  { title: 'Actions', key: 'actions', sortable: false },
 ]
 
 // Dialogs
-// Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
-const dialogDelete = ref(false)
-const defaultItem: Item = { title: '', desc: '' }
-const editedItem = ref<Item>(defaultItem)
+const defaultItem: Item = { title: '', status: undefined, desc: '' }
+const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
+const isNewItem = computed(() => !selectedItemId.value)
+const selectedItemOwnerId = ref<number | undefined>(undefined)
+const { user } = storeToRefs(useAuthStore())
+const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Task: ${selectedItemId.value}` : 'New Task'))
-const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
+const dialogDeleteTitle = computed(() => `Are you sure you want to delete task: ${selectedItemId.value}?`)
 const { taskStatus } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
 watch(dialog, (value) => value || reset())
-watch(dialogDelete, (value) => value || reset())
 
 const reset = () => {
   console.log('reset')
   dialog.value = false
-  dialogDelete.value = false
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
+    selectedItemOwnerId.value = undefined
   })
 }
 
@@ -82,18 +82,14 @@ const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, delete
 const saveItem = () => {
   console.debug('saveItem', { editedItem: editedItem.value })
   // insert or update
-  selectedItemId.value ? updateItem() : insertItem()
+  isNewItem.value ? insertItem() : updateItem()
 }
-const updateItemDialog = ({ id, status, title, desc }: Item) => {
+const updateItemDialog = ({ id, status, title, desc, created_by_object }: Item) => {
   console.debug('updating...', id)
   editedItem.value = { status, title, desc }
   selectedItemId.value = id
+  selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
-}
-const deleteItemDialog = ({ id }: Item) => {
-  console.debug('deleting...', id)
-  selectedItemId.value = id
-  dialogDelete.value = true
 }
 
 const activities = ref([
@@ -108,22 +104,28 @@ const activities = ref([
 
 <template>
   <div>
-    <!--Insert / Update Dialog -->
-    <MyDialog
+    <!-- CRUD Dialog -->
+    <CRUDDialog
       v-model="dialog"
-      :loading="insertLoading || updateLoading"
+      :loading="insertLoading || updateLoading || deleteLoading"
+      :delete-loading="deleteLoading"
       :title="dialogTitle"
-      :comments="!!selectedItemId"
+      :delete-title="dialogDeleteTitle"
+      :enable-form="isNewItem || isItemOwner"
+      :enable-save="isNewItem || isItemOwner"
+      :enable-delete="isItemOwner"
+      :comments="!isNewItem"
+      @save="saveItem"
+      @delete="deleteItem"
       @cancel="reset"
-      @ok="saveItem"
     >
       <v-container>
         <v-row>
-          <v-col cols="12">
-            <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Type" />
-          </v-col>
-          <v-col cols="12">
+          <v-col cols="9">
             <v-text-field hide-details v-model="editedItem.title" label="Title" />
+          </v-col>
+          <v-col cols="3">
+            <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Status" />
           </v-col>
           <v-col cols="12">
             <v-textarea hide-details v-model="editedItem.desc" label="Desc" />
@@ -131,78 +133,30 @@ const activities = ref([
         </v-row>
       </v-container>
 
-      <template #footer>
-        <h3 class="bg-white rounded-lg pa-2 mb-1">Activities</h3>
-        <v-sheet ref="container" rounded class="pa-0 mb-4 flex-grow-1 d-flex">
-          <v-virtual-scroll ref="scroll" :items="activities" :max-height="200" item-height="64">
-            <template v-slot:default="{ item: activity }">
-              <v-list-item :title="activity" class="mb-2 border-b" lines="one">
-                <template #prepend>
-                  <v-avatar size="32" :color="chipColor(activity)">{{ getInitials(activity) }}</v-avatar>
-                </template>
-              </v-list-item>
-            </template>
-          </v-virtual-scroll>
-        </v-sheet>
+      <!-- Activities list -->
+      <template #footer v-if="!isNewItem">
+        <TaskActivityList :activities="activities" />
       </template>
-    </MyDialog>
-
-    <!-- Delete Dialog -->
-    <DeleteDialog
-      v-model="dialogDelete"
-      :loading="deleteLoading"
-      :title="dialogDeleteTitle"
-      @cancel="reset"
-      @ok="deleteItem"
-    >
-    </DeleteDialog>
+    </CRUDDialog>
 
     <!-- DataTable -->
-    <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
+    <DataTable
       :headers="headers"
       :items="tasks"
       :loading="loading"
-      density="comfortable"
-      fixed-header
-      height="70vh"
-      class="elevation-1"
+      :error="error"
+      v-model:search-term="searchTerm"
+      new-label="New Task"
+      search-label="Search Tasks"
+      search-placeholder="Type task title, description, or username"
+      @click:row="updateItemDialog"
+      @click:new="dialog = true"
     >
-      <template v-slot:top>
-        <v-toolbar height="80" extension-height="80">
-          <v-text-field
-            clearable
-            @click:clear="searchTerm = ''"
-            hide-details
-            variant="outlined"
-            density="comfortable"
-            v-model="searchTerm"
-            label="Search Tasks"
-            placeholder="Type task title or desc"
-            class="mx-4"
-            style="flex: 3"
-          />
-          <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="dialog = true">New Task</v-btn>
-          <template #extension v-if="error">
-            <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
-          </template>
-        </v-toolbar>
+      <template #info-tool-tip>
+        <p><b>Tasks</b>: Progress tracking for article and research paper development</p>
+        <p>[WIP] Information on how to add tasks and link them to activities.</p>
       </template>
-      <template v-slot:item.created_by="{ item }">
-        {{ item.raw.created_by_object.username }}
-      </template>
-      <template v-slot:item.created_at="{ item }">
-        {{ new Date(item.raw.created_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.updated_at="{ item }">
-        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-        <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
-      </template>
-    </v-data-table-server>
+    </DataTable>
   </div>
 </template>
 

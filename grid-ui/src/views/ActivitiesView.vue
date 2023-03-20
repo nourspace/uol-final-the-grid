@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DeleteDialog from '@/components/DeleteDialog.vue'
-import MyDialog from '@/components/MyDialog.vue'
+import CRUDDialog from '@/components/CRUDDialog.vue'
+import DataTable from '@/components/DataTable.vue'
 import { useAssetsMini } from '@/composables/assets'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
@@ -13,9 +13,9 @@ import { AllActivities } from '@/graph/activities.query.gql'
 import { StreamActivities } from '@/graph/activities.subscription.gql'
 import type { Activity, Asset } from '@/services/activties'
 import { setActivityAssets } from '@/services/activties'
+import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
 import { chipColor } from '@/utils'
-import { mdiDelete, mdiPencil } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 
@@ -27,45 +27,45 @@ const {
   loading,
   error,
 } = useListQuery({ query: AllActivities, queryVariables, subscription: StreamActivities })
-let itemsPerPage = 50
 
 const headers = [
   { title: 'ID', align: 'start', sortable: false, key: 'id' },
   { title: 'Type', align: 'start', key: 'type' },
-  { title: 'Assets', align: 'start', key: 'assets' },
+  { title: 'Topics', align: 'start', key: 'assets' },
   { title: 'Notes', align: 'start', key: 'notes' },
   { title: 'Source', align: 'start', key: 'source' },
   { title: 'By', align: 'end', key: 'created_by' },
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
-  { title: 'Actions', key: 'actions', sortable: false },
 ]
 
 // Dialogs
-// Todo (Nour): [dx] refactor dialogs
 const dialog = ref(false)
-const dialogDelete = ref(false)
 const defaultItem: Activity = { type: undefined, notes: '', source: '' }
-const editedItem = ref<Activity>(defaultItem)
-const editedItemAssets = ref<Asset[]>([])
+const editedItem = ref<Activity>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
-const assetsSearchTerm = ref('')
+const isNewItem = computed(() => !selectedItemId.value)
+const selectedItemOwnerId = ref<number | undefined>(undefined)
+const { user } = storeToRefs(useAuthStore())
+const isItemOwner = computed(() => !!selectedItemOwnerId.value && selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Activity: ${selectedItemId.value}` : 'New Activity'))
-const dialogDeleteTitle = computed(() => `Are you sure you want to delete this item: ${selectedItemId.value}?`)
+const dialogDeleteTitle = computed(() => `Are you sure you want to delete activity: ${selectedItemId.value}?`)
 const { activityType } = storeToRefs(useEnumsStore())
+
+const editedItemAssets = ref<Asset[]>([])
+const assetsSearchTerm = ref('')
 
 // Useful for when user clicks away and closes the dialogs
 watch(dialog, (value) => value || reset())
-watch(dialogDelete, (value) => value || reset())
 
 const reset = () => {
   console.log('reset')
   dialog.value = false
-  dialogDelete.value = false
   nextTick(() => {
     editedItem.value = Object.assign({}, defaultItem)
-    editedItemAssets.value = []
     selectedItemId.value = undefined
+    selectedItemOwnerId.value = undefined
+    editedItemAssets.value = []
   })
 }
 
@@ -112,39 +112,41 @@ const saveItem = () => {
   // insert or update
   selectedItemId.value ? updateItem() : insertItem()
 }
-const updateItemDialog = ({ id, type, notes, source, activity_assets }: Activity) => {
+const updateItemDialog = ({ id, type, notes, source, activity_assets, created_by_object }: Activity) => {
   console.debug('updating...', id)
   editedItem.value = { type, notes, source }
   editedItemAssets.value = activity_assets ? activity_assets.map(({ asset }) => asset) : []
   selectedItemId.value = id
+  selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
-}
-const deleteItemDialog = ({ id }: Activity) => {
-  console.debug('deleting...', id)
-  selectedItemId.value = id
-  dialogDelete.value = true
 }
 </script>
 
 <template>
   <div>
-    <!--Insert / Update Dialog -->
-    <MyDialog
+    <!-- CRUD Dialog -->
+    <CRUDDialog
       v-model="dialog"
-      :loading="insertLoading || updateLoading"
+      :loading="insertLoading || updateLoading || deleteLoading"
+      :delete-loading="deleteLoading"
       :title="dialogTitle"
-      :comments="!!selectedItemId"
+      :delete-title="dialogDeleteTitle"
+      :enable-form="isNewItem || isItemOwner"
+      :enable-save="isNewItem || isItemOwner"
+      :enable-delete="isItemOwner"
+      :comments="!isNewItem"
+      @save="saveItem"
+      @delete="preDeleteItem"
       @cancel="reset"
-      @ok="saveItem"
     >
       <v-container>
         <v-row>
-          <v-col cols="12">
+          <v-col cols="6">
             <v-select hide-details :items="activityType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
           </v-col>
-          <v-col cols="12">
+          <v-col cols="6">
             <v-autocomplete
-              label="Assets"
+              label="Topics"
               v-model="editedItemAssets"
               v-model:search.trim="assetsSearchTerm"
               :loading="assetsSearchLoading"
@@ -172,55 +174,26 @@ const deleteItemDialog = ({ id }: Activity) => {
           </v-col>
         </v-row>
       </v-container>
-    </MyDialog>
-
-    <!-- Delete Dialog -->
-    <DeleteDialog
-      v-model="dialogDelete"
-      :loading="deleteLoading"
-      :title="dialogDeleteTitle"
-      @cancel="reset"
-      @ok="preDeleteItem"
-    >
-    </DeleteDialog>
+    </CRUDDialog>
 
     <!-- DataTable -->
-    <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
+    <DataTable
       :headers="headers"
       :items="activities"
       :loading="loading"
-      density="comfortable"
-      fixed-header
-      height="70vh"
-      class="elevation-1"
+      :error="error"
+      v-model:search-term="searchTerm"
+      new-label="New Activity"
+      search-label="Search Activities"
+      search-placeholder="Type activity note, source, topic name, or username"
+      @click:row="updateItemDialog"
+      @click:new="dialog = true"
     >
-      <!-- Toolbar -->
-      <template v-slot:top>
-        <v-toolbar height="80" extension-height="80">
-          <v-text-field
-            clearable
-            @click:clear="searchTerm = ''"
-            hide-details
-            variant="outlined"
-            density="comfortable"
-            v-model="searchTerm"
-            label="Search Activities"
-            placeholder="Search in notes and sources"
-            class="mx-4"
-            style="flex: 3"
-          />
-          <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="dialog = true">New Activity</v-btn>
-          <template #extension v-if="error">
-            <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
-          </template>
-        </v-toolbar>
+      <template #info-tool-tip>
+        <p><b>Activities</b>: User actions associated with one or more topics</p>
+        <p>[WIP] Information on how to add activities and link them to topics and tasks.</p>
       </template>
-
-      <!-- Custom columns -->
-
-      <template v-slot:item.assets="{ item }">
+      <template #item.assets="{ item }">
         <v-chip
           v-for="{ asset } in item.raw.activity_assets"
           :key="asset.id"
@@ -231,25 +204,7 @@ const deleteItemDialog = ({ id }: Activity) => {
           >{{ asset.name }}
         </v-chip>
       </template>
-      <template v-slot:item.source="{ item }">
-        <div class="v-data-table__td__source">
-          <a :href="item.raw.source" target="_blank">{{ item.raw.source }}</a>
-        </div>
-      </template>
-      <template v-slot:item.created_by="{ item }">
-        {{ item.raw.created_by_object.username }}
-      </template>
-      <template v-slot:item.created_at="{ item }">
-        {{ new Date(item.raw.created_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.updated_at="{ item }">
-        {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon size="small" class="me-2" @click="updateItemDialog(item.raw)"> {{ mdiPencil }}</v-icon>
-        <v-icon size="small" @click="deleteItemDialog(item.raw)"> {{ mdiDelete }}</v-icon>
-      </template>
-    </v-data-table-server>
+    </DataTable>
   </div>
 </template>
 

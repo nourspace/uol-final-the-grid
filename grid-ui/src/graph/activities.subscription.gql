@@ -5,7 +5,15 @@ subscription StreamActivities($search: String!, $now: timestamptz) {
   stream: activities_stream(
     cursor: { initial_value: { created_at: $now }, ordering: ASC }
     batch_size: 5
-    where: { _or: [{ notes: { _ilike: $search } }, { source: { _ilike: $search } }] }
+    where: {
+      _or: [
+        { notes: { _ilike: $search } }
+        { source: { _ilike: $search } }
+        #  { type: { _ilike: $search } } # Todo (Nour): can't filter on types
+        { created_by_object: { username: { _ilike: $search } } }
+        { activity_assets: { asset: { name: { _ilike: $search } } } }
+      ]
+    }
   ) {
     ...ActivityListFragment
   }

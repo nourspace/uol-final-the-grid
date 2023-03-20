@@ -1,0 +1,19 @@
+.v-data-table__td__source,
+.v-data-table__td__url {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.v-data-table__td {
+  background: none !important;
+}
+
+tr.v-data-table__tr:hover {
+  background-color: #eee !important;
+  cursor: pointer;
+
+  td {
+  }
+}

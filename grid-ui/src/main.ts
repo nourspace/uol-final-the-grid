@@ -7,7 +7,7 @@ import apolloClient from '@/plugins/apolloClient'
 import vuetify from '@/plugins/vuetify'
 import router from '@/router'
 
-import '@/assets/main.css'
+import '@/assets/main.scss'
 import App from '@/App.vue'
 
 const app = createApp({
