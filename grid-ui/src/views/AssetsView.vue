@@ -51,8 +51,8 @@ const isNewItem = computed(() => !selectedItemId.value)
 const selectedItemOwnerId = ref<number | undefined>(undefined)
 const { user } = storeToRefs(useAuthStore())
 const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
-const dialogTitle = computed(() => (selectedItemId.value ? `Edit Asset: ${selectedItemId.value}` : 'New Asset'))
-const dialogDeleteTitle = computed(() => `Are you sure you want to delete asset: ${selectedItemId.value}?`)
+const dialogTitle = computed(() => (selectedItemId.value ? `Edit Topic: ${selectedItemId.value}` : 'New Topic'))
+const dialogDeleteTitle = computed(() => `Are you sure you want to delete topic: ${selectedItemId.value}?`)
 const { assetCategory } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
@@ -142,15 +142,15 @@ const updateItemDialog = ({ id, name, category, description, url, created_by_obj
       :loading="loading"
       :error="error"
       v-model:search-term="searchTerm"
-      new-label="New Asset"
-      search-label="Search Assets"
-      search-placeholder="Type asset name, description, URL, or username"
+      new-label="New Topic"
+      search-label="Search Topics"
+      search-placeholder="Type topic name, description, URL, or username"
       @click:row="updateItemDialog"
       @click:new="dialog = true"
     >
       <template #info-tool-tip>
-        <p><b>Assets</b>: Broad topics or specific subjects that activities and articles revolve around</p>
-        <p>[WIP] Information on how to add assets and link them to activities.</p>
+        <p><b>Topics</b>: Broad topics or specific subjects that activities and articles revolve around</p>
+        <p>[WIP] Information on how to add topics and link them to activities.</p>
       </template>
     </DataTable>
   </div>

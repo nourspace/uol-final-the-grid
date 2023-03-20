@@ -31,7 +31,7 @@ const {
 const headers = [
   { title: 'ID', align: 'start', sortable: false, key: 'id' },
   { title: 'Type', align: 'start', key: 'type' },
-  { title: 'Assets', align: 'start', key: 'assets' },
+  { title: 'Topics', align: 'start', key: 'assets' },
   { title: 'Notes', align: 'start', key: 'notes' },
   { title: 'Source', align: 'start', key: 'source' },
   { title: 'By', align: 'end', key: 'created_by' },
@@ -146,7 +146,7 @@ const updateItemDialog = ({ id, type, notes, source, activity_assets, created_by
           </v-col>
           <v-col cols="6">
             <v-autocomplete
-              label="Assets"
+              label="Topics"
               v-model="editedItemAssets"
               v-model:search.trim="assetsSearchTerm"
               :loading="assetsSearchLoading"
@@ -185,13 +185,13 @@ const updateItemDialog = ({ id, type, notes, source, activity_assets, created_by
       v-model:search-term="searchTerm"
       new-label="New Activity"
       search-label="Search Activities"
-      search-placeholder="Type activity note, source, asset name, or username"
+      search-placeholder="Type activity note, source, topic name, or username"
       @click:row="updateItemDialog"
       @click:new="dialog = true"
     >
       <template #info-tool-tip>
-        <p><b>Activities</b>: User actions associated with one or more assets</p>
-        <p>[WIP] Information on how to add activities and link them to assets and tasks.</p>
+        <p><b>Activities</b>: User actions associated with one or more topics</p>
+        <p>[WIP] Information on how to add activities and link them to topics and tasks.</p>
       </template>
       <template #item.assets="{ item }">
         <v-chip

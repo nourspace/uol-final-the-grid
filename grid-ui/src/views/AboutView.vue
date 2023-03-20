@@ -17,11 +17,11 @@ import { author, version } from '../../package.json'
             <h2 class="text-h5 text-center my-2">Core Concepts</h2>
             <ul>
               <li>
-                <span class="font-weight-black">Assets</span>: Broad topics or specific subjects that activities and
+                <span class="font-weight-black">Topics</span>: Broad topics or specific subjects that activities and
                 articles revolve around
               </li>
               <li>
-                <span class="font-weight-black">Activities</span>: User actions associated with one or more assets
+                <span class="font-weight-black">Activities</span>: User actions associated with one or more topics
               </li>
               <li>
                 <span class="font-weight-black">Tasks</span>: Progress tracking for article and research paper
@@ -32,7 +32,7 @@ import { author, version } from '../../package.json'
                 summaries, blog articles, or research papers
               </li>
               <li>
-                <span class="font-weight-black">Comments</span>: [not implemented] Text communication on assets,
+                <span class="font-weight-black">Comments</span>: [not implemented] Text communication on topics,
                 activities, tasks, and other entities
               </li>
             </ul>

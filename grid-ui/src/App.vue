@@ -10,7 +10,7 @@ const { loggedIn, user } = storeToRefs(auth)
 const links = computed(() => [
   ...(loggedIn.value
     ? [
-        { title: 'Assets', name: 'assets' },
+        { title: 'Topics', name: 'topics' },
         { title: 'Activities', name: 'activities' },
         { title: 'Tasks', name: 'tasks' },
       ]

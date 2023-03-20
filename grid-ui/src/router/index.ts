@@ -9,8 +9,8 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: HomeView },
     {
-      path: '/assets',
-      name: 'assets',
+      path: '/topics',
+      name: 'topics',
       meta: { requiresAuth: true },
       component: () => import('@/views/AssetsView.vue'),
     },
