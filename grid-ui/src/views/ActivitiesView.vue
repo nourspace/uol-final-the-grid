@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DataTable from '@/components/DataTable.vue'
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
 import { useAssetsMini } from '@/composables/assets'
@@ -13,8 +14,8 @@ import { AllActivities } from '@/graph/activities.query.gql'
 import { StreamActivities } from '@/graph/activities.subscription.gql'
 import type { Activity, Asset } from '@/services/activties'
 import { setActivityAssets } from '@/services/activties'
-import { useEnumsStore } from '@/stores/enums'
 import { useAuthStore } from '@/stores/auth'
+import { useEnumsStore } from '@/stores/enums'
 import { chipColor } from '@/utils'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
@@ -27,7 +28,6 @@ const {
   loading,
   error,
 } = useListQuery({ query: AllActivities, queryVariables, subscription: StreamActivities })
-let itemsPerPage = 50
 
 const headers = [
   { title: 'ID', align: 'start', sortable: false, key: 'id' },
@@ -193,72 +193,30 @@ const deleteItemDialog = () => {
     </DeleteDialog>
 
     <!-- DataTable -->
-    <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
+    <DataTable
       :headers="headers"
       :items="activities"
       :loading="loading"
-      density="comfortable"
-      fixed-header
-      height="70vh"
-      class="elevation-1"
+      :error="error"
+      v-model:search-term="searchTerm"
+      new-label="New Activity"
+      search-label="Search Activities"
+      search-placeholder="Type activity note, source, asset name, or username"
+      @click:row="updateItemDialog"
+      @click:new="dialog = true"
     >
-      <!-- Toolbar -->
-      <template v-slot:top>
-        <v-toolbar height="80" extension-height="80">
-          <v-text-field
-            clearable
-            @click:clear="searchTerm = ''"
-            hide-details
-            variant="outlined"
-            density="comfortable"
-            v-model="searchTerm"
-            label="Search Activities"
-            placeholder="Type activity note, source, asset name, or username"
-            class="mx-4"
-            style="flex: 3"
-          />
-          <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="dialog = true" variant="outlined">New Activity</v-btn>
-          <template #extension v-if="error">
-            <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
-          </template>
-        </v-toolbar>
+      <template v-slot:item.assets="{ item }">
+        <v-chip
+          v-for="{ asset } in item.raw.activity_assets"
+          :key="asset.id"
+          size="small"
+          class="mr-1 my-1"
+          variant="outlined"
+          :color="chipColor(asset.name)"
+          >{{ asset.name }}
+        </v-chip>
       </template>
-
-      <!-- Custom rows -->
-      <!-- rename to rowItem not to conflict with inner slots -->
-      <template v-slot:item="{ item: rowItem }: { item: any }">
-        <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="updateItemDialog(rowItem.raw)">
-          <!-- Custom columns -->
-          <template v-slot:item.assets="{ item }">
-            <v-chip
-              v-for="{ asset } in item.raw.activity_assets"
-              :key="asset.id"
-              size="small"
-              class="mr-1 my-1"
-              variant="outlined"
-              :color="chipColor(asset.name)"
-              >{{ asset.name }}
-            </v-chip>
-          </template>
-          <template v-slot:item.source="{ item }">
-            <div class="v-data-table__td__source">
-              <a :href="item.raw.source" target="_blank">{{ item.raw.source }}</a>
-            </div>
-          </template>
-          <template v-slot:item.created_by="{ item }">
-            {{ item.raw.created_by_object.username }}
-          </template>
-          <template v-slot:item.created_at="{ item }">
-            {{ new Date(item.raw.created_at).toLocaleDateString() }}
-          </template>
-          <template v-slot:item.updated_at="{ item }">
-            {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-          </template>
-        </v-data-table-row>
-      </template>
-    </v-data-table-server>
+    </DataTable>
   </div>
 </template>
 

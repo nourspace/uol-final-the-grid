@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DataTable from '@/components/DataTable.vue'
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import MyDialog from '@/components/MyDialog.vue'
 import TaskActivityList from '@/components/TaskActivityList.vue'
@@ -29,7 +30,6 @@ interface Item {
 const searchTerm = ref('')
 const queryVariables = computed(() => ({ search: `%${searchTerm.value}%` }))
 const { items: tasks, loading, error } = useListQuery({ query: AllTasks, queryVariables, subscription: StreamTasks })
-let itemsPerPage = 50
 
 const headers = [
   { title: 'ID', align: 'start', key: 'id' },
@@ -156,58 +156,19 @@ const activities = ref([
     </DeleteDialog>
 
     <!-- DataTable -->
-    <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
+    <DataTable
       :headers="headers"
       :items="tasks"
       :loading="loading"
-      density="comfortable"
-      fixed-header
-      height="70vh"
-      class="elevation-1"
+      :error="error"
+      v-model:search-term="searchTerm"
+      new-label="New Task"
+      search-label="Search Tasks"
+      search-placeholder="Type task title, description, or username"
+      @click:row="updateItemDialog"
+      @click:new="dialog = true"
     >
-      <!-- Toolbar -->
-      <template v-slot:top>
-        <v-toolbar height="80" extension-height="80">
-          <!-- Search field -->
-          <v-text-field
-            clearable
-            @click:clear="searchTerm = ''"
-            hide-details
-            variant="outlined"
-            density="comfortable"
-            v-model="searchTerm"
-            label="Search Tasks"
-            placeholder="Type task title, description, or username"
-            class="mx-4"
-            style="flex: 3"
-          />
-          <v-spacer></v-spacer>
-          <!-- Create new -->
-          <v-btn color="primary" dark @click="dialog = true" variant="outlined">New Task</v-btn>
-          <template #extension v-if="error">
-            <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
-          </template>
-        </v-toolbar>
-      </template>
-
-      <!-- Custom rows -->
-      <!-- rename to rowItem not to conflict with inner slots -->
-      <template v-slot:item="{ item: rowItem }: { item: any }">
-        <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="updateItemDialog(rowItem.raw)">
-          <!-- Custom columns -->
-          <template v-slot:item.created_by="{ item }">
-            {{ item.raw.created_by_object.username }}
-          </template>
-          <template v-slot:item.created_at="{ item }">
-            {{ new Date(item.raw.created_at).toLocaleDateString() }}
-          </template>
-          <template v-slot:item.updated_at="{ item }">
-            {{ new Date(item.raw.updated_at).toLocaleDateString() }}
-          </template>
-        </v-data-table-row>
-      </template>
-    </v-data-table-server>
+    </DataTable>
   </div>
 </template>
 
