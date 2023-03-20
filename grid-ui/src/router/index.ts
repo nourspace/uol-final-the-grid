@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/stores/auth"
+import { useAuthStore } from '@/stores/auth'
 import { createRouter, createWebHistory } from 'vue-router'
 import TestView from '@/views/TestView.vue'
 import AuthView from '@/views/AuthView.vue'
@@ -40,6 +40,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
     return next('/')
   }
+  // Todo (Nour): [dx/ux] redirect to home if user is logged in and tris to access auth pages
   next()
 })
 

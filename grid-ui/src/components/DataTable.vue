@@ -83,12 +83,12 @@ const _searchTerm = computed({
 
         <!-- Common custom columns -->
         <template v-slot:item.source="{ item }">
-          <div class="v-data-table__td__source">
+          <div class="v-data-table__td__source" @click.stop>
             <a :href="item.raw.source" target="_blank">{{ item.raw.source }}</a>
           </div>
         </template>
         <template v-slot:item.url="{ item }">
-          <div class="v-data-table__td__url">
+          <div class="v-data-table__td__url" @click.stop>
             <a :href="item.raw.url" target="_blank">{{ item.raw.url }}</a>
           </div>
         </template>
