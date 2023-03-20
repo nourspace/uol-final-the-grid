@@ -152,6 +152,10 @@ const activities = ref([
       @click:row="updateItemDialog"
       @click:new="dialog = true"
     >
+      <template #info-tool-tip>
+        <p><b>Tasks</b>: Progress tracking for article and research paper development</p>
+        <p>[WIP] Information on how to add tasks and link them to activities.</p>
+      </template>
     </DataTable>
   </div>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { mdiInformationOutline } from '@mdi/js'
 /**
  * Todo
  * - sort
@@ -63,9 +64,15 @@ const _searchTerm = computed({
           style="flex: 3"
         />
         <v-spacer></v-spacer>
+        <v-tooltip v-if="$slots['info-tool-tip']" location="top end">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" :icon="mdiInformationOutline" color="info"></v-btn>
+          </template>
+          <slot name="info-tool-tip"></slot>
+        </v-tooltip>
         <!-- Create new -->
         <v-btn color="primary" dark @click="emit('click:new')" variant="outlined">{{ newLabel }}</v-btn>
-        <template #extension v-if="error">
+        <template v-slot:extension v-if="error">
           <v-alert color="error" variant="outlined" class="mx-4" density="comfortable"> {{ error }}</v-alert>
         </template>
       </v-toolbar>

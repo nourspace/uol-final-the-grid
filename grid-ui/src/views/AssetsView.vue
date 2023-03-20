@@ -148,6 +148,10 @@ const updateItemDialog = ({ id, name, category, description, url, created_by_obj
       @click:row="updateItemDialog"
       @click:new="dialog = true"
     >
+      <template #info-tool-tip>
+        <p><b>Assets</b>: Broad topics or specific subjects that activities and articles revolve around</p>
+        <p>[WIP] Information on how to add assets and link them to activities.</p>
+      </template>
     </DataTable>
   </div>
 </template>

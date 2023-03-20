@@ -189,7 +189,11 @@ const updateItemDialog = ({ id, type, notes, source, activity_assets, created_by
       @click:row="updateItemDialog"
       @click:new="dialog = true"
     >
-      <template v-slot:item.assets="{ item }">
+      <template #info-tool-tip>
+        <p><b>Activities</b>: User actions associated with one or more assets</p>
+        <p>[WIP] Information on how to add activities and link them to assets and tasks.</p>
+      </template>
+      <template #item.assets="{ item }">
         <v-chip
           v-for="{ asset } in item.raw.activity_assets"
           :key="asset.id"
