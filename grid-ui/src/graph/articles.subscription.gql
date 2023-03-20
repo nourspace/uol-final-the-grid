@@ -1,0 +1,21 @@
+#import './articles.fragment.gql'
+
+subscription StreamArticles($search: String!, $now: timestamptz) {
+  # will get all the articles that have `created_at > now` in batches of 5 rows
+  stream: articles_stream(
+    cursor: { initial_value: { created_at: $now }, ordering: ASC }
+    batch_size: 5
+    where: {
+      _or: [
+        { title: { _ilike: $search } }
+        { summary: { _ilike: $search } }
+        { body: { _ilike: $search } }
+        #  { status: { _ilike: $search } } # Todo (Nour): can't filter on status
+        { created_by_object: { username: { _ilike: $search } } }
+      ]
+    }
+  ) {
+    ...ArticleFragment
+    ...CreatedByFragment
+  }
+}

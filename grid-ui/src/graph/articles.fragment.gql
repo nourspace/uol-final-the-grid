@@ -1,0 +1,20 @@
+#import './users.fragment.gql'
+
+fragment ArticleFragment on articles {
+  id
+  title
+  summary
+  body
+  status
+  type
+  url
+  created_by
+  created_at
+  updated_at
+}
+
+fragment CreatedByFragment on articles {
+  created_by_object {
+    ...MiniUserFragment
+  }
+}

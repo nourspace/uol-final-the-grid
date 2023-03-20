@@ -1,0 +1,19 @@
+#import './articles.fragment.gql'
+
+mutation InsertArticle($object: articles_insert_input!) {
+  item: insert_articles_one(object: $object) {
+    ...ArticleFragment
+  }
+}
+
+mutation UpdateArticle($id: Int!, $object: articles_set_input) {
+  item: update_articles_by_pk(pk_columns: {id: $id}, _set: $object) {
+    ...ArticleFragment
+  }
+}
+
+mutation DeleteArticle($id: Int!) {
+  item: delete_articles_by_pk(id: $id) {
+    id
+  }
+}

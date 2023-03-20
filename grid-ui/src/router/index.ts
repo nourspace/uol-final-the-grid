@@ -21,6 +21,7 @@ const router = createRouter({
       component: () => import('@/views/ActivitiesView.vue'),
     },
     { path: '/tasks', name: 'tasks', meta: { requiresAuth: true }, component: () => import('@/views/TasksView.vue') },
+    { path: '/articles', name: 'articles', meta: { requiresAuth: true }, component: () => import('@/views/ArticlesView.vue') },
     { path: '/test', name: 'test', component: TestView },
     { path: '/login', name: 'login', component: AuthView, props: { authType: 'login' } },
     { path: '/register', name: 'register', component: AuthView, props: { authType: 'register' } },

@@ -15,4 +15,12 @@ query AllEnums {
     value
     comment
   }
+  article_status {
+    value
+    comment
+  }
+  article_type {
+    value
+    comment
+  }
 }
