@@ -44,7 +44,7 @@ const headers = [
 
 // Dialogs
 const dialog = ref(false)
-const defaultItem: Item = { name: '', category: '', description: '', url: '' }
+const defaultItem: Item = { name: '', category: 'topic', description: '', url: '' }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
 const isNewItem = computed(() => !selectedItemId.value)

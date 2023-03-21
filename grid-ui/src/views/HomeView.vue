@@ -10,7 +10,7 @@ const { loggedIn, user } = storeToRefs(useAuthStore())
     <v-container>
       <v-row>
         <v-col cols="12" class="text-center">
-          <h1 class="text-h2 mb-10">Welcome to The Gird</h1>
+          <h1 class="text-h2 mb-10">Welcome to The Grid</h1>
           <div v-if="loggedIn">
             <p class="text-h4 mb-2">👋 {{ user.username }}</p>
             <p class="text-h6">

@@ -155,7 +155,7 @@ const activities = ref([
             <v-text-field hide-details v-model="editedItem.article_id" label="Article ID" />
           </v-col>
           <v-col cols="8" v-if="isNewItem">
-            <v-checkbox hide-details v-model="createNewArticle" label="Create new Article?" />
+            <v-checkbox hide-details v-model="createNewArticle" label="Create a new Article for this Task?" />
           </v-col>
           <v-col cols="4" v-if="isNewItem && createNewArticle">
             <v-select

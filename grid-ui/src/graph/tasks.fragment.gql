@@ -21,6 +21,11 @@ fragment TaskArticleFragment on tasks {
   article {
     id
     title
+    tasks {
+      id
+      title
+      status
+    }
   }
 }
 
