@@ -67,7 +67,7 @@ async function submitForm() {
               <v-card-text>
                 <slot></slot>
               </v-card-text>
-              <v-card-actions class="ma-2">
+              <v-card-actions class="ma-2 mt-n4">
                 <v-btn v-if="enableDelete" color="error" variant="outlined" @click="dialogDelete = true"> Delete</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="grey-darken-1" variant="text" @click="emit('cancel')"> Cancel</v-btn>

@@ -1,5 +1,4 @@
 #import './tasks.fragment.gql'
-#import './users.fragment.gql'
 
 query AllTasks($search: String) {
   items: tasks(
@@ -13,9 +12,6 @@ query AllTasks($search: String) {
     }
     order_by: { created_at: desc }
   ) {
-    ...TaskFragment
-    created_by_object {
-      ...MiniUserFragment
-    }
+    ...TaskListFragment
   }
 }

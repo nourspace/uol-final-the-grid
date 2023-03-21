@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CRUDDialog from '@/components/CRUDDialog.vue'
 import DataTable from '@/components/DataTable.vue'
-import ItemList from "@/components/ItemList.vue"
+import ItemList from '@/components/ItemList.vue'
 import { useCRUDMutations } from '@/composables/useCRUDMutations'
 import { useListQuery } from '@/composables/useListQuery'
 import {
@@ -11,22 +11,11 @@ import {
 } from '@/graph/articles.mutation.gql'
 import { AllArticles } from '@/graph/articles.query.gql'
 import { StreamArticles } from '@/graph/articles.subscription.gql'
+import type { Article, Task } from '@/services/articles'
 import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
-
-// Todo (Nour): [TS] maybe generate types
-interface Item {
-  id?: number
-  status?: string
-  type: string
-  title: string
-  summary: string
-  body: string
-  url: string
-  created_by_object?: { id: number }
-}
 
 // List
 const searchTerm = ref('')
@@ -51,8 +40,8 @@ const headers = [
 
 // Dialogs
 const dialog = ref(false)
-const defaultItem: Item = { title: '', summary: '', body: '', type: 'blog_post', status: undefined, url: '' }
-const editedItem = ref<Item>(Object.assign({}, defaultItem))
+const defaultItem: Article = { title: '', summary: '', body: '', type: 'blog_post', status: undefined, url: '' }
+const editedItem = ref<Article>(Object.assign({}, defaultItem))
 const selectedItemId = ref<number | undefined>(undefined)
 const isNewItem = computed(() => !selectedItemId.value)
 const selectedItemOwnerId = ref<number | undefined>(undefined)
@@ -61,6 +50,7 @@ const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Article: ${selectedItemId.value}` : 'New Article'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete article: ${selectedItemId.value}?`)
 const { articleStatus, articleType } = storeToRefs(useEnumsStore())
+const articleTasks = ref<string[]>([])
 
 // Useful for when user clicks away and closes the dialogs
 watch(dialog, (value) => value || reset())
@@ -93,22 +83,14 @@ const saveItem = () => {
   // insert or update
   isNewItem.value ? insertItem() : updateItem()
 }
-const updateItemDialog = ({ id, status, type, title, summary, body, url, created_by_object }: Item) => {
+const updateItemDialog = ({ id, status, type, title, summary, body, url, tasks, created_by_object }: Article) => {
   console.debug('updating...', id)
   editedItem.value = { status, type, title, summary, body, url }
   selectedItemId.value = id
   selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
+  articleTasks.value = tasks ? tasks.map((t: Task) => t.title): []
 }
-
-const tasks = ref([
-  'Listened to a podcast on Gold and its impact on Analyze Political Impact on Commodities.',
-  'Interviewed an expert on Research Crypto Mining in Top Countries and its relation to AI.',
-  "Researched Study AI's Impact on Environment using Gold.",
-  'Read the news about Gold and its impact on Research Crypto Mining in Top Countries.',
-  'Watched a video on Ethereum and its impact on Analyze Ethereum PoS Switch.',
-  'Researched Create Healthcare ETF using AI.',
-])
 </script>
 
 <template>
@@ -134,7 +116,13 @@ const tasks = ref([
             <v-text-field hide-details v-model="editedItem.title" label="Title" />
           </v-col>
           <v-col cols="6">
-            <v-select hide-details :items="articleType.map((c) => c.value)" v-model="editedItem.type" label="Type" />
+            <v-select
+              hide-details
+              :items="articleType.map((c) => c.value)"
+              v-model="editedItem.type"
+              label="Type"
+              density="comfortable"
+            />
           </v-col>
           <v-col cols="6">
             <v-select
@@ -142,13 +130,14 @@ const tasks = ref([
               :items="articleStatus.map((c) => c.value)"
               v-model="editedItem.status"
               label="Status"
+              density="comfortable"
             />
           </v-col>
           <v-col cols="12">
-            <v-text-field hide-details v-model="editedItem.url" label="URL" />
+            <v-text-field hide-details v-model="editedItem.url" label="URL" density="comfortable" />
           </v-col>
           <v-col cols="12">
-            <v-textarea hide-details v-model="editedItem.summary" label="Summary" />
+            <v-textarea hide-details v-model="editedItem.summary" label="Summary" rows="2" density="comfortable" />
           </v-col>
           <v-col cols="12">
             <v-textarea hide-details v-model="editedItem.body" label="Body" />
@@ -157,8 +146,8 @@ const tasks = ref([
       </v-container>
 
       <!-- Tasks list -->
-      <template #footer v-if="!isNewItem">
-        <ItemList title="Tasks [mock data]" :items="tasks" />
+      <template #footer v-if="!isNewItem && articleTasks.length">
+        <ItemList title="Tasks" :items="articleTasks" />
       </template>
     </CRUDDialog>
 

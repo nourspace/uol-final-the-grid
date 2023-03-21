@@ -13,8 +13,22 @@ fragment ArticleFragment on articles {
   updated_at
 }
 
-fragment CreatedByFragment on articles {
+fragment ArticleCreatedByFragment on articles {
   created_by_object {
     ...MiniUserFragment
   }
+}
+
+fragment ArticleTasksFragment on articles {
+  tasks {
+    id
+    title
+    status
+  }
+}
+
+fragment ArticleListFragment on articles {
+  ...ArticleFragment
+  ...ArticleCreatedByFragment
+  ...ArticleTasksFragment
 }

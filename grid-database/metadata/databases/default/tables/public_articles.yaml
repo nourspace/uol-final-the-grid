@@ -5,6 +5,14 @@ object_relationships:
   - name: created_by_object
     using:
       foreign_key_constraint_on: created_by
+array_relationships:
+  - name: tasks
+    using:
+      foreign_key_constraint_on:
+        column: article_id
+        table:
+          name: tasks
+          schema: public
 insert_permissions:
   - role: user
     permission:

@@ -10,7 +10,7 @@ fragment ActivityFragment on activities {
   updated_at
 }
 
-fragment CreatedByFragment on activities {
+fragment ActivityCreatedByFragment on activities {
   created_by_object {
     ...MiniUserFragment
   }
@@ -27,6 +27,6 @@ fragment ActivityAssetsFragment on activities {
 
 fragment ActivityListFragment on activities {
   ...ActivityFragment
-  ...CreatedByFragment
+  ...ActivityCreatedByFragment
   ...ActivityAssetsFragment
 }

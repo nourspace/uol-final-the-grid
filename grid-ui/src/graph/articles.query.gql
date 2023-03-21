@@ -13,7 +13,6 @@ query AllArticles($search: String) {
     }
     order_by: { created_at: desc }
   ) {
-    ...ArticleFragment
-    ...CreatedByFragment
+    ...ArticleListFragment
   }
 }

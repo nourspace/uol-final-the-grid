@@ -11,6 +11,7 @@ import {
 } from '@/graph/tasks.mutation.gql'
 import { AllTasks } from '@/graph/tasks.query.gql'
 import { StreamTasks } from '@/graph/tasks.subscription.gql'
+import { insertArticle } from '@/services/articles'
 import { useAuthStore } from '@/stores/auth'
 import { useEnumsStore } from '@/stores/enums'
 import { storeToRefs } from 'pinia'
@@ -22,6 +23,7 @@ interface Item {
   status?: string
   title: string
   desc: string
+  article_id?: number
   created_by_object?: { id: number }
 }
 
@@ -36,14 +38,17 @@ const headers = [
   { title: 'Title', align: 'start', key: 'title' },
   { title: 'Desc', align: 'start', key: 'desc' },
   { title: 'By', align: 'end', key: 'created_by' },
+  { title: 'Article', align: 'end', key: 'article' },
   { title: 'Created', align: 'end', key: 'created_at' },
   { title: 'Updated', align: 'end', key: 'updated_at' },
 ]
 
 // Dialogs
 const dialog = ref(false)
-const defaultItem: Item = { title: '', status: undefined, desc: '' }
+const defaultItem: Item = { title: '', status: undefined, desc: '', article_id: undefined }
 const editedItem = ref<Item>(Object.assign({}, defaultItem))
+const createNewArticle = ref(false)
+const newArticleType = ref('blog_post')
 const selectedItemId = ref<number | undefined>(undefined)
 const isNewItem = computed(() => !selectedItemId.value)
 const selectedItemOwnerId = ref<number | undefined>(undefined)
@@ -51,7 +56,7 @@ const { user } = storeToRefs(useAuthStore())
 const isItemOwner = computed(() => selectedItemOwnerId.value == user.value.id)
 const dialogTitle = computed(() => (selectedItemId.value ? `Edit Task: ${selectedItemId.value}` : 'New Task'))
 const dialogDeleteTitle = computed(() => `Are you sure you want to delete task: ${selectedItemId.value}?`)
-const { taskStatus } = storeToRefs(useEnumsStore())
+const { taskStatus, articleType } = storeToRefs(useEnumsStore())
 
 // Useful for when user clicks away and closes the dialogs
 watch(dialog, (value) => value || reset())
@@ -63,6 +68,8 @@ const reset = () => {
     editedItem.value = Object.assign({}, defaultItem)
     selectedItemId.value = undefined
     selectedItemOwnerId.value = undefined
+    createNewArticle.value = false
+    newArticleType.value = 'blog_post'
   })
 }
 
@@ -79,14 +86,30 @@ const { insertItem, insertLoading, updateItem, updateLoading, deleteItem, delete
 
 // Dialog functions
 
+const preInsertItem = async () => {
+  loading.value = true
+  if (createNewArticle.value) {
+    try {
+      const article = await insertArticle({
+        status: 'in_progress',
+        type: 'blog_post',
+        title: `Task: ${editedItem.value.title}`,
+      })
+      editedItem.value.article_id = article.id
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  insertItem()
+}
 const saveItem = () => {
   console.debug('saveItem', { editedItem: editedItem.value })
   // insert or update
-  isNewItem.value ? insertItem() : updateItem()
+  isNewItem.value ? preInsertItem() : updateItem()
 }
-const updateItemDialog = ({ id, status, title, desc, created_by_object }: Item) => {
+const updateItemDialog = ({ id, status, title, desc, article_id, created_by_object }: Item) => {
   console.debug('updating...', id)
-  editedItem.value = { status, title, desc }
+  editedItem.value = { status, title, desc, article_id }
   selectedItemId.value = id
   selectedItemOwnerId.value = created_by_object?.id
   dialog.value = true
@@ -121,11 +144,26 @@ const activities = ref([
     >
       <v-container>
         <v-row>
-          <v-col cols="9">
+          <v-col cols="8">
             <v-text-field hide-details v-model="editedItem.title" label="Title" />
           </v-col>
-          <v-col cols="3">
+          <v-col cols="4">
             <v-select hide-details :items="taskStatus.map((c) => c.value)" v-model="editedItem.status" label="Status" />
+          </v-col>
+          <!-- Add articles section -->
+          <v-col cols="8" v-if="!isNewItem">
+            <v-text-field hide-details v-model="editedItem.article_id" label="Article ID" />
+          </v-col>
+          <v-col cols="8" v-if="isNewItem">
+            <v-checkbox hide-details v-model="createNewArticle" label="Create new Article?" />
+          </v-col>
+          <v-col cols="4" v-if="isNewItem && createNewArticle">
+            <v-select
+              hide-details
+              :items="articleType.map((c) => c.value)"
+              v-model="newArticleType"
+              label="Article type"
+            />
           </v-col>
           <v-col cols="12">
             <v-textarea hide-details v-model="editedItem.desc" label="Desc" />
@@ -155,6 +193,9 @@ const activities = ref([
       <template #info-tool-tip>
         <p><b>Tasks</b>: Progress tracking for article and research paper development</p>
         <p>[WIP] Information on how to add tasks and link them to activities.</p>
+      </template>
+      <template #item.article="{ item }">
+        {{ item.raw.article && item.raw.article.title }}
       </template>
     </DataTable>
   </div>

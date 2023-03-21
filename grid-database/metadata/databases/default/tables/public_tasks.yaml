@@ -23,6 +23,7 @@ insert_permissions:
       set:
         created_by: x-hasura-User-Id
       columns:
+        - article_id
         - desc
         - status
         - title
@@ -30,18 +31,20 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - article_id
+        - created_at
         - created_by
-        - id
         - desc
+        - id
         - status
         - title
-        - created_at
         - updated_at
       filter: {}
 update_permissions:
   - role: user
     permission:
       columns:
+        - article_id
         - desc
         - status
         - title

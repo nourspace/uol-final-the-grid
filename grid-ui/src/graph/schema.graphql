@@ -407,6 +407,32 @@ type articles {
     published_at: date
     status: article_status_enum!
     summary: String
+    "An array relationship"
+    tasks(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): [tasks!]!
+    "An aggregate relationship"
+    tasks_aggregate(
+        "distinct select on columns"
+        distinct_on: [tasks_select_column!],
+        "limit the number of rows returned"
+        limit: Int,
+        "skip the first n rows. Use only with order_by"
+        offset: Int,
+        "sort the rows by one or more columns"
+        order_by: [tasks_order_by!],
+        "filter the rows returned"
+        where: tasks_bool_exp
+    ): tasks_aggregate!
     title: String!
     type: article_type_enum!
     updated_at: timestamptz!
@@ -2224,6 +2250,9 @@ type task_status_mutation_response {
 
 "columns and relationships of \"tasks\""
 type tasks {
+    "An object relationship"
+    article: articles
+    article_id: Int
     created_at: timestamptz!
     created_by: Int!
     "An object relationship"
@@ -2284,12 +2313,14 @@ type tasks_aggregate_fields {
 
 "aggregate avg on columns"
 type tasks_avg_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
 
 "aggregate max on columns"
 type tasks_max_fields {
+    article_id: Int
     created_at: timestamptz
     created_by: Int
     desc: String
@@ -2300,6 +2331,7 @@ type tasks_max_fields {
 
 "aggregate min on columns"
 type tasks_min_fields {
+    article_id: Int
     created_at: timestamptz
     created_by: Int
     desc: String
@@ -2318,42 +2350,49 @@ type tasks_mutation_response {
 
 "aggregate stddev on columns"
 type tasks_stddev_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
 
 "aggregate stddev_pop on columns"
 type tasks_stddev_pop_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
 
 "aggregate stddev_samp on columns"
 type tasks_stddev_samp_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
 
 "aggregate sum on columns"
 type tasks_sum_fields {
+    article_id: Int
     created_by: Int
     id: Int
 }
 
 "aggregate var_pop on columns"
 type tasks_var_pop_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
 
 "aggregate var_samp on columns"
 type tasks_var_samp_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
 
 "aggregate variance on columns"
 type tasks_variance_fields {
+    article_id: Float
     created_by: Float
     id: Float
 }
@@ -3020,6 +3059,8 @@ enum tasks_constraint {
 "select columns of table \"tasks\""
 enum tasks_select_column {
     "column name"
+    article_id
+    "column name"
     created_at
     "column name"
     created_by
@@ -3037,6 +3078,8 @@ enum tasks_select_column {
 
 "update columns of table \"tasks\""
 enum tasks_update_column {
+    "column name"
+    article_id
     "column name"
     created_at
     "column name"
@@ -3860,6 +3903,8 @@ input articles_bool_exp {
     published_at: date_comparison_exp
     status: article_status_enum_comparison_exp
     summary: String_comparison_exp
+    tasks: tasks_bool_exp
+    tasks_aggregate: tasks_aggregate_bool_exp
     title: String_comparison_exp
     type: article_type_enum_comparison_exp
     updated_at: timestamptz_comparison_exp
@@ -3882,6 +3927,7 @@ input articles_insert_input {
     published_at: date
     status: article_status_enum
     summary: String
+    tasks: tasks_arr_rel_insert_input
     title: String
     type: article_type_enum
     updated_at: timestamptz
@@ -3914,6 +3960,13 @@ input articles_min_order_by {
     url: order_by
 }
 
+"input type for inserting object relation for remote table \"articles\""
+input articles_obj_rel_insert_input {
+    data: articles_insert_input!
+    "upsert condition"
+    on_conflict: articles_on_conflict
+}
+
 "on_conflict condition type for table \"articles\""
 input articles_on_conflict {
     constraint: articles_constraint!
@@ -3931,6 +3984,7 @@ input articles_order_by {
     published_at: order_by
     status: order_by
     summary: order_by
+    tasks_aggregate: tasks_aggregate_order_by
     title: order_by
     type: order_by
     updated_at: order_by
@@ -4600,6 +4654,7 @@ input tasks_arr_rel_insert_input {
 
 "order by avg() on columns of table \"tasks\""
 input tasks_avg_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
@@ -4609,6 +4664,8 @@ input tasks_bool_exp {
     _and: [tasks_bool_exp!]
     _not: tasks_bool_exp
     _or: [tasks_bool_exp!]
+    article: articles_bool_exp
+    article_id: Int_comparison_exp
     created_at: timestamptz_comparison_exp
     created_by: Int_comparison_exp
     created_by_object: users_bool_exp
@@ -4623,12 +4680,15 @@ input tasks_bool_exp {
 
 "input type for incrementing numeric columns in table \"tasks\""
 input tasks_inc_input {
+    article_id: Int
     created_by: Int
     id: Int
 }
 
 "input type for inserting data into table \"tasks\""
 input tasks_insert_input {
+    article: articles_obj_rel_insert_input
+    article_id: Int
     created_at: timestamptz
     created_by: Int
     created_by_object: users_obj_rel_insert_input
@@ -4642,6 +4702,7 @@ input tasks_insert_input {
 
 "order by max() on columns of table \"tasks\""
 input tasks_max_order_by {
+    article_id: order_by
     created_at: order_by
     created_by: order_by
     desc: order_by
@@ -4652,6 +4713,7 @@ input tasks_max_order_by {
 
 "order by min() on columns of table \"tasks\""
 input tasks_min_order_by {
+    article_id: order_by
     created_at: order_by
     created_by: order_by
     desc: order_by
@@ -4676,6 +4738,8 @@ input tasks_on_conflict {
 
 "Ordering options when selecting data from \"tasks\"."
 input tasks_order_by {
+    article: articles_order_by
+    article_id: order_by
     created_at: order_by
     created_by: order_by
     created_by_object: users_order_by
@@ -4694,6 +4758,7 @@ input tasks_pk_columns_input {
 
 "input type for updating data in table \"tasks\""
 input tasks_set_input {
+    article_id: Int
     created_at: timestamptz
     created_by: Int
     desc: String
@@ -4705,18 +4770,21 @@ input tasks_set_input {
 
 "order by stddev() on columns of table \"tasks\""
 input tasks_stddev_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
 
 "order by stddev_pop() on columns of table \"tasks\""
 input tasks_stddev_pop_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
 
 "order by stddev_samp() on columns of table \"tasks\""
 input tasks_stddev_samp_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
@@ -4731,6 +4799,7 @@ input tasks_stream_cursor_input {
 
 "Initial value of the column from where the streaming should start"
 input tasks_stream_cursor_value_input {
+    article_id: Int
     created_at: timestamptz
     created_by: Int
     desc: String
@@ -4742,6 +4811,7 @@ input tasks_stream_cursor_value_input {
 
 "order by sum() on columns of table \"tasks\""
 input tasks_sum_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
@@ -4757,18 +4827,21 @@ input tasks_updates {
 
 "order by var_pop() on columns of table \"tasks\""
 input tasks_var_pop_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
 
 "order by var_samp() on columns of table \"tasks\""
 input tasks_var_samp_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }
 
 "order by variance() on columns of table \"tasks\""
 input tasks_variance_order_by {
+    article_id: order_by
     created_by: order_by
     id: order_by
 }

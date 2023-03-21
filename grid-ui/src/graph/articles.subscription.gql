@@ -15,7 +15,6 @@ subscription StreamArticles($search: String!, $now: timestamptz) {
       ]
     }
   ) {
-    ...ArticleFragment
-    ...CreatedByFragment
+    ...ArticleListFragment
   }
 }
