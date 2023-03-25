@@ -13,6 +13,7 @@ const links = computed(() => [
         { title: 'Topics', name: 'topics' },
         { title: 'Activities', name: 'activities' },
         { title: 'Tasks', name: 'tasks' },
+        { title: 'Articles', name: 'articles' },
       ]
     : []),
   // { title: 'Test', name: 'test' },

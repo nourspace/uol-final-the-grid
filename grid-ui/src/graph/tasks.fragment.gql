@@ -1,9 +1,36 @@
+#import './users.fragment.gql'
+
 fragment TaskFragment on tasks {
   id
   title
   status
   desc
+  article_id
   created_by
   created_at
   updated_at
+}
+
+fragment TaskCreatedByFragment on tasks {
+  created_by_object {
+    ...MiniUserFragment
+  }
+}
+
+fragment TaskArticleFragment on tasks {
+  article {
+    id
+    title
+    tasks {
+      id
+      title
+      status
+    }
+  }
+}
+
+fragment TaskListFragment on tasks {
+  ...TaskFragment
+  ...TaskCreatedByFragment
+  ...TaskArticleFragment
 }

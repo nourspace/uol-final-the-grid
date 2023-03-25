@@ -4,6 +4,7 @@ CREATE TABLE asset_category (
 );
 INSERT INTO asset_category (value, comment) VALUES
   ('topic', 'Generic topic'),
+  ('country', 'Country or nation'),
   ('currency', 'Fiat or Bitcoin'),
   ('crypto', 'Cryptocurrency project'),
   ('other', 'Other category')

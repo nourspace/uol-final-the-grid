@@ -1,5 +1,7 @@
 SET check_function_bodies = false;
+
 DELETE FROM public.assets where id < 22;
+
 INSERT INTO public.assets (id, name, category, description, url, created_by ) VALUES
     (21, 'Bitcoin', 'currency', 'Bitcoin cryptocurrency', 'https://bitcoin.org/', 1),
     (2, 'Ethereum', 'crypto', 'Ethereum cryptocurrency', 'https://www.ethereum.org/', 1),

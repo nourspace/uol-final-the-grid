@@ -1,5 +1,4 @@
 #import './assets.fragment.gql'
-#import './users.fragment.gql'
 
 query AllAssets($search: String!) {
   items: assets(
@@ -14,10 +13,7 @@ query AllAssets($search: String!) {
     }
     order_by: { created_at: desc }
   ) {
-    ...AssetFragment
-    created_by_object {
-      ...MiniUserFragment
-    }
+    ...AssetListFragment
   }
 }
 

@@ -28,8 +28,8 @@ import { author, version } from '../../package.json'
                 development
               </li>
               <li>
-                <span class="font-weight-black">Articles</span>: [not implemented] The final output, such as reports,
-                summaries, blog articles, or research papers
+                <span class="font-weight-black">Articles</span>: The final output, such as reports, summaries, blog
+                articles, or research papers
               </li>
               <li>
                 <span class="font-weight-black">Comments</span>: [not implemented] Text communication on topics,

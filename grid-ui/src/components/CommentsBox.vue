@@ -38,7 +38,7 @@ onMounted(() => {
 
 <template>
   <v-sheet color="white" width="100%" height="100%" rounded elevation="12" class="pa-2 d-flex flex-column justify-end">
-      <v-card-title>Comments</v-card-title>
+      <v-card-title>Comments [mock data]</v-card-title>
     <v-sheet ref="container" class="pa-0 mb-4 flex-grow-1 d-flex">
       <v-virtual-scroll ref="scroll" :items="comments" :max-height="maxHeight" item-height="64">
         <template v-slot:default="{ item: comment }">

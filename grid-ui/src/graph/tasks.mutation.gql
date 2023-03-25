@@ -9,6 +9,7 @@ mutation InsertTask($object: tasks_insert_input!) {
 mutation UpdateTask($id: Int!, $object: tasks_set_input) {
   item: update_tasks_by_pk(pk_columns: {id: $id}, _set: $object) {
     ...TaskFragment
+    ...TaskArticleFragment
   }
 }
 

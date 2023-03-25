@@ -1,3 +1,66 @@
 table:
   name: articles
   schema: public
+object_relationships:
+  - name: created_by_object
+    using:
+      foreign_key_constraint_on: created_by
+array_relationships:
+  - name: tasks
+    using:
+      foreign_key_constraint_on:
+        column: article_id
+        table:
+          name: tasks
+          schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      set:
+        created_by: x-hasura-User-Id
+      columns:
+        - body
+        - published_at
+        - status
+        - summary
+        - title
+        - type
+        - url
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - body
+        - created_at
+        - created_by
+        - id
+        - published_at
+        - status
+        - summary
+        - title
+        - type
+        - updated_at
+        - url
+      filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - body
+        - published_at
+        - status
+        - summary
+        - title
+        - type
+        - url
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        created_by:
+          _eq: X-Hasura-User-Id

@@ -1,5 +1,4 @@
 #import './assets.fragment.gql'
-#import './users.fragment.gql'
 
 subscription StreamAssets($search: String!, $now: timestamptz) {
   # will get all the assets that have `created_at > now` in batches of 5 rows
@@ -16,9 +15,6 @@ subscription StreamAssets($search: String!, $now: timestamptz) {
       ]
     }
   ) {
-    ...AssetFragment
-    created_by_object {
-      ...MiniUserFragment
-    }
+    ...AssetListFragment
   }
 }
