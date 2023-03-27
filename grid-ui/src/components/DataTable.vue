@@ -81,7 +81,7 @@ const _searchTerm = computed({
     <!-- Custom rows -->
     <!-- rename to rowItem not to conflict with inner slots -->
     <template v-slot:item="{ item: rowItem }: { item: any }">
-      <v-data-table-row :item="rowItem" :key="`item_${rowItem.value}`" @click="emit('click:row', rowItem.raw)">
+      <v-data-table-row aria-label="item-row" :item="rowItem" :key="`item_${rowItem.value}`" @click="emit('click:row', rowItem.raw)">
         <!-- User custom columns to pass to inner v-data-table -->
         <!--  https://gist.github.com/loilo/73c55ed04917ecf5d682ec70a2a1b8e2 -->
         <template v-for="(_, name) in $slots" v-slot:[name]="slotData">

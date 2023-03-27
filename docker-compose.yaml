@@ -6,7 +6,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - grid-database/.env
+      - grid-database/.env.local
     volumes:
     - db_data:/var/lib/postgresql/data
 
@@ -16,7 +16,7 @@ services:
     ports:
     - "8080:8080"
     env_file:
-      - grid-database/.env
+      - grid-database/.env.local
     depends_on:
     - "postgres"
 
@@ -27,7 +27,7 @@ services:
     ports:
     - "3000:3000"
     env_file:
-      - grid-ui/.env
+      - grid-ui/.env.local
 
   auth:
     image: nourspace/grid-auth
@@ -36,7 +36,7 @@ services:
     ports:
     - "5050:5050"
     env_file:
-      - grid-auth/.env
+      - grid-auth/.env.local
   # Todo (Nour): Add console
 
 volumes:

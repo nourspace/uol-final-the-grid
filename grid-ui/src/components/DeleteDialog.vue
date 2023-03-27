@@ -24,9 +24,9 @@ const value = computed({
 </script>
 
 <template>
-  <v-dialog v-model="value" :max-width="width">
+  <v-dialog role="dialog" v-model="value" :max-width="width">
     <v-card :loading="loading">
-      <v-card-title class="text-h5">{{ title }}</v-card-title>
+      <v-card-title role="heading" class="text-h5">{{ title }}</v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="grey-darken-1" variant="text" @click="emit('cancel')"> Cancel </v-btn>

@@ -62,8 +62,9 @@ async function submitForm() {
     <v-container>
       <v-row>
         <v-col :cols="comments ? 8 : 8" :offset="comments ? 0 : 2">
-          <v-form ref="form" :disabled="!enableForm" @submit.prevent="submitForm">
-            <v-card :title="title" :loading="loading">
+          <v-form ref="form" role="form" :aria-label="title" :disabled="!enableForm" @submit.prevent="submitForm">
+            <v-card :loading="loading">
+              <v-card-title role="heading" class="text-h4">{{ title }}</v-card-title>
               <v-card-text>
                 <slot></slot>
               </v-card-text>
