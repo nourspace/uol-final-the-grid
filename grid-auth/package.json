@@ -1,13 +1,14 @@
 {
   "name": "grid-auth",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Authentication backend for The Grid",
   "author": "nourspace",
   "main": "dist/index.ts",
   "scripts": {
     "dev": "ts-node-dev ./src/index.ts",
     "start": "NODE_ENV=production NODE_OPTIONS=--enable-source-maps node ./dist/index.js",
-    "build": "rm -rf ./dist && tsc -p ."
+    "build": "rm -rf ./dist && tsc -p .",
+    "test:unit": "vitest"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -25,8 +26,11 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.13.0",
+    "@types/supertest": "^2.0.12",
+    "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vitest": "^0.29.7"
   }
 }
