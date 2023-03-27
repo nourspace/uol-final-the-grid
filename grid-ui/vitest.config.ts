@@ -13,6 +13,9 @@ export default mergeConfig(
       exclude: [...configDefaults.exclude, 'e2e/*'],
       root: fileURLToPath(new URL('./', import.meta.url)),
       setupFiles: ['./src/tests.setup.ts'],
+      deps: {
+        inline: ['vuetify']
+      }
     },
   }),
 )

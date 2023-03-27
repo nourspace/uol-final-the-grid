@@ -166,3 +166,5 @@ function clientErrorHandler(
     .status(500)
     .send({ error: ["Authentication failed. Please contact admin."] });
 }
+
+export default app;
