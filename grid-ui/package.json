@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@mdi/js": "^7.1.96",
+    "@pinia/testing": "^0.0.15",
     "@rollup/plugin-graphql": "^2.0.3",
     "@rushstack/eslint-patch": "^1.2.0",
     "@testing-library/jest-dom": "^5.16.5",
