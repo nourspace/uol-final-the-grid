@@ -8,24 +8,26 @@ services:
     env_file:
       - grid-database/.env.local
     volumes:
-    - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
   graphql-engine:
     image: hasura/graphql-engine:v2.18.0
     restart: always
     ports:
-    - "8080:8080"
+      - "8080:8080"
     env_file:
       - grid-database/.env.local
     depends_on:
-    - "postgres"
+      - "postgres"
+
+  # Todo (Nour): Add console service
 
   ui:
     image: nourspace/grid-ui
     build: ./grid-ui
     restart: always
     ports:
-    - "3000:3000"
+      - "3000:3000"
     env_file:
       - grid-ui/.env.local
 
@@ -34,11 +36,9 @@ services:
     build: ./grid-auth
     restart: always
     ports:
-    - "5050:5050"
+      - "5050:5050"
     env_file:
       - grid-auth/.env.local
-  # Todo (Nour): Add console
 
 volumes:
   db_data:
-
