@@ -6,39 +6,58 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - grid-database/.env.local
+      - grid-database/.env
     volumes:
-    - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
   graphql-engine:
     image: hasura/graphql-engine:v2.18.0
     restart: always
     ports:
-    - "8080:8080"
+      - "8080:8080"
     env_file:
-      - grid-database/.env.local
+      - grid-database/.env
     depends_on:
-    - "postgres"
+      - "postgres"
+
+  console:
+    image: grid-console
+    build:
+      context: ./grid-database
+      dockerfile: console.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+      - "9693:9693"
+    env_file:
+      - grid-database/.env
+    environment:
+      # Override as this would be container to container
+      HASURA_GRAPHQL_ENDPOINT: http://graphql-engine:8080
+      HASURA_GRAPHQL_CLI_ENVIRONMENT: skip-update-check
+    volumes:
+      - ./grid-database:/app
 
   ui:
-    image: nourspace/grid-ui
+    image: grid-ui
     build: ./grid-ui
-    restart: always
+    restart: unless-stopped
     ports:
-    - "3000:3000"
+      - "3000:3000"
     env_file:
-      - grid-ui/.env.local
+      - grid-ui/.env
 
   auth:
-    image: nourspace/grid-auth
+    image: grid-auth
     build: ./grid-auth
-    restart: always
+    restart: unless-stopped
     ports:
-    - "5050:5050"
+      - "5050:5050"
     env_file:
-      - grid-auth/.env.local
-  # Todo (Nour): Add console
+      - grid-auth/.env
+    environment:
+      # Override as this would be container to container
+      HASURA_GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
 
 volumes:
   db_data:
-
