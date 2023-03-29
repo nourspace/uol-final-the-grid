@@ -28,6 +28,7 @@ services:
     restart: unless-stopped
     ports:
       - "9090:9090"
+      - "9693:9693"
     env_file:
       - grid-database/.env
     environment:
