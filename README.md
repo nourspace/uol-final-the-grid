@@ -33,7 +33,9 @@ docker compose build
 # Start the services
 docker compose up -d
 
-# 
+# Check everything is running
+docker compose ps
+
 # Initialise database
 ./initialise-database.sh
 ```
@@ -47,4 +49,5 @@ Access the components
 
 ```shell
 docker compose down --volumes
+find . -name .env -delete
 ```

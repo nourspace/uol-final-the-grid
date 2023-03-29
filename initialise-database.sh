@@ -18,5 +18,5 @@ dockerhasura metadata apply
 dockerhasura --database-name default seed apply --file 1678399001253_users.sql
 dockerhasura --database-name default seed apply --file 1678393485908_assets.sql
 dockerhasura --database-name default seed apply --file 1678407536594_activities.sql
-dockerhasura --database-name default seed apply --file 1678408293369_tasks.sql
 dockerhasura --database-name default seed apply --file 1679339231541_articles.sql
+dockerhasura --database-name default seed apply --file 1678408293369_tasks.sql
