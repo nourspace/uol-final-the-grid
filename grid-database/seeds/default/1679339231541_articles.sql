@@ -9,4 +9,5 @@ VALUES (1, 'AI Healthcare ETF', 'Start of an article about Healthcare ETF using 
         'research_paper', 1),
        (3, 'Gold and its relation to Bitcoin mining', 'Comparison between gold and Bitcoin mining.', '', 'in_review',
         'news_report', 1);
+
 SELECT pg_catalog.setval('public.articles_id_seq', 4, true);

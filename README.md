@@ -20,6 +20,10 @@ Using Docker and Docker-Compose The Grid can be launched
 ### Setup
 
 ```shell
+# Clone the repo
+git clone https://github.com/nourspace/uol-final-the-grid.git grid
+cd grid
+
 # clone .env.example files
 ./clone-example-envs.sh
 
@@ -29,6 +33,7 @@ docker compose build
 # Start the services
 docker compose up -d
 
+# 
 # Initialise database
 ./initialise-database.sh
 ```
@@ -37,3 +42,9 @@ Access the components
 
 - UI: http://localhost:3000
 - Console: http://localhost:9090
+
+### Tear down
+
+```shell
+docker compose down --volumes
+```

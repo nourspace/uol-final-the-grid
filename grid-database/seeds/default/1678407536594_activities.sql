@@ -1,4 +1,6 @@
 SET check_function_bodies = false;
+
+DELETE FROM public.activity_asset where activity_id < 31;
 DELETE FROM public.activities where id < 31;
 
 INSERT INTO public.activities (id, "timestamp", type, notes, source, created_by)
@@ -35,7 +37,6 @@ VALUES
     (30, '2022-01-01 15:43:19', 'video', 'Watched a video on Ethereum and its impact on Analyze Ethereum PoS Switch', 'youtube.com/watch=333', 2);
 SELECT pg_catalog.setval('public.activities_id_seq', 31, true);
 
--- DELETE FROM activity_asset;
 INSERT INTO activity_asset (activity_id, asset_id)
 VALUES
     (1, 20),
@@ -69,5 +70,3 @@ VALUES
     (28, 11),
     (29, 1),
     (30, 2);
-
-

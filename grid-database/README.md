@@ -46,9 +46,9 @@ hasura --database-name default migrate apply
 # Seed database (order is important!)
 hasura --database-name default seed apply --file 1678399001253_users.sql
 hasura --database-name default seed apply --file 1678393485908_assets.sql
+hasura --database-name default seed apply --file 1678407536594_activities.sql
 hasura --database-name default seed apply --file 1679339231541_articles.sql
 hasura --database-name default seed apply --file 1678408293369_tasks.sql
-hasura --database-name default seed apply --file 1678407536594_activities.sql
 ```
 
 ### Run Hasura Console
