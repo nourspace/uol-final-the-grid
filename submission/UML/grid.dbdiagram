@@ -1,0 +1,132 @@
+# https://dbdiagram.io/d
+
+Table "users" {
+  "id" serial [pk, increment]
+  "username" text [unique, not null]
+  "password" text [not null]
+  "name" text
+  "role" text [default: `"user" not null
+        references public.user_role
+            on update cascade on delete restrict,
+    last_login timestamp with time zone,
+`]
+}
+
+Table "activity_type" {
+  "value" text [pk, not null]
+  "comment" text
+}
+
+Table "activities" {
+  "id" serial [pk, increment]
+  "timestamp" timestamp
+  "type" text
+  "notes" text
+  "source" text
+  "created_by" integer [not null]
+  "is_hidden" boolean [not null, default: false]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+}
+
+Table "task_status" {
+  "value" text [pk, not null]
+  "comment" text
+}
+
+Table "asset_category" {
+  "value" text [pk, not null]
+  "comment" text
+}
+
+Table "assets" {
+  "id" serial [pk, increment]
+  "name" text [not null]
+  "category" text [not null]
+  "description" text
+  "url" text
+  "created_by" integer [not null]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+}
+
+Table "activity_asset" {
+  "activity_id" integer [not null]
+  "asset_id" integer [not null]
+
+Indexes {
+  (activity_id, asset_id) [pk]
+}
+}
+
+Table "article_status" {
+  "value" text [pk, not null]
+  "comment" text
+}
+
+Table "article_type" {
+  "value" text [pk, not null]
+  "comment" text [not null]
+}
+
+Table "articles" {
+  "id" serial [pk, increment]
+  "title" text [not null]
+  "summary" text
+  "body" text
+  "status" text [not null]
+  "type" text [not null]
+  "created_by" integer [not null]
+  "published_at" date
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+  "url" text
+}
+
+Table "tasks" {
+  "id" serial [pk, increment]
+  "title" text [not null]
+  "desc" text
+  "status" text [not null]
+  "created_by" integer [not null]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+  "article_id" integer
+}
+
+Table "task_activity" {
+  "task_id" integer [not null]
+  "activity_id" integer [not null]
+
+Indexes {
+  (task_id, activity_id) [pk]
+}
+}
+
+Ref:"activity_type"."value" < "activities"."type" [update: cascade, delete: restrict]
+
+Ref:"users"."id" < "activities"."created_by" [update: restrict, delete: restrict]
+
+Ref:"asset_category"."value" < "assets"."category" [update: cascade, delete: restrict]
+
+Ref:"users"."id" < "assets"."created_by" [update: restrict, delete: restrict]
+
+Ref:"activities"."id" < "activity_asset"."activity_id" [update: restrict, delete: restrict]
+
+Ref:"assets"."id" < "activity_asset"."asset_id" [update: restrict, delete: restrict]
+
+Ref:"article_status"."value" < "articles"."status" [update: cascade, delete: restrict]
+
+Ref:"article_type"."value" < "articles"."type" [update: cascade, delete: restrict]
+
+Ref:"users"."id" < "articles"."created_by" [update: restrict, delete: restrict]
+
+Ref:"task_status"."value" < "tasks"."status" [update: cascade, delete: restrict]
+
+Ref:"users"."id" < "tasks"."created_by" [update: restrict, delete: restrict]
+
+Ref:"articles"."id" < "tasks"."article_id" [update: restrict, delete: restrict]
+
+Ref:"tasks"."id" < "task_activity"."task_id" [update: restrict, delete: restrict]
+
+Ref:"activities"."id" < "task_activity"."activity_id" [update: restrict, delete: restrict]
